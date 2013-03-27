@@ -21,7 +21,7 @@ You are playing *Angelica S. Smith*, highly trained scientist with a few
 biomechanic modifications, who was sent here as part of humanity's
 search for _new planets to colonize_. 
 
-After you arrival in orbit with in a tiny hyperspace caspule you have
+After your arrival in orbit in a tiny hyperspace capsule you have
 successfully landed on the planet. In a barren landscape shaped by
 regular and unhealty rainfall you need to _establish a base and start exploring_.
 
