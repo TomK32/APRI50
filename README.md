@@ -17,7 +17,7 @@
 
 *ApriL* or *APRI50* is a exploration game set on a planet in a nearby solar system.
 
-You are playing *Angelica S. Smith*, highly trained scientist with a few
+You are playing *Angelica Smith*, highly trained scientist with a few
 biomechanic modifications, who was sent here as part of humanity's
 search for _new planets to colonize_. 
 
