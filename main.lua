@@ -4,6 +4,7 @@
 --
 -- (C) 2013 Anna Lazareva, Thomas R. Koll
 
+require 'lib/helpers'
 require 'lib/middleclass'
 require 'game'
 require 'views/view'
@@ -41,6 +42,9 @@ end
 function love.keypressed(key)
   if key == 'f2' then
     makeScreenshot()
+  end
+  if key == 'q' then
+    love.quit()
   end
   if not game.current_state then return end
   game.current_state:keypressed(key)

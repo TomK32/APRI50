@@ -5,11 +5,23 @@ game = {
   graphics = {
     mode = { }
   },
-  fonts = {},
+  fonts = { },
   version = require('version'),
   url = 'http://ananasblau.com/apri50',
-  current_level = 1
+  current_level = 1,
+  dna_length = 10,
+  matchers = {
+    markable =     {'A', nil, nil, 'C', nil, nil, 'G', nil, nil, 'T'},
+    transforming = {'C', 'T', nil, 'G', 'A', nil, 'A', 'C', 'T', nil},
+    consuming =    {nil, 'C', 'G', 'G', 'G', nil, nil, 'T', nil, nil},
+    liquifying =   {nil, nil, nil, nil, nil, nil, nil, 'C', nil, 'T'},
+    growable =     {'A', 'C', 'G', nil, 'T', 'G', 'T', nil, nil, 'G'}
+  }
 }
+print(game.matchers)
+for n,m in pairs(game.matchers) do
+  print(n, m)
+end
 
 function game:createFonts(offset)
   local font_file = 'fonts/Comfortaa-Regular.ttf'

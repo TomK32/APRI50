@@ -1,7 +1,7 @@
 
 
 CreditsView = class("CreditsView", View)
-CreditsView.background_image = love.graphics.newImage('images/start_menu_background.png')
+CreditsView.background_image = nil -- love.graphics.newImage('images/start_menu_background.png')
 CreditsView.gui = require 'lib/quickie'
 
 function CreditsView:drawContent()
@@ -17,12 +17,7 @@ function CreditsView:update(dt)
 
   self.gui.group.push({grow = "down", pos = {x, y}})
   self.gui.Label({size = {'tight', 1.5 * 6 * game.fonts.lineHeight},
-    text = _("Poppy is a fan-game based on the movie Sightseers.\
-\
-Programming: Thomas R. Koll, http://twitter.com/ananasblau\
-Art: Anna Lazareva, http://twitter.com/Anna_Lazareva\
-Music:\
-  * Place du Marché by md-gramm, soundcloud.com/md-gramm/place-du-march-bernard-bigo")})
+    text = _("APIR50 is a game by Thomas R. Koll")})
 
   if self.gui.Button({text = _('Return to menu')}) then
     game:startMenu()
