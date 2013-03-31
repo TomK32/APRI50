@@ -1,8 +1,88 @@
 require('entities/scorable')
 require('entities/growable')
+local Chunk
 do
   local _parent_0 = nil
   local _base_0 = {
+    offset = {
+      x = 0,
+      y = 0
+    }
+  }
+  _base_0.__index = _base_0
+  if _parent_0 then
+    setmetatable(_base_0, _parent_0.__base)
+  end
+  local _class_0 = setmetatable({
+    __init = function(self, width, height)
+      self.tiles = { }
+      self.width = width
+      self.height = height
+      for y = 1, height do
+        self.tiles[y] = { }
+        for x = 1, width do
+          self.tiles[y][x] = { }
+        end
+      end
+    end,
+    __base = _base_0,
+    __name = "Chunk",
+    __parent = _parent_0
+  }, {
+    __index = function(cls, name)
+      local val = rawget(_base_0, name)
+      if val == nil and _parent_0 then
+        return _parent_0[name]
+      else
+        return val
+      end
+    end,
+    __call = function(cls, ...)
+      local _self_0 = setmetatable({}, _base_0)
+      cls.__init(_self_0, ...)
+      return _self_0
+    end
+  })
+  _base_0.__class = _class_0
+  local self = _class_0
+  self.get = function(self, x, y)
+    if self[y] and self[y][x] then
+      return self[y][x]
+    end
+  end
+  self.set = function(self, x, y, value)
+    if not self[y] then
+      self[y] = { }
+    end
+    self[y][x] = value
+  end
+  if _parent_0 and _parent_0.__inherited then
+    _parent_0.__inherited(_parent_0, _class_0)
+  end
+  Chunk = _class_0
+end
+do
+  local _parent_0 = nil
+  local _base_0 = {
+    place = function(self, position)
+      self.position = position
+    end,
+    apply = function(self, position)
+      self.startChunk = Chunk(3, 3)
+      self.currentChunk = Chunk(3, 3)
+      self.targetChunk = Chunk(3, 3)
+      for i, extension in ipairs(self.extensions) do
+        extension.apply(self, chunk)
+      end
+    end,
+    update = function(self, dt)
+      if not self.position then
+        return 
+      end
+      for i, callback in pairs(self.updateCallbacks) do
+        callback(self, dt)
+      end
+    end,
     mutate = function(self, dna_matcher)
       local max_mutations = 1
       local mutations_counter = 1
@@ -56,8 +136,8 @@ do
       self.dna = dna
       self.parent = parent
       self.mutations = { }
+      self.updateCallbacks = { }
       mixin(self, Scorable)
-      mixin(self, Growable)
       return self
     end,
     __base = _base_0,
@@ -85,6 +165,9 @@ do
     'C',
     'G',
     'T'
+  }
+  self.extensions = {
+    Transforming
   }
   self.seed_generator = function(seed)
     return math.random()

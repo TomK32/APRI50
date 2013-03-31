@@ -17,13 +17,13 @@ The Evolution Kit has following co-routines:
 
 * Markable
 * Growable
-* Transforming
-* Scorable
 * Consuming
 * Reproducing
 * Liquifying
 * Hardening
 * Transparent
+* Transforming
+* Scorable
 
 Co-routines are easily modifyable and extendable by the expirenced user,
 please refer to APRI Document #25132 for detailed instructions.
@@ -36,7 +36,7 @@ information must be provided as the co-routines of the Evolution Kit
 won't be called simultaneously.
 
 Every interface of the evolution kit must provide a `apply` method.
-This method must accpet a `chunk` of data containing detailed binary
+This method must accept a `chunk` of data containing detailed binary
 information of the previous results in the previous steps of the
 Evolution Kit quantum computation.
 

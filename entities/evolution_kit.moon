@@ -8,9 +8,32 @@
 require 'entities/scorable'
 require 'entities/growable'
 
+class Chunk
+  offset: {x: 0, y: 0} -- you may change these to a negative value
+  new: (width, height) =>
+    @tiles = {}
+    @width = width
+    @height = height
+    for y=1, height do
+      @tiles[y] = {}
+      for x=1, width do
+        @tiles[y][x] = {}
+  @get: (x, y) =>
+    if @[y] and @[y][x]
+      return @[y][x]
+
+  @set: (x, y, value) =>
+    if not @[y]
+      @[y] = {}
+    @[y][x] = value
+
 export class EvolutionKit
 
   @genes = {'A', 'C', 'G', 'T'}
+
+  @extensions = {Transforming}
+  -- @extensions = {Markable, Growable, Liquifying, Hardening, Transparent, Consuming, Blocking}
+
 
   -- needs to return 0..1
   --EvolutionKit.seed_generator = function(seed) return 1 / ((1 + seed) + math.random()); end
@@ -20,9 +43,26 @@ export class EvolutionKit
     @dna = dna -- a table
     @parent = parent
     @mutations = {} -- just the dna strings
+    @updateCallbacks = {} -- e.g. for methods to be called if the kit if growing over a longer time
+
     mixin(@, Scorable)
-    mixin(@, Growable)
     @
+
+  place: (position) =>
+    @position = position
+
+  apply: (position) =>
+    @startChunk = Chunk(3,3)
+    @currentChunk = Chunk(3,3)
+    @targetChunk = Chunk(3,3)
+    for i, extension in ipairs(@extensions)
+      extension.apply(self, chunk)
+
+  update: (dt) =>
+    return if not @position
+
+    for i, callback in pairs(@updateCallbacks) do
+      callback(@, dt)
 
   -- if dna_matcher is given it will mutate upto 10 times until
   -- the score for the new mutation is higher than for the parent

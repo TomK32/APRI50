@@ -15,9 +15,14 @@ Mutator = class("Mutator", State)
 
 function Mutator:initialize()
   self.evolution_kit = EvolutionKit.random(game.dna_length)
+  self.evolution_kit.place({x = 4, y = 4})
   self.view = MutatorView({self.evolution_kit})
   self.mutations = 1
   self.evolution_kit.name = self.mutations
+end
+
+function Mutator:update(dt)
+  self.evolution_kit.update(dt)
 end
 
 function Mutator:keypressed(key, code)
