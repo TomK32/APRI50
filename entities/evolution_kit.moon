@@ -50,6 +50,7 @@ export class EvolutionKit
 
   place: (position) =>
     @position = position
+    @
 
   apply: (position) =>
     @startChunk = Chunk(3,3)
@@ -57,6 +58,7 @@ export class EvolutionKit
     @targetChunk = Chunk(3,3)
     for i, extension in ipairs(@extensions)
       extension.apply(self, chunk)
+    @
 
   update: (dt) =>
     return if not @position

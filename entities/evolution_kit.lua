@@ -66,6 +66,7 @@ do
   local _base_0 = {
     place = function(self, position)
       self.position = position
+      return self
     end,
     apply = function(self, position)
       self.startChunk = Chunk(3, 3)
@@ -74,6 +75,7 @@ do
       for i, extension in ipairs(self.extensions) do
         extension.apply(self, chunk)
       end
+      return self
     end,
     update = function(self, dt)
       if not self.position then
