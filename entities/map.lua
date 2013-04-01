@@ -1,34 +1,34 @@
 do
   local _parent_0 = nil
   local _base_0 = {
-    update = function(self, dt)
-      if self.view and self.view.update then
-        return self.view:update(dt)
+    addEntity = function(self, entity)
+      entity.map = self
+      if not self.layers[entity.position.z] then
+        self.layers[entity.position.z] = { }
+        table.insert(self.layer_indexes, entity.position.z)
+        table.sort(self.layer_indexes, function(a, b)
+          return a < b
+        end)
       end
+      return table.insert(self.layers[entity.position.z], entity)
     end,
-    draw = function(self)
-      if self.view then
-        return self.view:draw()
-      end
-    end,
-    keypressed = function(self, key, code)
-      if self.view.gui then
-        return self.view.gui.keyboard.pressed(key, code)
-      end
-    end
+    update = function(self, dt) end
   }
   _base_0.__index = _base_0
   if _parent_0 then
     setmetatable(_base_0, _parent_0.__base)
   end
   local _class_0 = setmetatable({
-    __init = function(self, game, name, view)
-      self.game = game
-      self.name = name
-      self.view = view
+    __init = function(self, width, height)
+      self.width = width
+      self.height = height
+      self.layers = { }
+      self.layer_indexes = { }
+      self.level = level
+      return self
     end,
     __base = _base_0,
-    __name = "State",
+    __name = "Map",
     __parent = _parent_0
   }, {
     __index = function(cls, name)
@@ -49,5 +49,5 @@ do
   if _parent_0 and _parent_0.__inherited then
     _parent_0.__inherited(_parent_0, _class_0)
   end
-  State = _class_0
+  Map = _class_0
 end

@@ -10,7 +10,8 @@ require 'game'
 require 'views/view'
 require 'game_states/state'
 require 'game_states/mutator'
-require 'views/credits_view'
+require 'game_states/map_state'
+--require 'views/credits_view'
 function love.load()
   local modes = love.graphics.getModes()
   table.sort(modes, function(a, b) return a.width * a.height > b.width * b.height end)
@@ -25,8 +26,8 @@ function love.load()
   -- game.current_state = Intro(game.newVersionOrStart)
 
   --love.audio.play(game.sounds.music.track01)
-  game:mutator()
-  --game:start()
+  --game:mutator()
+  game:start()
 end
 
 function love.draw()

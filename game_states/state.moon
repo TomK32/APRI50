@@ -1,20 +1,18 @@
 
-
 export class State
-
   new: (game, name, view) =>
     @game = game
     @name = name
     @view = view
 
-  @update: (dt) =>
+  update: (dt) =>
     if @view and @view.update then
-      @view:update(dt)
+      @view\update(dt)
 
-  @draw: () =>
+  draw: () =>
     if @view then
-      @view:draw()
+      @view\draw()
 
-  @keypressed: (key, code) => 
+  keypressed: (key, code) => 
     if @view.gui then
       @view.gui.keyboard.pressed(key, code)

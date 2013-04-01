@@ -1,10 +1,13 @@
 
+require 'entities/map'
+
 game = {
   title = 'APRI50',
   debug = false,
   graphics = {
     mode = { }
   },
+  renderer = require('renderers/default'),
   fonts = { },
   version = require('version'),
   url = 'http://ananasblau.com/apri50',
@@ -18,10 +21,6 @@ game = {
     growable =     {'A', 'C', 'G', nil, 'T', 'G', 'T', nil, nil, 'G'}
   }
 }
-print(game.matchers)
-for n,m in pairs(game.matchers) do
-  print(n, m)
-end
 
 function game:createFonts(offset)
   local font_file = 'fonts/Comfortaa-Regular.ttf'
@@ -52,7 +51,8 @@ end
 function game:start()
   game.stopped = false
   love.mouse.setVisible(false)
-  game.current_state = MapState(game.current_level)
+  game.current_state = MapState()
+  game.renderer.map_view = game.current_state.view
 end
 
 function game:mutator()
