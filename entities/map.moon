@@ -8,6 +8,7 @@ export class Map
     @height = height
     @layers = {} -- here the entities are stuffed into
     @layer_indexes = {}
+    @tiles = {}
     @level = level
     @
 
@@ -19,6 +20,16 @@ export class Map
       table.sort(@layer_indexes, (a,b) -> return a < b)
     table.insert(@layers[entity.position.z], entity)
 
+  getTile: (x, y) =>
+    if @tiles[x]
+      return @tiles[x][y]
+    return nil
+
+  setTile: (x, y, tile) =>
+    if not @tiles[x]
+      @tiles[x] = {}
+    @tiles[x][y] = tile
+
   update: (dt) =>
     --
 
@@ -28,12 +39,9 @@ export class Map
     -- split up the chunk and make new, single tile, entities out of it
     for x=1, entity.targetChunk.width do
       for y=1, entity.targetChunk.height do
-        if @width >= offset_x + x and @height >= offset_y + y
-          tile = entity.targetChunk\get(x,y)
-          tile.position = { x: offset_x + x, y: offset_y + y, z: entity.position.z}
-          @\addEntity(tile)
+        tile = entity.targetChunk\get(x,y)
+        @\setTile(offset_x + x, offset_y + y, tile)
     -- and remove the original entity
     for i, e in pairs(@layers[entity.position.z])
       if e == entity
         table.remove(@layers[entity.position.z], i)
-
