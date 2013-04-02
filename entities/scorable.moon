@@ -10,8 +10,11 @@ export class Scorable
     if dna_matcher == nil
       return nil
     for i = 1, math.min(#dna_matcher, #self.dna) do
-      element = dna_matcher[i]
-      if element and element ~= '' and element == self.dna[i]
+      c = dna_matcher[i]
+      if c == nil or c == '' or c == ' '
+        -- do nothing
+        1
+      elseif c and c == self.dna[i]
         value += 1
       else
         value -= 1

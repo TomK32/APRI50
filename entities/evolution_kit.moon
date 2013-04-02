@@ -7,25 +7,9 @@
 
 require 'entities/scorable'
 require 'entities/growable'
-
-class Chunk
-  offset: {x: 0, y: 0} -- you may change these to a negative value
-  new: (width, height) =>
-    @tiles = {}
-    @width = width
-    @height = height
-    for y=1, height do
-      @tiles[y] = {}
-      for x=1, width do
-        @tiles[y][x] = {}
-  @get: (x, y) =>
-    if @[y] and @[y][x]
-      return @[y][x]
-
-  @set: (x, y, value) =>
-    if not @[y]
-      @[y] = {}
-    @[y][x] = value
+require 'entities/drawable'
+require 'entities/transforming'
+require 'entities/chunk'
 
 export class EvolutionKit
 
@@ -46,6 +30,7 @@ export class EvolutionKit
     @updateCallbacks = {} -- e.g. for methods to be called if the kit if growing over a longer time
 
     mixin(@, Scorable)
+    mixin(@, Drawable)
     @
 
   place: (position) =>
