@@ -4,6 +4,7 @@ export class Chunk
     @tiles = {}
     @width = width
     @height = height
+    @possible_shift = {x: 0, y: 0}
     @\fill()
     return @
 
@@ -13,12 +14,33 @@ export class Chunk
         @[x] = {}
       for y=1, @height
         if not @[x][y]
-          @[x][y] = {color: {0,0,0,0}}
+          @[x][y] = {color: {100,0,0,255}}
 
   grow: (x, y) =>
+    @possible_shift.x += x
+    @possible_shift.y += y
+    if @possible_shift.x >= 2
+      shift = math.floor(@possible_shift.x / 2)
+      self.offset.x -= shift
+      @shift(shift, 0)
+      @possible_shift.x -= shift*2
+    if @possible_shift.y >= 2
+      shift = math.floor(@possible_shift.y / 2)
+      self.offset.y -= shift
+      @shift(0, shift)
+      @possible_shift.y -= shift*2
     @height += y
     @width += x
     @\fill()
+
+  shift: (x, y) =>
+    if x > 0
+      for i=0, @width
+        @[@width - i + x] = @[@width - i]
+    if y > 0
+      for i=1, @height
+        for j=0, @height
+          @[i][@width - j + y] = @[i][@width - j]
 
   get: (x, y) =>
     if @[x] and @[x][y]

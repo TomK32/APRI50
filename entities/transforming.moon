@@ -9,11 +9,16 @@ export class Transforming
     @duration_mod_transforming = 10 if not @duration_mod_transforming
     @dt_mod_transforming = 0 if not @dt_mod_transforming
     @dt_mod_transforming += dt
+    -- this is the last to be removed from the evokit
     if @dt_mod_transforming > @duration_mod_transforming
-      @unbind('updateCallbacks', Transforming.update)
-      return
+      if #@updateCallbacks == 1
+        @unbind('updateCallbacks', Transforming.update)
+        return
+      else
+        return
     @currentChunk.height = @targetChunk.height
     @currentChunk.width = @targetChunk.width
+    @currentChunk.offset = @targetChunk.offset
     @targetChunk\iterate (x,y, target_cell) ->
       -- tweening
       start_cell = @startChunk\get(x, y)
