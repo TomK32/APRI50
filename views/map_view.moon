@@ -15,8 +15,12 @@ export class MapView extends View
       entities = @map.layers[layer]
       table.sort(entities, (a, b) -> return a.position.y > b.position.y)
       for i,entity in ipairs(entities) do
+        love.graphics.push()
         if entity.draw
-          love.graphics.push()
           game.renderer\translate(entity.position.x, entity.position.y)
           entity\draw()
-          love.graphics.pop()
+        elseif entity.color
+          game.renderer\rectangle('fill', entity.color, entity.position.x, entity.position.y)
+        else
+          print("No method draw on entity " .. entity)
+        love.graphics.pop()

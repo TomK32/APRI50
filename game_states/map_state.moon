@@ -12,12 +12,18 @@ export class MapState extends State
     }
     for i, e in pairs(@evolution_kits) do
       @map\addEntity(e)
+      e.map = @map
 
     return @
 
   update: (dt) =>
-    for e in *@evolution_kits
-      e\update(dt) 
+    for i, entity in pairs(@evolution_kits)
+      entity\update(dt)
+    for i, entity in pairs(@evolution_kits)
+      if entity.merge
+        @map\merge(entity)
+        table.remove(@evolution_kits,i)
+
     @map\update(dt)
 
 

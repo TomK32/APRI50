@@ -52,6 +52,9 @@ export class EvolutionKit
     return if not @position
     for i, callback in pairs(@updateCallbacks) do
       callback(@, dt)
+    if #@updateCallbacks == 0
+      -- nothing else to do will be merged into the map
+      @merge = true
 
   -- if dna_matcher is given it will mutate upto 10 times until
   -- the score for the new mutation is higher than for the parent
@@ -94,7 +97,6 @@ export class EvolutionKit
     return EvolutionKit(dna, parent)
 
   bind: (event, callback) =>
-    print(@[event], event)
     table.insert(@[event], callback)
 
   unbind: (event,callback) =>
