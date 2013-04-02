@@ -15,19 +15,20 @@ export class EvolutionKit
 
   @genes = {'A', 'C', 'G', 'T'}
 
-  @extensions = {Transforming}
   -- @extensions = {Markable, Growable, Liquifying, Hardening, Transparent, Consuming, Blocking}
-
+  @extensions = {Growable, Transforming}
 
   -- needs to return 0..1
   --EvolutionKit.seed_generator = function(seed) return 1 / ((1 + seed) + math.random()); end
   @seed_generator = (seed) -> return math.random()
 
-  new: (dna, parent) =>
+  new: (dna, parent, position) =>
+    @updateCallbacks = {} -- e.g. for methods to be called if the kit if growing over a longer time
     @dna = dna -- a table
     @parent = parent
+    if position then
+      @\place(position)
     @mutations = {} -- just the dna strings
-    @updateCallbacks = {} -- e.g. for methods to be called if the kit if growing over a longer time
 
     mixin(@, Scorable)
     mixin(@, Drawable)
@@ -35,19 +36,20 @@ export class EvolutionKit
 
   place: (position) =>
     @position = position
+    @apply()
     @
 
   apply: (position) =>
-    @startChunk = Chunk(3,3)
-    @currentChunk = Chunk(3,3)
-    @targetChunk = Chunk(3,3)
-    for i, extension in ipairs(@extensions)
-      extension.apply(self, chunk)
+    -- Growable might change the chunks
+    @startChunk = Chunk(1,1)
+    @currentChunk = Chunk(1,1)
+    @targetChunk = Chunk(1,1)
+    for extension in *EvolutionKit.extensions
+      extension.apply(self, @targetChunk)
     @
 
   update: (dt) =>
     return if not @position
-
     for i, callback in pairs(@updateCallbacks) do
       callback(@, dt)
 
@@ -90,3 +92,15 @@ export class EvolutionKit
     for i = 1, length do
       dna[i] = EvolutionKit.genes[math.ceil(EvolutionKit.seed_generator(i) * #EvolutionKit.genes)]
     return EvolutionKit(dna, parent)
+
+  bind: (event, callback) =>
+    print(@[event], event)
+    table.insert(@[event], callback)
+
+  unbind: (event,callback) =>
+    pos = false
+    for i,e in ipairs(@[event])
+      if e == callback
+        pos = i
+    if pos
+      table.remove(@[event], i)
