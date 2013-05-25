@@ -3,9 +3,7 @@
 -- and update and draw functions
 
 export class Map
-  new: (width, height) =>
-    @width = width
-    @height = height
+  new: () =>
     @layers = {} -- here the entities are stuffed into
     @layer_indexes = {}
     @tiles = {}
