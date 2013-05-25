@@ -45,18 +45,25 @@ export class EvolutionKit
     table.insert(@extensions, extension)
 
   apply: (position) =>
-    -- Growable might change the chunks
-    @startChunk = Chunk(1,1)
-    @currentChunk = Chunk(1,1)
-    @targetChunk = Chunk(1,1)
+    -- Any extension might change the chunks is size and composition
+    @startChunk = Chunk(1, 1)
+    @currentChunk = Chunk(1, 1)
+    @targetChunk = Chunk(1, 1)
+    -- first pass
     for extension in *EvolutionKit.extensions
-      extension.apply(self, @targetChunk)
+      if extension.apply
+        extension.apply(self, @targetChunk)
+    -- final pass
+    for extension in *EvolutionKit.extensions
+      if extension.finish
+        extension.finish(self, @targetChunk)
     @
 
   update: (dt) =>
     return if not @position
     for i, callback in pairs(@updateCallbacks) do
       callback(@, dt)
+
     if #@updateCallbacks == 0
       -- nothing else to do will be merged into the map
       @merge = true
