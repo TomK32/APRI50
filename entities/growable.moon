@@ -16,7 +16,6 @@ export class Growable
     tween(score , @, {width: score, height: score}, 'linear', Growable.removeSelf, @)
 
   removeSelf: =>
-    print("g")
     @\unbind('updateCallbacks', Growable.update)
 
   update: (dt) =>

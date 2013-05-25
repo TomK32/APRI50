@@ -50,7 +50,7 @@ end
 
 function game:start()
   game.stopped = false
-  love.mouse.setVisible(false)
+  --love.mouse.setVisible(false)
   game.current_state = MapState()
   game.renderer.map_view = game.current_state.view
 end

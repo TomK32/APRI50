@@ -7,6 +7,9 @@ export class MapView extends View
     @top_left = {x: 0, y: 0}
     scale = game.tile_size
 
+  coordsForXY: (x, y) =>
+    return math.floor(x / @scale.x) - 1 , math.floor(y / @scale.y) - 1
+
   drawContent: =>
     love.graphics.setColor(100,153,100,255)
     love.graphics.rectangle('fill', 0,0,self.display.width, self.display.height)

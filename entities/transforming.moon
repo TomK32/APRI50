@@ -21,7 +21,6 @@ export class Transforming
     for i, t in ipairs(@transforming_tweens)
       tween.stop(t)
 
-    print('dead')
     @\unbind('updateCallbacks', Transforming.update)
 
   update: (dt) =>
