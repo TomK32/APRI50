@@ -1,31 +1,36 @@
 
+-- gradually changes the colour of a chunk
 export class Transforming
   apply: (chunk) =>
-    @bind('updateCallbacks', Transforming.update)
-    @targetChunk\iterate (x,y,tile) ->
-      tile.color = {255,255/y,255/x,255}
-    
+    -- first run
+    if not @transforming_timer
+      @bind('updateCallbacks', Transforming.update)
+      @transforming_timer = 2
+    @transforming_timer = math.max(1.0, math.min(3, @transforming_timer + 1))
+    if not @transforming_tweens
+      @transforming_tweens = {}
+
+    @width, @height = @currentChunk.width, @currentChunk.height
+    for i, t in ipairs(@transforming_tweens)
+      tween.stop(t)
+
+    @currentChunk\iterate (x, y, tile) ->
+      table.insert(@transforming_tweens, tween(@transforming_timer, tile, {color: {100, 255/(x+y), 255/y, 255}}))
+
+  removeSelf: =>
+    for i, t in ipairs(@transforming_tweens)
+      tween.stop(t)
+
+    print('dead')
+    @\unbind('updateCallbacks', Transforming.update)
+
   update: (dt) =>
-    @duration_mod_transforming = 10 if not @duration_mod_transforming
-    @dt_mod_transforming = 0 if not @dt_mod_transforming
-    @dt_mod_transforming += dt
-    -- this is the last to be removed from the evokit
-    if @dt_mod_transforming > @duration_mod_transforming
-      if #@updateCallbacks == 1
-        @unbind('updateCallbacks', Transforming.update)
-        return
-      else
-        return
-    @currentChunk.height = @targetChunk.height
-    @currentChunk.width = @targetChunk.width
-    @currentChunk.offset = @targetChunk.offset
-    @targetChunk\iterate (x,y, target_cell) ->
-      -- tweening
-      start_cell = @startChunk\get(x, y)
-      if not start_cell
-        start_cell = @startChunk\set(x, y, {color: {0,0,0,0}})
-      current_cell = @currentChunk\get(x,y)
-      if not current_cell
-        current_cell = @currentChunk\set(x, y, {color: {0,0,0,0}})
-      for i, c in pairs(target_cell.color)
-        current_cell.color[i] = start_cell.color[i] +(target_cell.color[i] - start_cell.color[i]) * (@dt_mod_transforming / @duration_mod_transforming)
+    @transforming_timer -= dt
+    if @width >= @targetChunk.width and @height >= @targetChunk.height
+      if @transforming_timer < 0
+        Transforming.removeSelf(@)
+    elseif @currentChunk.width - 1 < @width or @currentChunk.height - 1 < @height
+      @transforming_timer = 2.0
+      Transforming.apply(@, @targetChunk)
+
+    true

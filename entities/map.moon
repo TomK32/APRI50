@@ -10,6 +10,7 @@ export class Map
     @layer_indexes = {}
     @tiles = {}
     @level = level
+    @updateAble = {} -- entities that need to be called during update
     @
 
   addEntity: (entity) =>
@@ -19,6 +20,8 @@ export class Map
       table.insert(@layer_indexes, entity.position.z)
       table.sort(@layer_indexes, (a,b) -> return a < b)
     table.insert(@layers[entity.position.z], entity)
+    if entity.update
+      table.insert(@updateAble, entity)
 
   getTile: (x, y) =>
     if @tiles[x]
@@ -31,7 +34,11 @@ export class Map
     @tiles[x][y] = tile
 
   update: (dt) =>
-    --
+    for i, entity in ipairs(@updateAble)
+      if entity.update
+        entity\update(dt)
+      if entity.deleted
+        table.remove(@updateAble, i)
 
   merge: (entity) =>
     offset_x = entity.position.x + entity.targetChunk.offset.x

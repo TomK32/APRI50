@@ -103,6 +103,4 @@ export class EvolutionKit
     pos = false
     for i,e in ipairs(@[event])
       if e == callback
-        pos = i
-    if pos
-      table.remove(@[event], i)
+        table.remove(@[event], i)

@@ -14,7 +14,7 @@ export class Chunk
         @[x] = {}
       for y=1, @height
         if not @[x][y]
-          @[x][y] = {color: {100,0,0,255}}
+          @[x][y] = {color: {0, 0, 0, 255}}
 
   grow: (x, y) =>
     @possible_shift.x += x

@@ -1,7 +1,7 @@
 
 export class Drawable
   @draw: =>
-    if not @currentChunk 
+    if not @currentChunk
       return
     game.renderer\translate(@currentChunk.offset.x, @currentChunk.offset.y)
     @currentChunk\iterate (x, y, tile) ->

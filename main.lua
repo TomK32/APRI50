@@ -6,6 +6,7 @@
 
 require 'lib/helpers'
 require 'lib/middleclass'
+tween = require 'lib/tween'
 require 'game'
 require 'views/view'
 require 'game_states/state'
@@ -57,6 +58,7 @@ function love.mousepressed(x,y,button)
   end
 end
 function love.update(dt)
+  tween.update(dt)
   if not game.current_state then return end
   game.current_state:update(dt)
 end
