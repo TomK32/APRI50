@@ -66,7 +66,13 @@ export class EvolutionKit
 
     if #@updateCallbacks == 0
       -- nothing else to do will be merged into the map
-      @merge = true
+      @\merge()
+
+  merge: =>
+    @targetChunk.offset = @currentChunk.offset
+    @map\merge(self)
+    @.deleted = true
+    @ = nil
 
   -- if dna_matcher is given it will mutate upto 10 times until
   -- the score for the new mutation is higher than for the parent
