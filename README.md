@@ -38,9 +38,9 @@ most efficient use of the planetary resources.
 
 ## References (other games you should play!)
 
-* Starseed Pilgrim
-* Waking Mars
-* Wayward
+* Starseed Pilgrim http://www.starseedpilgrim.com
+* Waking Mars http://www.tigerstylegames.com/wakingmars/
+* Wayward http://www.unlok.ca/category/wayward/
 
 
 ## Footnotes
