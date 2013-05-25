@@ -13,7 +13,7 @@ export class Growable
     @targetChunk\fill()
     @\bind('updateCallbacks', Growable.update)
 
-    tween(score , @, {width: score, height: score}, 'linear', Growable.removeSelf, @)
+    tween(score/4 , @, {width: score, height: score}, 'linear', Growable.removeSelf, @)
 
   removeSelf: =>
     @\unbind('updateCallbacks', Growable.update)
@@ -23,3 +23,5 @@ export class Growable
       @currentChunk\grow(0,1)
     if @width > @currentChunk.width
       @currentChunk\grow(1,0)
+
+return Growable

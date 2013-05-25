@@ -6,9 +6,7 @@
 -- https://github.com/jbrownlee/learning-lua/blob/master/genetic_algorithm.lua
 
 require 'entities/scorable'
-require 'entities/growable'
 require 'entities/drawable'
-require 'entities/transforming'
 require 'entities/chunk'
 
 export class EvolutionKit
@@ -16,7 +14,7 @@ export class EvolutionKit
   @genes = {'A', 'C', 'G', 'T'}
 
   -- @extensions = {Markable, Growable, Liquifying, Hardening, Transparent, Consuming, Blocking}
-  @extensions = {Growable, Transforming}
+  @extensions = {}
 
   -- needs to return 0..1
   --EvolutionKit.seed_generator = function(seed) return 1 / ((1 + seed) + math.random()); end
@@ -38,6 +36,13 @@ export class EvolutionKit
     @position = position
     @apply()
     @
+
+  registerExtension: (extension) =>
+    if game.debug
+      print('Registering extension ' .. extension)
+    extension = require('extensions/' .. extension)
+    assert(extension)
+    table.insert(@extensions, extension)
 
   apply: (position) =>
     -- Growable might change the chunks
@@ -104,3 +109,9 @@ export class EvolutionKit
     for i,e in ipairs(@[event])
       if e == callback
         table.remove(@[event], i)
+
+EvolutionKit\registerExtension('growable')
+EvolutionKit\registerExtension('transforming')
+EvolutionKit\registerExtension('liquifying')
+EvolutionKit\registerExtension('fauna')
+

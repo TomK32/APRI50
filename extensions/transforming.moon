@@ -15,7 +15,8 @@ export class Transforming
       tween.stop(t)
 
     @currentChunk\iterate (x, y, tile) ->
-      table.insert(@transforming_tweens, tween(@transforming_timer, tile, {color: {100, 255/(x+y), 255/y, 255}}))
+      target = @targetChunk\get(x, y)
+      table.insert(@transforming_tweens, tween(@transforming_timer, tile, {color: target.color}))
 
   removeSelf: =>
     for i, t in ipairs(@transforming_tweens)
@@ -33,3 +34,5 @@ export class Transforming
       Transforming.apply(@, @targetChunk)
 
     true
+
+return Transforming
