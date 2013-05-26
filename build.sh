@@ -28,6 +28,15 @@ done
 # Take HEAD make an archive of it
 git archive HEAD -o "$BUILD/$FILENAME.zip"
 
+unzip "$BUILD/$FILENAME.zip" -d "$BUILD/$FILENAME"
+pwd=`pwd`
+cd "$BUILD/$FILENAME"
+moonc .
+rm "$BUILD/$FILENAME.zip"
+zip -r "$BUILD/$FILENAME.zip" .
+cd $pwd
+rm -Rf "$BUILD/$FILENAME"
+
 echo "return '${GAME_VERSION}'" > "version.lua"
 # Add the version file
 zip -q "$BUILD/$FILENAME.zip" "version.lua"
