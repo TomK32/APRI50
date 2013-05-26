@@ -13,7 +13,6 @@ export class EvolutionKit
 
   @genes = {'A', 'C', 'G', 'T'}
 
-  -- @extensions = {Markable, Growable, Liquifying, Hardening, Transparent, Consuming, Blocking}
   @extensions = {}
 
   -- needs to return 0..1
@@ -70,6 +69,9 @@ export class EvolutionKit
 
   merge: =>
     @targetChunk.offset = @currentChunk.offset
+    for extension in *EvolutionKit.extensions
+      if extension.onMerge
+        extension.onMerge(self)
     @map\merge(self)
     @.deleted = true
     @ = nil
@@ -123,8 +125,13 @@ export class EvolutionKit
       if e == callback
         table.remove(@[event], i)
 
+-- @extensions = {
+--EvolutionKit\registerExtension('consuming')
+--EvolutionKit\registerExtension('hardening')
+--EvolutionKit\registerExtension('transparent')
+--EvolutionKit\registerExtension('blocking')
 EvolutionKit\registerExtension('growable')
 EvolutionKit\registerExtension('transforming')
 EvolutionKit\registerExtension('liquifying')
 EvolutionKit\registerExtension('fauna')
-
+EvolutionKit\registerExtension('seeding')
