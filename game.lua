@@ -13,13 +13,13 @@ game = {
   version = require('version'),
   url = 'http://ananasblau.com/apri50',
   current_level = 1,
-  dna_length = 10,
+  dna_length = 12,
   matchers = {
-    markable =     {'A', nil, nil, 'C', nil, nil, 'G', nil, nil, 'T'},
-    transforming = {'C', 'T', nil, 'G', 'A', nil, 'A', 'C', 'T', nil},
-    consuming =    {nil, 'C', 'G', 'G', 'G', nil, nil, 'T', nil, nil},
-    liquifying =   {nil, nil, nil, nil, nil, nil, nil, 'C', nil, 'T'},
-    growable =     {'A', 'C', 'G', nil, 'T', 'G', 'T', nil, nil, 'G'}
+    markable =     splitDNA('A  C  G  T A'),
+    liquifying =   splitDNA('AA     C T G'),
+    growable =     splitDNA('ACG TGT  GAT'),
+    fauna    =     splitDNA('G AA  TGT GT'),
+    seeding  =     splitDNA('  A T  C G  ')
   },
   player = Player()
 }

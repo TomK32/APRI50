@@ -1,13 +1,13 @@
 
 export class Growable
-  @matcher = splitDNA('A    T A A')
+  @matcher = game.matchers.growable
 
   apply: (chunk) =>
     @width = 0 -- for tweening
     @height = 0
 
     @growable_target = {0, 0}
-    score = 6 + @\score(Growable.matcher)
+    score = @matchers.length / 2 + @\score(Growable.matcher)
     @growable_target = {score, score}
     @targetChunk.width, @targetChunk.height = score, score
     @targetChunk\fill()

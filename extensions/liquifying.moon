@@ -1,7 +1,7 @@
 
 -- gradually changes the colour of a chunk
 export class Liquifying
-  @matcher = splitDNA(' GT  TG C')
+  @matcher = game.matchers.liquifying
   finish: (chunk) =>
     score = 1 + @\score(Liquifying.matcher)
     if game.debug

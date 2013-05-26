@@ -1,7 +1,7 @@
 
 -- gradually changes the colour of a chunk
 export class Fauna
-  @matcher = splitDNA(' A CT G C')
+  @matcher = game.matchers.fauna
   finish: (chunk) =>
     score = 1 + @\score(Fauna.matcher)
     if game.debug

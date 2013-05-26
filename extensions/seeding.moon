@@ -1,6 +1,6 @@
 
 export class Seeding
-  @matcher = splitDNA('  G AA TCC')
+  @matcher = game.matchers.seeding
 
   onMerge: =>
     score = 4 + @\score(Seeding.matcher)
