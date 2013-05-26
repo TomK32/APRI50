@@ -5,15 +5,17 @@ export class Growable
   apply: (chunk) =>
     @width = 0 -- for tweening
     @height = 0
+    if game.debug
+      print('Growable')
 
     @growable_target = {0, 0}
-    score = @matchers.length / 2 + @\score(Growable.matcher)
+    score = #Growable.matcher / 2 + @\score(Growable.matcher)
     @growable_target = {score, score}
     @targetChunk.width, @targetChunk.height = score, score
     @targetChunk\fill()
     @\bind('updateCallbacks', Growable.update)
 
-    tween(score/4 , @, {width: score, height: score}, 'linear', Growable.removeSelf, @)
+    tween(2 , @, {width: score, height: score}, 'linear', Growable.removeSelf, @)
 
   removeSelf: =>
     @\unbind('updateCallbacks', Growable.update)
