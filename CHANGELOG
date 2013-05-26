@@ -1,7 +1,9 @@
 
 Version 0.2
 
-* Inventory
+* First version of generated icons of iventory items
+* Inventory with keyboard access
+* Add Seeding extension to mutate and re-stock EvoKits
 * Merge EvolutionKit into Map
 * Refactor EvolutionKit to make adding new extensions easier
 * Use Tween
