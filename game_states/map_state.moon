@@ -21,6 +21,10 @@ export class MapState extends State
   update: (dt) =>
     @map\update(dt)
 
+  keypressed: (key, unicode) =>
+    if key\match("[0-9]")
+      game.player.inventory.active = tonumber(key)
+
   mousepressed: (x, y, button) =>
     item_number = @inventory_view\clickedItem(x, y)
     if item_number
