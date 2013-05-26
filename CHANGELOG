@@ -1,0 +1,14 @@
+
+Version 0.2
+
+* Inventory
+* Merge EvolutionKit into Map
+* Refactor EvolutionKit to make adding new extensions easier
+* Use Tween
+* Allow placing EvolutionKits with mouse
+
+Version 0.1
+
+* Basic EvolutionKit with extensions
+
+
