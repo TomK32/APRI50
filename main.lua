@@ -62,7 +62,7 @@ function love.update(dt)
   dt = 0.05
   tween.update(dt)
   if not game.current_state then return end
-  game.current_state:update(0.05)
+  game.current_state:update(dt)
 end
 
 function love.quit()

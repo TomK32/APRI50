@@ -108,7 +108,12 @@ export class EvolutionKit
 
   toString: =>
     if @dna
-      return @name .. ': ' .. table.concat(@dna, '')
+      text = table.concat(@dna, '')
+      text = text .. ' • '
+      for i, extension in ipairs(EvolutionKit.extensions)
+        if extension.matcher
+          text = text .. extension.__name .. ': ' .. @score(extension.matcher) .. ' '
+      return text
     else
       return 'Evolution Kit'
 

@@ -16,9 +16,9 @@ game = {
   dna_length = 12,
   matchers = {
     markable =     splitDNA('A  C  G  T A'),
-    liquifying =   splitDNA('AA     C T G'),
-    growable =     splitDNA('ACG TGT  GAT'),
-    fauna    =     splitDNA('G AA  TGT GT'),
+    liquifying =   splitDNA(' A     C T G'),
+    growable =     splitDNA('A   T      G'),
+    fauna    =     splitDNA('A   T   T GT'),
     seeding  =     splitDNA('  A T  C G  ')
   },
   player = Player(),
