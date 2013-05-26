@@ -29,6 +29,8 @@ export class EvolutionKit
 
     mixin(@, Scorable)
     mixin(@, Drawable)
+
+    @toImage()
     @
 
   place: (position) =>
@@ -104,11 +106,32 @@ export class EvolutionKit
       new_dna[pos] = EvolutionKit.genes[math.ceil(#EvolutionKit.genes * math.random())]
     return new_dna
 
-  toString: () =>
+  toString: =>
     if @dna
       return @name .. ': ' .. table.concat(@dna, '')
     else
       return 'Evolution Kit'
+
+  toImage: =>
+    assert(@dna)
+    if @image
+      return @image
+    size = game.icon_size
+    image_data = love.image.newImageData(size, size)
+    -- every 3rd letter decides size
+    dna_int = @dnaToInt()
+    scale = (game.dna_length - 1) / (size * size)
+    c = 0
+    for x = 0, size - 1
+      for y = 0, size - 1
+        c += 1
+        r = c * scale + 1
+        r1, r2 = math.floor(r), math.ceil(r)
+        r = (dna_int[r1] + dna_int[r2]) / 2
+        col = math.ceil(r * 4) / 4 -- rasterize for the colour
+        image_data\setPixel(x, y, 64 * col, 64 * col, 64 * col, 255)
+    @image = love.graphics.newImage(image_data)
+    return @image
 
   random: (length, parent) ->
     dna = {}

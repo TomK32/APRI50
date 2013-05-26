@@ -35,4 +35,12 @@ export class Scorable
       score += scores[name]
     return {score: score, scores: scores}
 
+  @dnaToInt: =>
+    dna_int = {}
+    gene_values = {}
+    for i, gene in ipairs(EvolutionKit.genes)
+      gene_values[gene] = i
+    for i=1, #@dna
+      dna_int[i] = gene_values[@dna[i]]
+    return dna_int
 

@@ -21,7 +21,8 @@ game = {
     fauna    =     splitDNA('G AA  TGT GT'),
     seeding  =     splitDNA('  A T  C G  ')
   },
-  player = Player()
+  player = Player(),
+  icon_size = 32
 }
 
 function game:createFonts(offset)
