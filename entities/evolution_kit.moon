@@ -120,13 +120,13 @@ export class EvolutionKit
     image_data = love.image.newImageData(size, size)
     -- every 3rd letter decides size
     dna_int = @dnaToInt()
-    scale = (game.dna_length - 1) / (size * size)
+    scale = (game.dna_length ) / (size * size)
     c = 0
     for x = 0, size - 1
       for y = 0, size - 1
         c += 1
-        r = c * scale + 1
-        r1, r2 = math.floor(r), math.ceil(r)
+        r = math.floor(c * scale + 1)
+        r1, r2 = math.min(game.dna_length, r), math.min(game.dna_length, r + 1)
         r = (dna_int[r1] + dna_int[r2]) / 2
         col = math.ceil(r * 4) / 4 -- rasterize for the colour
         image_data\setPixel(x, y, 64 * col, 64 * col, 64 * col, 255)
