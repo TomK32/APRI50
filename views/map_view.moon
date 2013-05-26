@@ -16,7 +16,7 @@ export class MapView extends View
     return math.floor(x / @scale.x) - 1 , math.floor(y / @scale.y) - 1
 
   drawContent: =>
-    love.graphics.setColor(100,153,100,255)
+    love.graphics.setColor(10,10,10,255)
     love.graphics.rectangle('fill', 0,0,self.display.width, self.display.height)
 
     -- background tiles

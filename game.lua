@@ -1,5 +1,6 @@
 
 require 'entities/map'
+require 'entities/player'
 
 game = {
   title = 'APRI50',
@@ -19,7 +20,8 @@ game = {
     consuming =    {nil, 'C', 'G', 'G', 'G', nil, nil, 'T', nil, nil},
     liquifying =   {nil, nil, nil, nil, nil, nil, nil, 'C', nil, 'T'},
     growable =     {'A', 'C', 'G', nil, 'T', 'G', 'T', nil, nil, 'G'}
-  }
+  },
+  player = Player()
 }
 
 function game:createFonts(offset)

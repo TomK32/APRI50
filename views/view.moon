@@ -12,6 +12,9 @@ export class View
     @\drawContent()
     love.graphics.pop()
 
+  pointInRect: (x, y) =>
+    return x > @display.x and y > @display.y and x < @display.x + @display.width and y < @display.y + @display.height
+
   setDisplay: (display) =>
     if not @display then
       @display = {}
