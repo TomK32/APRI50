@@ -157,9 +157,9 @@ export class EvolutionKit
 
 -- @extensions = {
 --EvolutionKit\registerExtension('consuming')
---EvolutionKit\registerExtension('hardening')
 EvolutionKit\registerExtension('growable')
 EvolutionKit\registerExtension('transforming')
 EvolutionKit\registerExtension('liquifying')
 EvolutionKit\registerExtension('flora')
+EvolutionKit\registerExtension('hardening')
 EvolutionKit\registerExtension('seeding')

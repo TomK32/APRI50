@@ -19,7 +19,8 @@ game = {
     liquifying =   splitDNA(' A     C T G'),
     growable =     splitDNA('A   T      G'),
     flora    =     splitDNA('A   T   T GT'),
-    seeding  =     splitDNA('  A T  C G  ')
+    seeding  =     splitDNA('  A T  C G  '),
+    hardening=     splitDNA(' TG   A GGT ')
   },
   player = Player(),
   icon_size = 32
