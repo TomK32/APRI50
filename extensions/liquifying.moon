@@ -2,8 +2,12 @@
 -- gradually changes the colour of a chunk
 export class Liquifying
   @matcher = game.matchers.liquifying
+
+  score: =>
+    return 1 + @\score(Liquifying.matcher)
+
   finish: (chunk) =>
-    score = 1 + @\score(Liquifying.matcher)
+    score = Liquifying.score(@)
     if game.debug
       print('Liquifying ' .. score)
     if score < 0

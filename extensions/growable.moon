@@ -2,14 +2,17 @@
 export class Growable
   @matcher = game.matchers.growable
 
+  score: =>
+    return #Growable.matcher / 2 + @\score(Growable.matcher)
+
   apply: (chunk) =>
     @width = 0 -- for tweening
     @height = 0
+    score = Growable.score(@)
     if game.debug
-      print('Growable')
+      print('Growable: ' .. score)
 
     @growable_target = {0, 0}
-    score = #Growable.matcher / 2 + @\score(Growable.matcher)
     @growable_target = {score, score}
     @targetChunk.width, @targetChunk.height = score, score
     @targetChunk\fill()

@@ -2,8 +2,11 @@
 export class Seeding
   @matcher = game.matchers.seeding
 
+  score: =>
+    return #Seeding.matcher / 2 + @\score(Seeding.matcher)
+
   onMerge: =>
-    score = #Seeding.matcher / 2 + @\score(Seeding.matcher)
+    score = Seeding.score(@)
     if game.debug
       print('Seeing: ' .. score)
     if score < 0

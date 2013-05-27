@@ -107,13 +107,15 @@ export class EvolutionKit
     return new_dna
 
   toString: =>
+    if @to_string
+      return @to_string
     if @dna
-      text = table.concat(@dna, '')
-      text = text .. ' • '
+      @to_string = table.concat(@dna, '')
+      @to_string = @to_string .. ' • '
       for i, extension in ipairs(EvolutionKit.extensions)
-        if extension.matcher
-          text = text .. extension.__name .. ': ' .. @score(extension.matcher) .. ' '
-      return text
+        if extension.score
+          @to_string = @to_string .. extension.__name .. ': ' .. extension.score(@) .. ' '
+      return @to_string
     else
       return 'Evolution Kit'
 
@@ -156,8 +158,6 @@ export class EvolutionKit
 -- @extensions = {
 --EvolutionKit\registerExtension('consuming')
 --EvolutionKit\registerExtension('hardening')
---EvolutionKit\registerExtension('transparent')
---EvolutionKit\registerExtension('blocking')
 EvolutionKit\registerExtension('growable')
 EvolutionKit\registerExtension('transforming')
 EvolutionKit\registerExtension('liquifying')

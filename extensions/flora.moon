@@ -2,8 +2,12 @@
 -- gradually changes the colour of a chunk
 export class Flora
   @matcher = game.matchers.flora
+
+  score: =>
+    return 1 + @\score(Flora.matcher)
+
   finish: (chunk) =>
-    score = 1 + @\score(Flora.matcher)
+    score = Flora.score(@)
     if game.debug
       print('Flora: ' .. score)
     if score < 0
