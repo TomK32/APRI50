@@ -18,7 +18,7 @@ game = {
     markable =     splitDNA('A  C  G  T A'),
     liquifying =   splitDNA(' A     C T G'),
     growable =     splitDNA('A   T      G'),
-    fauna    =     splitDNA('A   T   T GT'),
+    flora    =     splitDNA('A   T   T GT'),
     seeding  =     splitDNA('  A T  C G  ')
   },
   player = Player(),

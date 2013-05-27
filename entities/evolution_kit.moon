@@ -161,5 +161,5 @@ export class EvolutionKit
 EvolutionKit\registerExtension('growable')
 EvolutionKit\registerExtension('transforming')
 EvolutionKit\registerExtension('liquifying')
-EvolutionKit\registerExtension('fauna')
+EvolutionKit\registerExtension('flora')
 EvolutionKit\registerExtension('seeding')

@@ -1,17 +1,17 @@
 
 -- gradually changes the colour of a chunk
-export class Fauna
-  @matcher = game.matchers.fauna
+export class Flora
+  @matcher = game.matchers.flora
   finish: (chunk) =>
-    score = 1 + @\score(Fauna.matcher)
+    score = 1 + @\score(Flora.matcher)
     if game.debug
-      print('Fauna: ' .. score)
+      print('Flora: ' .. score)
     if score < 0
       return
 
     tmp = @targetChunk.width * @targetChunk.height / 2
     @targetChunk\iterate (x, y, tile) ->
-      tile.color[2] = 255 - math.ceil((255 - tile.color[2]) / (x + y))
+      tile.color[2] = 255 - math.ceil((255 - tile.color[2]) / (score + x + y))
       tile.color[3] = math.ceil(tile.color[3] / 2)
 
-return Fauna
+return Flora
