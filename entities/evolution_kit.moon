@@ -35,8 +35,13 @@ export class EvolutionKit
 
   place: (position) =>
     @position = position
-    @apply()
-    @
+    cost = { metal: 1, energy: 1, water: 1, biomass: 1 }
+    if game.player\hasResources(cost)
+      @apply()
+      game.player\useResources(cost)
+      return @
+    else
+      return false
 
   registerExtension: (extension) =>
     if game.debug
