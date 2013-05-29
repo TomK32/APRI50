@@ -8,13 +8,19 @@ export class Chunk
     @\fill()
     return @
 
+  defaultTile: =>
+    return {
+      color: {0, 0, 0, 255},
+      transformed: false
+    }
+
   fill: =>
     for x=1, @width
       if not @[x] then
         @[x] = {}
       for y=1, @height
         if not @[x][y]
-          @[x][y] = {color: {0, 0, 0, 255}}
+          @[x][y] = @defaultTile()
 
   grow: (x, y) =>
     @possible_shift.x += x
