@@ -31,8 +31,6 @@ export class EvolutionKit
     mixin(@, Drawable)
 
     @toImage()
-    @currentChunk = Chunk(1, 1)
-    @targetChunk = Chunk(1, 1)
     @
 
   place: (map, position) =>
@@ -54,6 +52,8 @@ export class EvolutionKit
     table.insert(@extensions, extension)
 
   apply: (position) =>
+    @currentChunk = Chunk(1, 1, @)
+    @targetChunk = Chunk(1, 1, @)
     -- Any extension might change the chunks is size and composition
     -- first pass
     for extension in *EvolutionKit.extensions

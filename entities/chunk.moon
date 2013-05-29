@@ -1,9 +1,11 @@
 export class Chunk
-  new: (width, height) =>
+  new: (width, height, evolution_kit) =>
     @offset = {x: 0, y: 0} -- you may change these to a negative value
     @tiles = {}
     @width = width
     @height = height
+    @evolution_kit = evolution_kit
+    @map = evolution_kit.map
     @possible_shift = {x: 0, y: 0}
     @\fill()
     return @
