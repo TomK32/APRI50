@@ -23,6 +23,7 @@ export class Chunk
       for y=1, @height
         if not @[x][y]
           @[x][y] = @defaultTile()
+          @mergeAttributes(x, y)
 
   grow: (x, y) =>
     @possible_shift.x += x
@@ -44,11 +45,11 @@ export class Chunk
   shift: (x, y) =>
     if x > 0
       for i=0, @width
-        @[@width - i + x] = @[@width - i]
+        @[@width - i + x] = @[@width - i] or {}
     if y > 0
       for i=1, @height
         for j=0, @height
-          @[i][@width - j + y] = @[i][@width - j]
+          @[i][@width - j + y] = @[i][@width - j] or @defaultTile()
 
   get: (x, y) =>
     if @[x] and @[x][y]
@@ -66,6 +67,17 @@ export class Chunk
     for y=1, @height
       for x=1, @width
         callback(x, y, (@[x] or {})[y] or @defaultTile())
+    return true
+
+  mergeAttributes: (x, y) =>
+    tile = @[x][y] or @defaultTile()
+    map_tile = @map\getTile(x + @evolution_kit.position.x, y + @evolution_kit.position.y)
+    if not map_tile
+      return false
+    for k, v in pairs(map_tile)
+      if tile[k] == nil
+        tile[k] = v
+    return true
 
   toString: =>
     string = @width .. 'x' .. @height .. "\n"
