@@ -30,6 +30,6 @@ class Hardening
         if map_tile.hardening
           if map_tile.hardening > (target_tile.hardening or 0)
             -- reduce the hardness of the map, even though transforming fails
-            map_tile.hardening = map_tile.hardening - (target_tile.hardening or 2) / 2
+            map_tile.hardening = map_tile.hardening - math.abs(target_tile.hardening or 2) / 2
             target_tile.transformed = false
             --@targetChunk\set(x, y, target_tile)
