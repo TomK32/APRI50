@@ -10,9 +10,8 @@ export class MapState extends State
     @inventory_view = InventoryView(game.player.inventory)
     @resources_view = ResourcesView(game.player.resources)
 
-    game.player.inventory\add(EvolutionKit.random(game.dna_length))
-    game.player.inventory\add(EvolutionKit.random(game.dna_length))
-    game.player.inventory\add(EvolutionKit.random(game.dna_length))
+    for i=1, game.evolution_kits_to_start
+      game.player.inventory\add(EvolutionKit.random(game.dna_length))
 
     return @
 

@@ -69,6 +69,7 @@ export class Chunk
         callback(x, y, (@[x] or {})[y] or @defaultTile())
     return true
 
+  -- merges attributes from the map into the tile
   mergeAttributes: (x, y) =>
     tile = @[x][y] or @defaultTile()
     map_tile = @map\getTile(x + @evolution_kit.position.x, y + @evolution_kit.position.y)

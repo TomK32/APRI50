@@ -14,6 +14,7 @@ game = {
   url = 'http://ananasblau.com/apri50',
   current_level = 1,
   dna_length = 12,
+  evolution_kits_to_start = 7,
   matchers = {
     markable =     splitDNA('A  C  G  T A'),
     liquifying =   splitDNA(' A     C T G'),
