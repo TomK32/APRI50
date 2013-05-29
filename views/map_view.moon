@@ -49,8 +49,8 @@ export class MapView extends View
         v = 'true'
       if v == false
         v = 'false'
-      if type(v) == 'string'
-        love.graphics.print( k .. ': ' .. v, m_x, m_y + i * game.fonts.lineHeight)
+      if type(v) == 'string' or type(v) == 'number'
+        love.graphics.print( k .. ': ' .. v, m_x + 10, m_y + i * game.fonts.lineHeight)
         i += 1
 
   drawTileOrEntity: (entity, x, y) =>
