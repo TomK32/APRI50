@@ -18,4 +18,6 @@ export class Liquifying
       tile.color[3] = 255 - math.ceil((255 - tile.color[3]) / (x + y))
       tile.color[2] = math.ceil(tile.color[2] / 2)
 
+      tile.transformed = true
+
 return Liquifying

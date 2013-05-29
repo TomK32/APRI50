@@ -14,8 +14,8 @@ class Hardening
     h_x2 = @targetChunk.width - h_x
     h_y = math.floor(math.min(@targetChunk.height, score) / 2)
     h_y2 = @targetChunk.height - h_y
-    print(h_x, h_x2, h_y, h_y2)
     @targetChunk\iterate (x, y, tile) ->
       if x <= h_x or x > h_x2 or y <= h_y or y > h_y2
+        tile.transformed = true
         tile.color = {100, 100, 100, 255}
 

@@ -66,7 +66,7 @@ export class Chunk
         callback(x, y, (@[x] or {})[y] or @defaultTile())
 
   toString: =>
-    string = ''
+    string = @width .. 'x' .. @height .. "\n"
     for x=1, @width
       for y=1, @height
         c = 0
@@ -79,9 +79,9 @@ export class Chunk
           if tile.hardening
             c += 4
           color = tile.color[1] + tile.color[2] + tile.color[3]
-          if color > 256 / 6
+          if color < 256 / 3
             c += 8
-          elseif color > 256 / 3
+          else
             c += 16
         string = string .. string.format("%2.i", c)
       string = string .. '\n'

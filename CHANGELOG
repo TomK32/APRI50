@@ -1,4 +1,10 @@
 
+
+Version 0.3
+
+* Only place tiles on the map that have a 'transformed' flag
+* Debug possibilities
+
 Version 0.2
 
 * First version of generated icons of iventory items

@@ -43,7 +43,10 @@ export class Map
     offset_y = entity.position.y + entity.targetChunk.offset.y
     -- split up the chunk and make new, single tile, entities out of it
     entity.targetChunk\iterate (x, y, tile) ->
-      @\setTile(offset_x + x, offset_y + y, tile)
+      if tile.transformed
+        tile.transformed = nil
+        @\setTile(offset_x + x, offset_y + y, tile)
+
     -- and remove the original entity
     for i, e in pairs(@layers[entity.position.z])
       if e == entity
