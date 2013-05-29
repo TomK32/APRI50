@@ -63,4 +63,27 @@ export class Chunk
   iterate: (callback) =>
     for y=1, @height
       for x=1, @width
-        callback(x, y, (@[x] or {})[y] or {})
+        callback(x, y, (@[x] or {})[y] or @defaultTile())
+
+  toString: =>
+    string = ''
+    for x=1, @width
+      for y=1, @height
+        c = 0
+        tile = @get(x,y)
+        if tile
+          if tile.transformed
+            c += 1
+          if tile.colour
+            c += 2
+          if tile.hardening
+            c += 4
+          color = tile.color[1] + tile.color[2] + tile.color[3]
+          if color > 256 / 6
+            c += 8
+          elseif color > 256 / 3
+            c += 16
+        string = string .. string.format("%2.i", c)
+      string = string .. '\n'
+    return string
+

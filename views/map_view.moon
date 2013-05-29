@@ -33,6 +33,26 @@ export class MapView extends View
       for i,entity in ipairs(entities) do
         @\drawTileOrEntity(entity)
 
+    if game.debug
+      @debugTile()
+
+  debugTile: =>
+    m_x, m_y = love.mouse.getPosition()
+    x, y = @coordsForXY(m_x - @display.x, m_y - @display.y)
+    tile = @map\getTile(x + 1 - @top_left.x, y + 1 - @top_left.y)
+    i = 0
+    if not tile
+      return
+    love.graphics.setColor(255,255,255,200)
+    for k, v in pairs(tile)
+      if v == true
+        v = 'true'
+      if v == false
+        v = 'false'
+      if type(v) == 'string'
+        love.graphics.print( k .. ': ' .. v, m_x, m_y + i * game.fonts.lineHeight)
+        i += 1
+
   drawTileOrEntity: (entity, x, y) =>
     love.graphics.push()
     if entity.draw

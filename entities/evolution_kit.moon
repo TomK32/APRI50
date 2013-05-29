@@ -31,10 +31,13 @@ export class EvolutionKit
     mixin(@, Drawable)
 
     @toImage()
+    @currentChunk = Chunk(1, 1)
+    @targetChunk = Chunk(1, 1)
     @
 
-  place: (position) =>
+  place: (map, position) =>
     @position = position
+    @map = map
     cost = { metal: 1, energy: 1, water: 1, biomass: 1 }
     if game.player\hasResources(cost)
       @apply()
@@ -52,9 +55,6 @@ export class EvolutionKit
 
   apply: (position) =>
     -- Any extension might change the chunks is size and composition
-    @startChunk = Chunk(1, 1)
-    @currentChunk = Chunk(1, 1)
-    @targetChunk = Chunk(1, 1)
     -- first pass
     for extension in *EvolutionKit.extensions
       if extension.apply
