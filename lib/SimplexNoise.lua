@@ -8,7 +8,7 @@ Original Source: http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf
 **********************************************************************************
 --]]---------------------------------------------
 
-local SimplexNoise = {}
+SimplexNoise = {}
 SimplexNoise.e = 2.71828182845904523536
 SimplexNoise.__index = SimplexNoise
 
@@ -179,4 +179,3 @@ function SimplexNoise:Turbulent2DNoise(x,y,itier) --very expensive, much more so
 	return math.sin(x+ret)
 end
 
-return SimplexNoise

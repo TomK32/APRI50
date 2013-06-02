@@ -6,7 +6,8 @@
 --  * Edge, Center and Corner have indexes. get rid of them?
 --  * BitmapData
 
-Voronoi = require 'third-party/voronoi'
+Voronoi = require 'voronoi'
+require 'SimplexNoise'
 class Point
   new: (x, y) =>
     @x = x
@@ -70,11 +71,11 @@ class PM_PRNG
     return @seed
 	
 
-class Map
+export class MapGen
   -- TODO: accept a table in the constructor
   -- FIXME: Allow width and height for oblong shapes
   new: (size) =>
-    @num_points = 2000
+    @num_points = 20
     @lake_treshold = 0.3 -- 0...1
     @num_lloyd_iterations = 2
     @size = size -- it's a square
@@ -84,12 +85,13 @@ class Map
     -- TODO: better naming?
     @map_random = PM_PRNG()
 
-    @reset()
     return @
 
   newIsland: (_type, seed, variant) =>
-    @island_shape = IslandShape['make' + _type](seed)
+    @island_shape = MapGen.IslandShape['make' .. _type](seed)
     @map_random.seed = variant
+    @reset()
+    @generate()
     return @
 
   reset: =>
@@ -98,30 +100,31 @@ class Map
     @corners = {}
     @edges = {}
 
-  go: (first, last) =>
+  generate: () =>
 
     -- Keep track of the time each step needs
-    times = {}
+    @times = {}
+    print(@times)
     time = (message, callback) ->
       start = os.time()
-      callback()
-      table.insert(times, {message, os.time() - start})
+      callback(@)
+      print(message, os.time() - start)
+      table.insert(@times, {message, os.time() - start})
 
-    time('Reset', @reset)
     time('Placing random points', @generateRandomPoints)
     time('Improve points', @improveRandomPoints)
     time('Build graph', @buildGraph)
     time('Improve corners', @improveCorners)
 
     -- NOTE: The original had these four in one timer
-    table.insert(timer, {'Group', 'Elevations'})
+    table.insert(@times, {'Group', 'Elevations'})
     time('Assign corner elevations', @assignCornerElevations)
     time('Assign ocean coast and land', @assignOceanCoastAndLand)
     time('Redistribute Elevations', @redistributeElevations)
     time('Assign polygon Elevations', @assignPolygonElevations)
 
     -- NOTE: The original had these six in one timer
-    table.insert(timer, {'Group', 'Moisture'})
+    table.insert(@times, {'Group', 'Moisture'})
     time('Calculate downslopes', @calculateDownslopes)
     time('Determine watersheds', @calculateWatersheds)
     time('Create rivers', @createRivers)
@@ -130,13 +133,12 @@ class Map
     time('Assign Biomes', @assignBiomes)
 
   voronoi: =>
-    -- original passes a rectangle for the bounds {0, 0, @size, @size}
-    return Voronoi(@points)
+    return Voronoi.new(@points, {0, 0, @size, @size})
 
   generateRandomPoints: =>
     for i=1, @num_points
-      x = @map_random.nextDoubleRange(10, @size - 10)
-      y = @map_random.nextDoubleRange(10, @size - 10)
+      x = @map_random\nextDoubleRange(10, @size - 10)
+      y = @map_random\nextDoubleRange(10, @size - 10)
       @points[i] = Point(x, y)
         -- we keep a margin of 10 ot the border of the map
     @
@@ -156,10 +158,11 @@ class Map
     -- run it a few times.
     for i=1, @num_lloyd_iterations
       voronoi = @voronoi()
-      for i, point in ipairs(points)
+      for i, point in ipairs(@points)
         point.x = 0.0
         point.y = 0.0
-        region = voronoi\region(point)
+        -- FIXME
+        region = @points -- voronoi\region(point)
         region_count = 0
         for j, other_point in ipairs(region)
           point.x += other_point.x
@@ -247,7 +250,8 @@ class Map
   -- point, and the Voronoi edge may be null.
   buildGraph: =>
     voronoi = @voronoi()
-    edges = voronoi\edges()
+    edges = voronoi.edges
+    assert(#edges > 0, 'no edges in voronoi')
     center_lookup = {}
 
     -- Build Center objects for each of the points, and a lookup map
@@ -267,8 +271,8 @@ class Map
     -- Workaround for Voronoi lib bug: we need to call region()
     -- before Edges or neighboringSites are available
     -- TOOD: Necessary for lua?
-    for i, center in ipairs(@centers)
-      voronoi\region(center)
+    -- for i, center in ipairs(@centers)
+    --  voronoi\region(center)
 
     -- The Voronoi library generates multiple Point objects for
     -- corners, and we need to canonicalize to one Corner object.
@@ -435,7 +439,9 @@ class Map
     scale_factor = 1.1
     scale_factor_sqrt = math.sqrt(scale_factor)
 
-    table.sort(locations, (a, b) -> a.elevation < b.elevation)
+    table.sort(locations, (a, b) ->
+      print(a.elevation, b.elevation)
+      a.elevation < b.elevation)
     locations_length = #locations
     for i, point in ipairs(locations)
       -- Let y(x) be the total area that we want at elevation <= x.
@@ -712,7 +718,7 @@ class Map
   inside: (point) =>
     return @island_shape(Point(2 * (point.x / @size - 0.5), 2 * (point.y / @size - 0.5)))
 
-class IslandShape
+class MapGen.IslandShape
   -- This class has factory functions for generating islands of
   -- different shapes. The factory returns a function that takes a
   -- normalized point (x and y are -1 to +1) and returns true if the
@@ -722,12 +728,12 @@ class IslandShape
   -- The radial island radius is based on overlapping sine waves 
   makeRadial: (seed) ->
     ISLAND_FACTOR = 1.07  -- 1.0 means no small islands; 2.0 leads to a lot
-    islandRandom:PM_PRNG = new PM_PRNG()
+    islandRandom = PM_PRNG()
     islandRandom.seed = seed
-    bumps = islandRandom.nextIntRange(1, 6)
-    startAngle = islandRandom.nextDoubleRange(0, 2*math.PI)
-    dipAngle = islandRandom.nextDoubleRange(0, 2*math.PI)
-    dipWidth = islandRandom.nextDoubleRange(0.2, 0.7)
+    bumps = islandRandom\nextIntRange(1, 6)
+    startAngle = islandRandom\nextDoubleRange(0, 2*math.PI)
+    dipAngle = islandRandom\nextDoubleRange(0, 2*math.PI)
+    dipWidth = islandRandom\nextDoubleRange(0.2, 0.7)
 
     return (q) ->
       angle = math.atan2(q.y, q.x)
@@ -741,10 +747,10 @@ class IslandShape
 
   -- The Simplex island combines Simplex noise with the radius
   makeSimplex: (seed) ->
-    simplex = SimplexNoise.seed(seed)
+    simplex = SimplexNoise.new(seed)
 
     return (q) ->
-      c = simplex:Noise2D(math.floor((q.x+1)*128), int((q.y+1)*128))
+      c = simplex\Noise2D(math.floor((q.x+1)*128), int((q.y+1)*128))
       return c > (0.3+0.3*q.length*q.length)
 
   -- The square shape fills the entire space with land

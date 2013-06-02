@@ -34,44 +34,47 @@ voronoilib = { }
 --------------------------------------------------------------------------------------------------------------------
 -- creates a voronoi diagram and returns a table containing the structure.
 --
-function voronoilib:new(points)
+function voronoilib.new(points, boundary)
 
-  voronoi.points = { }
-  voronoi.boundary = { minx,miny,minx+maxx,miny+maxy }
-  voronoi.vertex = { }
-  voronoi.segments = { }
-  voronoi.edges = self.heap:new()
-  voronoi.beachline = self.doublelinkedlist:new()
-  voronoi.polygons = { }
-  voronoi.polygonmap = { }
-  voronoi.centroids = { }
+  self = {}
+	setmetatable(self, Voronoi)
+	self.__index = self
+
+  self.points = points
+  self.edges = {}
+  self.boundary = boundary
+  self.vertex = { }
+  self.segments = { }
+  self.edges = voronoilib.heap:new()
+  self.beachline = voronoilib.doublelinkedlist:new()
+  self.polygons = { }
+  self.polygonmap = { }
+  self.centroids = { }
   -- sets up the rvoronoi edges
-  for i = 1, #voronoi.points do
-    voronoi.edges:push(voronoi.points[i], voronoi.points[i].x, {i} )
+  for i, point in pairs(self.points) do
+    self.edges:push(point, point.x, {i} )
   end
 
-  while not voronoi.edges:isEmpty() do
-    local e, x = voronoi.edges:pop()
+  while not self.edges:isEmpty() do
+    local e, x = self.edges:pop()
     if e.edge then
-      self.tools:processEdge(e,voronoi)
+      voronoilib.tools:processEdge(e,self)
     else
-      self.tools:processPoint(e,voronoi)
+      voronoilib.tools:processPoint(e,self)
     end
   end
 
-  self.tools:finishEdges(voronoi)
+  voronoilib.tools:finishEdges(self)
 
-  self.tools:dirty_poly(voronoi)
+  voronoilib.tools:dirty_poly(self)
 
-  for i,polygon in pairs(voronoi.polygons) do
-    local cx, cy = self.tools:polyoncentroid(polygon.points)
-    voronoi.centroids[i] = { x = cx, y = cy }
-    voronoi.polygons[i].centroid = voronoi.centroids[i] -- creating a link between the two tables
+  for i,polygon in pairs(self.polygons) do
+    local cx, cy = voronoilib.tools:polyoncentroid(polygon.points)
+    self.centroids[i] = { x = cx, y = cy }
+    self.polygons[i].centroid = self.centroids[i] -- creating a link between the two tables
   end
 
-	setmetatable(voronoi, self)
-	self.__index = self
-  return voronoi
+  return self
 end
 
 ------------------------------------------------
