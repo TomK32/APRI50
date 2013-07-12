@@ -16,12 +16,14 @@ game = {
   dna_length = 12,
   evolution_kits_to_start = 7,
   matchers = {
-    markable =     splitDNA('A  C  G  T A'),
-    liquifying =   splitDNA(' A     C T G'),
-    growable =     splitDNA('A   T      G'),
-    flora    =     splitDNA('A   T   T GT'),
-    seeding  =     splitDNA('  A T  C G  '),
-    hardening=     splitDNA(' TG   A GGT ')
+    -- make sure they are unique and don't overlap too much.
+    markable   = splitDNA('A  C  G  T A'),
+    liquifying = splitDNA(' A     C T G'),
+    growable   = splitDNA('A   T      G'),
+    river      = splitDNA('T     G     '),
+    flora      = splitDNA('A   T   T GT'),
+    seeding    = splitDNA('  A T  C G  '),
+    hardening  = splitDNA(' TG   A GGT ')
   },
   player = Player(),
   icon_size = 32

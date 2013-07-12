@@ -1,6 +1,7 @@
 --
 -- (C) 2013 Thomas R. Koll
 
+package.path = package.path .. ';lib/?.lua'
 require 'lib/helpers'
 require 'lib/middleclass'
 tween = require 'lib/tween'

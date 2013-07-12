@@ -9,13 +9,15 @@ export class Liquifying
   finish: (chunk) =>
     score = Liquifying.score(@)
     if game.debug
-      print('Liquifying ' .. score)
+      print('Liquifying: ' .. score)
     if score < 0
       return
 
-    tmp = @targetChunk.width * @targetChunk.height / 2
     @targetChunk\iterate (x, y, tile) ->
+      if tile.harvesting and tile.harvesting > score
+        return
       tile.hardening = (tile.hardening or 0) - score / 2
+      tile.liquid = score
 
       tile.color[3] = 255 - math.ceil((255 - tile.color[3]) / (score + x + y))
       tile.color[2] = math.ceil(tile.color[2] / 2)

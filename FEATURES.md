@@ -1,14 +1,22 @@
 
-# Gameplay
+## Gameplay
 
 * [DONE] Player.resources (metal, energy, water, biomass)
 * [DONE] Placing evokit costs resources (1 each)
-* A harvesting evokit can restore resources
+* Harvest to replentish resources
+* Loose condition when out of resources
+* Continuous terraforming?
 
-# EvolutionKits
+## Map
+* scrollable, if terraforming is stretching out far enough
+* port mapgen2
+* Put notes, landmarks and drawings (all on a sign) on the map
 
-* River
+## EvolutionKits
+
+* Water source for moisture, rivers, and lakes
 * Harvesting to extract stuff from the ground
+* Harvester: A permanent structure that harvests every few ticks
 * Re-apply evo kit for higher level. e.g from grass to plants to trees or flowers
 * Consuming: How got is it at absorbing the ground
 * Hardening:
@@ -19,7 +27,13 @@
   * Forrest
   * Crops
   * Flowers
-* Fauna:
+* Fauna
   * Bacteria
   * Re-apply for higher cells, upto animals
-  
+
+## Sound
+
+* Athmospheric sound
+  * change with map. Water on the map => water music
+* when placing EvoKit and when it finishes
+

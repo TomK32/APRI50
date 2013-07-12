@@ -54,6 +54,7 @@ export class Chunk
   get: (x, y) =>
     if @[x] and @[x][y]
       return @[x][y]
+    return nil
 
   set: (x, y, value) =>
     if not @[x]

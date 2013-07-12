@@ -16,6 +16,7 @@ export class Flora
     tmp = @targetChunk.width * @targetChunk.height / 2
     @targetChunk\iterate (x, y, tile) ->
       tile.hardening = (tile.hardening or 0) - score / 2
+      tile.flora = score
       tile.transformed = true
       tile.color[2] = 255 - math.ceil((255 - tile.color[2]) / (score + x + y))
       tile.color[3] = math.ceil(tile.color[3] / 2)

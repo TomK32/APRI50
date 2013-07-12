@@ -33,3 +33,5 @@ class Hardening
             map_tile.hardening = map_tile.hardening - math.abs(target_tile.hardening or 2) / 2
             target_tile.transformed = false
             --@targetChunk\set(x, y, target_tile)
+
+return Hardening
