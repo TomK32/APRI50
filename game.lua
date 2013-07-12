@@ -40,7 +40,7 @@ end
 
 function game:setMode(mode)
   self.graphics.mode = mode
-  love.graphics.setMode(mode.width, mode.height, mode.fullscreen or self.graphics.fullscreen)
+  love.window.setMode(mode.width, mode.height, mode.fullscreen or self.graphics.fullscreen)
   if self.graphics.mode.height < 600 then
     self:createFonts(-2)
   else

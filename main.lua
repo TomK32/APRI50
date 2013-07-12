@@ -1,8 +1,5 @@
 --
--- Poppy (Working title)
---   Sightseeing is not a crime!
---
--- (C) 2013 Anna Lazareva, Thomas R. Koll
+-- (C) 2013 Thomas R. Koll
 
 require 'lib/helpers'
 require 'lib/middleclass'
@@ -14,7 +11,7 @@ require 'game_states/mutator'
 require 'game_states/map_state'
 --require 'views/credits_view'
 function love.load()
-  local modes = love.graphics.getModes()
+  local modes = love.window.getModes()
   table.sort(modes, function(a, b) return a.width * a.height > b.width * b.height end)
   local preferred_mode = modes[1]
   for i, mode in ipairs(modes) do
