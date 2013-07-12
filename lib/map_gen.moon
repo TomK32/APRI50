@@ -20,26 +20,53 @@ class Point
 
 class Center
   new: =>
-    @point = nil
     @index = 0
+    @point = nil
+    @water = nil
+    @ocean = nil
+    @coast = nil
+    @border = nil
+    @biome = nil
+    @elevation = nil
+    @moisture = nil
+
     @neighbors = {}
-    @boders = {}
+    @borders = {}
     @corners = {}
     @
 
--- TODO incomplete
 class Corner
   new: =>
+    @ocean = false
+    @river = false
+    @water = false
+    @coast = false
+    @point = nil
+    @border = false
+    @elevation = nil -- 0..1
+    @moisture = nil
+
+    @touches = {}
+    @protrudes  ={}
+    @adjacent = {}
+
+    @downslope = nil
+    @watershed = nil -- point to coastal corner
+    @watershed_size = nil -- int
     @
 
--- TODO incomplete
 class Edge
   new: =>
-    @river = 0
+    @river = nil -- integer
+    @v0, @v1 = nil, nil -- voronoi edge
+    @d0, @d1 = nil, nil -- delaunay edge
+    @midpoint = nil
     @
+  delaunayLine: =>
+    return {}
 
 
--- Implementation of the Park Miller (1988) "minimal standard" linear 
+-- Implementation of the Park Miller (1988) "minimal standard" linear
 -- congruential pseudo-random number generator.
 -- MIT License
 -- @author Michael Baczynski, http://lab.polygonal.de/?p=162
@@ -133,7 +160,13 @@ export class MapGen
     time('Assign Biomes', @assignBiomes)
 
   voronoi: =>
-    return Voronoi.new(@points, {0, 0, @size, @size})
+    if @_voronoi
+      return @_voronoi
+    @_voronoi = Voronoi\new(@points, {0, 0, @size, @size})
+    for k, v in pairs(@_voronoi)
+      print(k, v)
+    @_voronoi.edges = @_voronoi\getEdges()
+    return @_voronoi
 
   generateRandomPoints: =>
     for i=1, @num_points
@@ -229,7 +262,7 @@ export class MapGen
     locations = {}
     for i, corner in ipairs(@corners)
       if not corner.ocean and not corner.coast
-        table.insert(locations, corner) 
+        table.insert(locations, corner)
     return locations
 
   -- Create a graph structure from the Voronoi edge list. The
@@ -725,7 +758,7 @@ class MapGen.IslandShape
   -- point should be on the island, and false if it should be water
   -- (lake or ocean).
 
-  -- The radial island radius is based on overlapping sine waves 
+  -- The radial island radius is based on overlapping sine waves
   makeRadial: (seed) ->
     ISLAND_FACTOR = 1.07  -- 1.0 means no small islands; 2.0 leads to a lot
     islandRandom = PM_PRNG()
