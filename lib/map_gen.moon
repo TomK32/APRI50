@@ -3,6 +3,7 @@
 -- Authors (Lua): tomk32@tomk32.com
 
 -- TODO: Figure out what to do about:
+--  * Voronoi
 --  * Edge, Center and Corner have indexes. get rid of them?
 --  * BitmapData
 
@@ -20,50 +21,51 @@ class Point
 
 class Center
   new: =>
-    @index = 0
     @point = nil
-    @water = nil
-    @ocean = nil
-    @coast = nil
-    @border = nil
-    @biome = nil
-    @elevation = nil
-    @moisture = nil
-
+    @index = 0
     @neighbors = {}
-    @borders = {}
+    @boders = {}
     @corners = {}
     @
-
+-- TODO incomplete
 class Corner
   new: =>
-    @ocean = false
-    @river = false
-    @water = false
-    @coast = false
-    @point = nil
-    @border = false
-    @elevation = nil -- 0..1
-    @moisture = nil
-
-    @touches = {}
-    @protrudes  ={}
-    @adjacent = {}
-
-    @downslope = nil
-    @watershed = nil -- point to coastal corner
-    @watershed_size = nil -- int
     @
 
+-- TODO incomplete
 class Edge
-  new: =>
-    @river = nil -- integer
-    @v0, @v1 = nil, nil -- voronoi edge
-    @d0, @d1 = nil, nil -- delaunay edge
-    @midpoint = nil
+  new: (a, b, c) =>
+    -- the equation of the edge: ax + by = c
+    @a, @b, @c = a, b, c
+    @river = 0
+    @left_site, @right_site = nil, nil
+    @_left_vertex, @_right_vertex = nil, nil
     @
+
+  createBisectingEdge: (site0, site1) =>
+    dx = site1.x - site0.x
+    dy = site1.y - site0.y
+    c = site0.x * dx + site0.y * dy + (dx * dx + dy * dy) * 0.5
+    if math.abs(dx) > math.abs(dy)
+      a = 1.0
+      b = dy / dx
+      c = c / dx
+    else
+      b = 1.0
+      a = dx / dy
+      c = c / dy
+
+    edge = Edge(a, b, c)
+    edge.left_site = site0
+    edge.right_site = site1
+    return edge
+
   delaunayLine: =>
-    return {}
+    return LineSegment(@left_site.coord, @right_site.coord)
+
+class LineSegment
+  new: (edge0, edge1) =>
+    @edge0, @edge1 = edge0, edge1
 
 
 -- Implementation of the Park Miller (1988) "minimal standard" linear
@@ -102,7 +104,7 @@ export class MapGen
   -- TODO: accept a table in the constructor
   -- FIXME: Allow width and height for oblong shapes
   new: (size) =>
-    @num_points = 20
+    @num_points = 2000
     @lake_treshold = 0.3 -- 0...1
     @num_lloyd_iterations = 2
     @size = size -- it's a square
@@ -112,13 +114,13 @@ export class MapGen
     -- TODO: better naming?
     @map_random = PM_PRNG()
 
+    @reset()
+    @go()
     return @
 
   newIsland: (_type, seed, variant) =>
-    @island_shape = MapGen.IslandShape['make' .. _type](seed)
+    @island_hape = MapGen.IslandShape['make' .. _type]--(seed)
     @map_random.seed = variant
-    @reset()
-    @generate()
     return @
 
   reset: =>
@@ -127,31 +129,31 @@ export class MapGen
     @corners = {}
     @edges = {}
 
-  generate: () =>
+  go: (first, last) =>
 
     -- Keep track of the time each step needs
-    @times = {}
-    print(@times)
+    times = {}
     time = (message, callback) ->
       start = os.time()
+      print(message)
       callback(@)
-      print(message, os.time() - start)
-      table.insert(@times, {message, os.time() - start})
+      table.insert(times, {message, os.time() - start})
 
+    time('Reset', @reset)
     time('Placing random points', @generateRandomPoints)
     time('Improve points', @improveRandomPoints)
     time('Build graph', @buildGraph)
     time('Improve corners', @improveCorners)
 
     -- NOTE: The original had these four in one timer
-    table.insert(@times, {'Group', 'Elevations'})
+    table.insert(times, {'Group', 'Elevations'})
     time('Assign corner elevations', @assignCornerElevations)
     time('Assign ocean coast and land', @assignOceanCoastAndLand)
     time('Redistribute Elevations', @redistributeElevations)
     time('Assign polygon Elevations', @assignPolygonElevations)
 
     -- NOTE: The original had these six in one timer
-    table.insert(@times, {'Group', 'Moisture'})
+    table.insert(times, {'Group', 'Moisture'})
     time('Calculate downslopes', @calculateDownslopes)
     time('Determine watersheds', @calculateWatersheds)
     time('Create rivers', @createRivers)
@@ -160,13 +162,8 @@ export class MapGen
     time('Assign Biomes', @assignBiomes)
 
   voronoi: =>
-    if @_voronoi
-      return @_voronoi
-    @_voronoi = Voronoi\new(@points, {0, 0, @size, @size})
-    for k, v in pairs(@_voronoi)
-      print(k, v)
-    @_voronoi.edges = @_voronoi\getEdges()
-    return @_voronoi
+    -- original passes a rectangle for the bounds {0, 0, @size, @size}
+    return Voronoi(@points)
 
   generateRandomPoints: =>
     for i=1, @num_points
@@ -194,8 +191,7 @@ export class MapGen
       for i, point in ipairs(@points)
         point.x = 0.0
         point.y = 0.0
-        -- FIXME
-        region = @points -- voronoi\region(point)
+        region = voronoi\region(point)
         region_count = 0
         for j, other_point in ipairs(region)
           point.x += other_point.x
@@ -283,8 +279,7 @@ export class MapGen
   -- point, and the Voronoi edge may be null.
   buildGraph: =>
     voronoi = @voronoi()
-    edges = voronoi.edges
-    assert(#edges > 0, 'no edges in voronoi')
+    edges = voronoi\edges()
     center_lookup = {}
 
     -- Build Center objects for each of the points, and a lookup map
@@ -304,8 +299,8 @@ export class MapGen
     -- Workaround for Voronoi lib bug: we need to call region()
     -- before Edges or neighboringSites are available
     -- TOOD: Necessary for lua?
-    -- for i, center in ipairs(@centers)
-    --  voronoi\region(center)
+    for i, center in ipairs(@centers)
+      voronoi\region(center)
 
     -- The Voronoi library generates multiple Point objects for
     -- corners, and we need to canonicalize to one Corner object.
@@ -472,9 +467,7 @@ export class MapGen
     scale_factor = 1.1
     scale_factor_sqrt = math.sqrt(scale_factor)
 
-    table.sort(locations, (a, b) ->
-      print(a.elevation, b.elevation)
-      a.elevation < b.elevation)
+    table.sort(locations, (a, b) -> a.elevation < b.elevation)
     locations_length = #locations
     for i, point in ipairs(locations)
       -- Let y(x) be the total area that we want at elevation <= x.
@@ -749,9 +742,9 @@ export class MapGen
 
   -- Determine whether a given point should be on the island or in the water.
   inside: (point) =>
-    return @island_shape(Point(2 * (point.x / @size - 0.5), 2 * (point.y / @size - 0.5)))
+    return IslandShape(Point(2 * (point.x / @size - 0.5), 2 * (point.y / @size - 0.5)))
 
-class MapGen.IslandShape
+MapGen.IslandShape =
   -- This class has factory functions for generating islands of
   -- different shapes. The factory returns a function that takes a
   -- normalized point (x and y are -1 to +1) and returns true if the
@@ -761,14 +754,14 @@ class MapGen.IslandShape
   -- The radial island radius is based on overlapping sine waves
   makeRadial: (seed) ->
     ISLAND_FACTOR = 1.07  -- 1.0 means no small islands; 2.0 leads to a lot
-    islandRandom = PM_PRNG()
+    islandRandom:PM_PRNG = new PM_PRNG()
     islandRandom.seed = seed
-    bumps = islandRandom\nextIntRange(1, 6)
-    startAngle = islandRandom\nextDoubleRange(0, 2*math.PI)
-    dipAngle = islandRandom\nextDoubleRange(0, 2*math.PI)
-    dipWidth = islandRandom\nextDoubleRange(0.2, 0.7)
+    bumps = islandRandom.nextIntRange(1, 6)
+    startAngle = islandRandom.nextDoubleRange(0, 2*math.PI)
+    dipAngle = islandRandom.nextDoubleRange(0, 2*math.PI)
+    dipWidth = islandRandom.nextDoubleRange(0.2, 0.7)
 
-    return (q) ->
+    inside: (q) =>
       angle = math.atan2(q.y, q.x)
       length = 0.5 * (math.max(math.abs(q.x), math.abs(q.y)) + q.length)
 
@@ -778,12 +771,17 @@ class MapGen.IslandShape
         r1, r2 = 0.2, 0.2
       return (length < r1 or (length > r1 * ISLAND_FACTOR and length < r2))
 
-  -- The Simplex island combines Simplex noise with the radius
+    return inside
+
+  -- The Perlin-based island combines perlin noise with the radius
   makeSimplex: (seed) ->
-    simplex = SimplexNoise.new(seed)
+    -- FIXME: Use proper perline noise
+    perlin = BitmapData(256, 256)
+    perlin.perlinNoise(64, 64, 8, seed, false, true)
 
     return (q) ->
-      c = simplex\Noise2D(math.floor((q.x+1)*128), int((q.y+1)*128))
+      -- NOTE: original had & 0xff
+      c = (255 - perlin.getPixel(math.floor((q.x+1)*128), int((q.y+1)*128))) / 255.0
       return c > (0.3+0.3*q.length*q.length)
 
   -- The square shape fills the entire space with land

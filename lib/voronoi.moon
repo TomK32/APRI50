@@ -18,25 +18,50 @@
 --   * No colours
 --   * No weight
 --   * No addSite, all done in addSites
+--   * No Site, use Point instead
 
 class SitesList
   new: =>
     @sites = {}
+    @sites_count = 0
     @sorted = true
 
   push: (site, i) =>
     @sorted = false
     @sites[i] = site
+    @sites_count += 1
 
-class Site
-  region: (bounds) =>
-    
+  -- O(n)
+  getSitesBounds: =>
+    if @sites_count == 0
+      return Rectangle(0, 0, 0, 0)
+    -- NOTE bug possible if we remove sites
+    x0, y0, x1, y1 = @sites[1].x, @sites[1].y, @sites[1].x, @sites[1].y
+    for i, site in ipairs(@sites)
+      if site.x < x0
+        x0 = site.x
+      elseif site.x > x1
+        x1 = site.x
+      if site.y < y0
+        y0 = site.y
+      elseif site.y > y1
+        y1 = site.y
+    return Rectangle(x0, y0, x1 - x0, y1 - y0)
+
+
+export class Rectangle
+  new: (x0, y0, x1, y1) =>
+    @x0, @y0, @x1, @y1 = x0, y0, x1, y1
+
+export class HalfedgePriorityQueue
+  new: =>
+    @
 
 class Voronoi
   new: (points, bounds) =>
     @sites = SitesList()
     @sites_by_location = {}
-    @addSites(points, colors)
+    @addSites(points)
     @plot_bounds = bounds -- a rectangle
     @triangles = {}
     @edges = {}
@@ -46,9 +71,9 @@ class Voronoi
 
   addSites: (points) =>
     for i, point in ipairs(points)
-      @sites\push(Site(point, i))
-      @sites_by_location[p] = @sites[i]
-  
+      @sites\push(point, i)
+      @sites_by_location[point] = @sites[i]
+
   region: (point) =>
     if @sites_by_location[point]
       @sites_by_location[point]\region(@plot_bounds)
@@ -76,12 +101,11 @@ class Voronoi
     vertices = {}
     bottomMostSite = @sites\next()
     new_site = @sites\next()
-    
+
     while true
       if not heap\empty()
         newinstar = heap\min()
-
-      if new_site && (heap\empty() or compareByYThenX(new_site, newinstar) < 0)
+      if new_site and (heap\empty() or compareByYThenX(new_site, newinstar) < 0)
         -- new site is smallest
         -- Step 8
         -- the Halfedge just to the left of newSite
@@ -91,12 +115,12 @@ class Voronoi
         -- this is the same as leftRegion(rbnd)
         -- this Site determines the region containing the new site
         bottom_site = rightRegion(lbnd)
-        
+
 
         -- Step 9
         edge = Edge.createBisectingEdge(bottom_site, new_site)
         @edges\push(edge)
-        
+
         bisector = Halfedge.create(edge, 'left')
         half_edges\push(bisector)
         -- inserting two Halfedges into edgeList constitutes Step 10:
@@ -137,7 +161,7 @@ class Voronoi
 
         edge = Edge.createBisectingEdge(bottom_site, top_site)
         @edges\push(edge)
-	 
+	
         bisector = Halfedge.create(edge, 'left')
         table.insert(half_edges, bisector)
         edge_list\insert(lbnd, bisector)
@@ -174,4 +198,4 @@ class Voronoi
 
   leftRegion: (half_edge) =>
     edge = half_edge.edge
-    
+
