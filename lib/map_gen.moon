@@ -7,9 +7,7 @@
 --  * Edge, Center and Corner have indexes. get rid of them?
 --  * BitmapData
 
-Voronoi = require 'voronoi'
-require 'SimplexNoise'
-class Point
+export class Point
   new: (x, y) =>
     @x = x
     @y = y
@@ -18,6 +16,9 @@ class Point
   interpolate: (a, b, strength) ->
     strength = strength or 0.5
     return Point((a.x + b.x) * strength, (a.y + b.y) * strength)
+
+require 'SimplexNoise'
+Voronoi = require 'voronoi'
 
 class Center
   new: =>
@@ -104,7 +105,7 @@ export class MapGen
   -- TODO: accept a table in the constructor
   -- FIXME: Allow width and height for oblong shapes
   new: (size) =>
-    @num_points = 2000
+    @num_points = 100
     @lake_treshold = 0.3 -- 0...1
     @num_lloyd_iterations = 2
     @size = size -- it's a square
@@ -279,7 +280,6 @@ export class MapGen
   -- point, and the Voronoi edge may be null.
   buildGraph: =>
     voronoi = @voronoi()
-    edges = voronoi\edges()
     center_lookup = {}
 
     -- Build Center objects for each of the points, and a lookup map
@@ -318,7 +318,7 @@ export class MapGen
             return -- already in the table
         table.insert(tbl, element)
 
-    for i, edge in ipairs(edges)
+    for i, edge in ipairs(voronoi.edges)
       -- TODO
       dedge = edge\delaunayLine()
       vedge = edge\voronoiEdge()
@@ -326,8 +326,8 @@ export class MapGen
       -- Fill the graph data. Make an Edge object corresponding to
       -- the edge from the voronoi library.
       edge = Edge()
-      edge.index = #@edges
-      table.insert(@edges, edge)
+      edge.index = #voronoi.edges
+      table.insert(voronoi.edges, edge)
       edge.midpoint = vedge.p0 and vedge.p1 and Point.interpolate(vedge.p0, vedge.p1)
 
       -- Edges point to corners. Edges point to centers.
