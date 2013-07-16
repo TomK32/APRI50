@@ -19,7 +19,10 @@
 --   * No weight
 --   * No addSite, all done in addSites
 
-class Site
+export class Vertex
+  --
+
+export class Site
   new: (point, index) =>
     @coord = point
     @index = index
@@ -30,10 +33,46 @@ class Site
       return Point()
     if @edgeOrientations == nil
       @reorderEdges()
-      region = @clippingBounds(bounds)
+      region = @clipToBounds(bounds)
       if Polygon(region)\winding() == 'clockwise'
         region = region\reverse()
-    return region
+      return region
+
+	reorderEdges: =>
+    reorderer = EdgeReorderer(@edges, Vertex)
+    @edges = reorderer.edges
+    @degeOrientations = reorderer.edgeOrientations
+
+  clipToBounds: (bounds) =>
+    points = {}
+    visible_index = 0
+    all_invisible = true
+    n = 1
+    -- find first visible edge
+    for i, edge in ipairs(@edges)
+      if edge.visible
+        visible_index = i
+        all_invisible = false
+        break
+
+    print('clip', i, n)
+    -- no edges visible
+    if all_invisible
+      return points
+    edge = @edges[visible_index + 1]
+    orientation = @edgeOrientations[visible_index]
+    table.insert(points, edge.clippedEnds[orientation])
+    if orientation == 'left'
+      orientation = 'right'
+    else
+      orientation = 'left'
+    table.insert(points, edge.clippedEnds[orientation])
+    for i, edge in ipairs(@edges)
+      if edge.visible
+        connect(points, i, bounds)
+    -- close up the polygon by adding another corner point to the bounds if needed
+    connect(points, visible_index, bounds, true)
+    return points
 
 class SitesList
   new: =>
@@ -44,24 +83,27 @@ class SitesList
 
   push: (site, i) =>
     @sorted = false
+    if not @sites[i]
+      @sites_count += 1
     @sites[i] = site
-    @sites_count += 1
 
   -- O(n)
   getSitesBounds: =>
     if @sites_count == 0
       return Rectangle(0, 0, 0, 0)
     -- NOTE bug possible if we remove sites
-    x0, y0, x1, y1 = @sites[1].x, @sites[1].y, @sites[1].x, @sites[1].y
+    point = @sites[1].coord
+    x0, y0, x1, y1 = point.x, point.y, point.x, point.y
     for i, site in ipairs(@sites)
-      if site.x < x0
-        x0 = site.x
-      elseif site.x > x1
-        x1 = site.x
-      if site.y < y0
-        y0 = site.y
-      elseif site.y > y1
-        y1 = site.y
+      point = site.coord
+      if point.x < x0
+        x0 = point.x
+      elseif point.x > x1
+        x1 = point.x
+      if point.y < y0
+        y0 = point.y
+      elseif point.y > y1
+        y1 = point.y
     return Rectangle(x0, y0, x1 - x0, y1 - y0)
 
   next: =>
@@ -143,7 +185,8 @@ export class EdgeList
     halfEdge.edgeListLeftNeighbor, halfEdge.edgeListRightNeighbor = nil, nil
 
   --Find the rightmost Halfedge that is still left of p 
-  edgeListLeftNeighbor: (point) =>
+  edgeListLeftNeighbor: (site) =>
+    point = site.coord
     -- Use hash table to get close to desired halfedge
     bucket = math.floor((point.x - @xmin) / @deltax * @hashsize)
     if (bucket < 1)
@@ -243,14 +286,12 @@ class Voronoi
 
   addSites: (points) =>
     for i, point in ipairs(points)
-      print(point.x, point.y)
-      @sites[i] = Site(point, i)
-      @sites_by_location[point] = @sites[i]
+      site = Site(point, i)
+      @sites\push(site, i)
+      @sites_by_location[point] = site
 
   region: (point) =>
     if @sites_by_location[point]
-      for k, v in pairs(@plot_bounds)
-        print(k, v)
       @sites_by_location[point]\region(@plot_bounds)
     else
       return Point()
@@ -276,7 +317,7 @@ class Voronoi
     edge_list = EdgeList(data_bounds.x0, data_bounds\width(), sqrt_nsites)
     half_edges = {}
     vertices = {}
-    bottomMostSite = @sites\next()
+    @bottom_most_site = @sites\next()
     new_site = @sites\next()
 
     while true
@@ -291,7 +332,7 @@ class Voronoi
         rbnd = edge_list\edgeListRightNeighbor(new_site)
         -- this is the same as leftRegion(rbnd)
         -- this Site determines the region containing the new site
-        bottom_site = rightRegion(lbnd)
+        bottom_site = @rightRegion(lbnd)
 
 
         -- Step 9
@@ -318,8 +359,8 @@ class Voronoi
         llbnd = lbnd.edgeListLeftNeighbor
         rbd = lbnd.edgeListRightNeighbor
         rrbd = rbnd.edgeListRightNeighbor
-        bottom_site = leftRegion(lbnd)
-        top_site = rightRegion(rbnd)
+        bottom_site = @leftRegion(lbnd)
+        top_site = @rightRegion(rbnd)
 
         -- these three sites define a Delaunay triangle
         -- (not actually using these for anything...)
@@ -375,6 +416,15 @@ class Voronoi
     -- but we don't actually ever use them again!
     vertices = nil
 
-  leftRegion: (half_edge) =>
-    edge = half_edge.edge
+  leftRegion: (halfedge) =>
+    edge = halfedge.edge
+    if not edge
+      return @bottom_most_site
+    return edge.site(halfedge.leftRight)
+
+  rightRegion: (halfedge) =>
+    edge = halfedge.edge
+    if not edge
+      return @bottom_most_site
+    return edge.site(if halfedge.leftRight == 'right' then 'left' else 'right')
 

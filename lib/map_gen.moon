@@ -107,8 +107,9 @@ export class MapGen
   new: (size) =>
     @num_points = 100
     @lake_treshold = 0.3 -- 0...1
-    @num_lloyd_iterations = 2
+    @num_lloyd_iterations = 1
     @size = size -- it's a square
+    @bounds = {x0: 0, y0: 0, x1: 100, y1: 100}
 
     @island_shape = nil
 
@@ -142,7 +143,7 @@ export class MapGen
 
     time('Reset', @reset)
     time('Placing random points', @generateRandomPoints)
-    time('Improve points', @improveRandomPoints)
+    time('Improve points', @improvePoints)
     time('Build graph', @buildGraph)
     time('Improve corners', @improveCorners)
 
@@ -164,18 +165,21 @@ export class MapGen
 
   voronoi: =>
     -- original passes a rectangle for the bounds {0, 0, @size, @size}
-    return Voronoi(@points)
+    return Voronoi(@points, @bounds)
 
   generateRandomPoints: =>
+    x = @bounds.x0
+    w = @bounds.x1 - @bounds.x0
+    y = @bounds.y0
+    h = @bounds.y1 - @bounds.y0
+
     for i=1, @num_points
-      x = @map_random\nextDoubleRange(10, @size - 10)
-      y = @map_random\nextDoubleRange(10, @size - 10)
-      @points[i] = Point(x, y)
+      @points[i] = Point(@map_random\nextDoubleRange(x, w), @map_random\nextDoubleRange(y, h))
         -- we keep a margin of 10 ot the border of the map
     @
 
   -- Improve the random set of points with Lloyd Relaxation.
-  improveRandomPoints: =>
+  improvePoints: =>
     -- We'd really like to generate "blue noise". Algorithms:
     -- 1. Poisson dart throwing: check each new point against all
     --     existing points, and reject it if it's too close.
