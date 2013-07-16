@@ -24,7 +24,7 @@ export class Vertex
 
 export class Site
   new: (point, index) =>
-    @coord = point
+    @point = point
     @index = index
     @edges = {}
 
@@ -92,10 +92,10 @@ class SitesList
     if @sites_count == 0
       return Rectangle(0, 0, 0, 0)
     -- NOTE bug possible if we remove sites
-    point = @sites[1].coord
+    point = @sites[1].point
     x0, y0, x1, y1 = point.x, point.y, point.x, point.y
     for i, site in ipairs(@sites)
-      point = site.coord
+      point = site.point
       if point.x < x0
         x0 = point.x
       elseif point.x > x1
@@ -186,7 +186,7 @@ export class EdgeList
 
   --Find the rightmost Halfedge that is still left of p 
   edgeListLeftNeighbor: (site) =>
-    point = site.coord
+    point = site.point
     -- Use hash table to get close to desired halfedge
     bucket = math.floor((point.x - @xmin) / @deltax * @hashsize)
     if (bucket < 1)
@@ -290,11 +290,11 @@ class Voronoi
       @sites\push(site, i)
       @sites_by_location[point] = site
 
-  region: (point) =>
-    if @sites_by_location[point]
-      @sites_by_location[point]\region(@plot_bounds)
+  region: (site) =>
+    if @sites_by_location[site]
+      @sites_by_location[site]\region(@plot_bounds)
     else
-      return Point()
+      return {}
 
   neighborSitesForSite: (point) =>
     site = @sites_by_location[poin]
@@ -302,7 +302,7 @@ class Voronoi
       return {}
     points = {}
     sites = site\neighborSites()
-    return neighbor.coord for i, neighbor in ipairs(sites)
+    return neighbor.point for i, neighbor in ipairs(sites)
 
   circles: =>
     @sites\circles()
