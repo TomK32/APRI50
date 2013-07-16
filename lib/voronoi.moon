@@ -69,9 +69,9 @@ export class Site
     table.insert(points, edge.clippedEnds[orientation])
     for i, edge in ipairs(@edges)
       if edge.visible
-        connect(points, i, bounds)
+        @connect(points, i, bounds)
     -- close up the polygon by adding another corner point to the bounds if needed
-    connect(points, visible_index, bounds, true)
+    @connect(points, visible_index, bounds, true)
     return points
 
 class SitesList
@@ -109,6 +109,8 @@ class SitesList
   next: =>
     @current_index += 1
     return @sites[@current_index]
+  length: =>
+    return @sites_count
 
 
 export class Rectangle
@@ -185,8 +187,7 @@ export class EdgeList
     halfEdge.edgeListLeftNeighbor, halfEdge.edgeListRightNeighbor = nil, nil
 
   --Find the rightmost Halfedge that is still left of p 
-  edgeListLeftNeighbor: (site) =>
-    point = site.point
+  edgeListLeftNeighbor: (point) =>
     -- Use hash table to get close to desired halfedge
     bucket = math.floor((point.x - @xmin) / @deltax * @hashsize)
     if (bucket < 1)
@@ -277,7 +278,7 @@ class Voronoi
     @sites = SitesList()
     @sites_by_location = {}
     @addSites(points)
-    @plot_bounds = bounds -- a rectangle
+    @bounds = bounds -- a rectangle
     @triangles = {}
     @edges = {}
 
@@ -286,13 +287,14 @@ class Voronoi
 
   addSites: (points) =>
     for i, point in ipairs(points)
+      print(point.x, point.y, i)
       site = Site(point, i)
       @sites\push(site, i)
       @sites_by_location[point] = site
 
   region: (site) =>
     if @sites_by_location[site]
-      @sites_by_location[site]\region(@plot_bounds)
+      @sites_by_location[site]\region(@bounds)
     else
       return {}
 
@@ -310,7 +312,7 @@ class Voronoi
   fortunesAlgorithm: =>
     print('fortunes')
     data_bounds = @sites\getSitesBounds()
-    sqrt_nsites = math.floor(math.sqrt(#@sites + 4))
+    sqrt_nsites = math.floor(math.sqrt(@sites\length() + 4))
 
     -- sweepline
     heap = HalfedgePriorityQueue(data_bounds.y0, data_bounds\height(), sqrt_nsites)
@@ -327,9 +329,9 @@ class Voronoi
         -- new site is smallest
         -- Step 8
         -- the Halfedge just to the left of newSite
-        lbnd = edge_list\edgeListLeftNeighbor(new_site)
+        lbnd = edge_list\edgeListLeftNeighbor(new_site.point)
         -- the Halfedge just to the right
-        rbnd = edge_list\edgeListRightNeighbor(new_site)
+        rbnd = edge_list\edgeListRightNeighbor(new_site.point)
         -- this is the same as leftRegion(rbnd)
         -- this Site determines the region containing the new site
         bottom_site = @rightRegion(lbnd)
@@ -411,7 +413,7 @@ class Voronoi
 
     -- we need the vertices to clip the edges
     for i, edge in ipairs(@edges)
-      edges\clipVertices(@plot_bounds)
+      edges\clipVertices(@bounds)
 
     -- but we don't actually ever use them again!
     vertices = nil
