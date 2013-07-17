@@ -55,7 +55,6 @@ export class Site
         all_invisible = false
         break
 
-    print('clip', i, n)
     -- no edges visible
     if all_invisible
       return points
@@ -134,17 +133,38 @@ export class Edge
     @sites = {}
     @right_site = nil
 
+  createBisectingEdge: (site0, site1) ->
+    dx = site1.x - site0.x
+    dy = site1.y - site0.y
+    c = site0.x * dx + site0.y * dy + (dx * dx + dy * dy) * 0.5
+    if math.abs(dx) > math.abs(dy)
+      a = 1.0
+      b = dy / dx
+      c = c / dx
+    else
+      b = 1.0
+      a = dx / dy
+      c = c / dy
+
+    edge = Edge(a, b, c)
+    edge.left_site = site0
+    edge.right_site = site1
+    return edge
+
+  delaunayLine: =>
+    return LineSegment(@left_site.coord, @right_site.coord)
+
 export class HalfedgePriorityQueue
   new: (ymin, deltay, sqrt_nsites) =>
     @ymin, @deltay, @sqrt_nsites = ymin, deltay, sqrt_nsites
     @hash = {}
     @count = 0
     @hashsize = 4 * @sqrt_nsites
-    @minBucket = 0
+    @min_bucket = 1
     -- dummy Halfedge at the top of each hash
     for i=1, @hashsize
       @hash[i] = Halfedge.createDummy()
-      @hash[i].nextInPriorityQueue = nul
+      @hash[i].nextInPriorityQueue = nil
     @
 
   -- TODO all sorts of methods
@@ -152,6 +172,15 @@ export class HalfedgePriorityQueue
   empty: =>
     @count == 0
 
+  min: =>
+    @adjustMinBucket()
+    answer = @hash[@min_bucket].nextInPriorityQueue
+    return Point(answer.vertex.x, answer.ystar)
+
+  adjustMinBucket: =>
+    for i = @min_bucket, @hashsize
+      if not @hash[i].nextInPriorityQueue
+        @min_bucket += 1
 
 export class EdgeList
   new: (xmin, deltax, sqrt_nsites) =>
@@ -164,14 +193,14 @@ export class EdgeList
     -- two dummy Halfedges:
     @leftEnd = Halfedge.createDummy()
     @rightEnd = Halfedge.createDummy()
-    @leftEnd.edgeListLeftNeighbor = null
-    @leftEnd.edgeListRightNeighbor = _rightEnd
-    @rightEnd.edgeListLeftNeighbor = _leftEnd
-    @rightEnd.edgeListRightNeighbor = null
+    @leftEnd.edgeListLeftNeighbor = nil
+    @leftEnd.edgeListRightNeighbor = @rightEnd
+    @rightEnd.edgeListLeftNeighbor = @leftEnd
+    @rightEnd.edgeListRightNeighbor = nil
     @hash[1] = @leftEnd
     @hash[@hashsize] = @rightEnd
 
-  -- Insert newHalfedge to the right of lb 
+  -- Insert newHalfedge to the right of lb
   insert: (lb, halfedge) =>
     halfedge.edgeListLeftNeighbor = lb
     halfedge.edgeListRightNeighbor = lb.edgeListRightNeighbor
@@ -179,14 +208,14 @@ export class EdgeList
     lb.edgeListRightNeighbor = halfedge
 
   -- This function only removes the Halfedge from the left-right list.
-  -- We cannot dispose it yet because we are still using it. 
+  -- We cannot dispose it yet because we are still using it
   remove: (halfEdge) =>
     halfEdge.edgeListLeftNeighbor.edgeListRightNeighbor = halfEdge.edgeListRightNeighbor
     halfEdge.edgeListRightNeighbor.edgeListLeftNeighbor = halfEdge.edgeListLeftNeighbor
     halfEdge.edge = Edge.DELETED
     halfEdge.edgeListLeftNeighbor, halfEdge.edgeListRightNeighbor = nil, nil
 
-  --Find the rightmost Halfedge that is still left of p 
+  --Find the rightmost Halfedge that is still left of p
   edgeListLeftNeighbor: (point) =>
     -- Use hash table to get close to desired halfedge
     bucket = math.floor((point.x - @xmin) / @deltax * @hashsize)
@@ -195,44 +224,45 @@ export class EdgeList
     if (bucket >= @hashsize)
       bucket = @hashsize - 1
     halfEdge = @hash[bucket]
-    if (halfEdge == null)
+    if halfEdge == nil
       i = 1
       while true
         halfEdge = @hash[bucket - i]
-        if halfEdge ~= null
+        if halfEdge ~= nil
           break
         halfEdge = @hash[bucket + i]
-        if halfEdge ~= null
+        if halfEdge ~= nil
           break
         i += 1
-        -- FIXME 
-        if i > 100
-          break
 
     -- Now search linear list of halfedges for the correct one
-    if (halfEdge == leftEnd  or (halfEdge ~= rightEnd and halfEdge\isLeftOf(point)))
+    if (halfEdge == @leftEnd or (halfEdge ~= @rightEnd and halfEdge\isLeftOf(point)))
       halfEdge = halfEdge.edgeListLeftNeighbor
-      while halfEdge ~= rightEnd and halfEdge\isLeftOf(point)
+      while halfEdge ~= @rightEnd and halfEdge\isLeftOf(point)
         halfEdge = halfEdge.edgeListRightNeighbor
     else
       halfEdge = halfEdge.edgeListLeftNeighbor
-      while halfEdge ~= leftEnd and not halfEdge\isLeftOf(point)
+      while halfEdge ~= @leftEnd and not halfEdge\isLeftOf(point)
         halfEdge = halfEdge.edgeListLeftNeighbor
-  
+
     -- Update hash table and reference counts
-    if (bucket > 0 and bucket < s@hashsize - 1)
+    if (bucket > 0 and bucket < @hashsize - 1)
       @hash[bucket] = halfEdge
     return halfEdge
 
+  edgeListRightNeighbor: (point) =>
+
+
 export class Halfedge
-  new: (edge, lr) =>
-    @edge = edge or Edge()
+  new: (edge, lr, dummy) =>
+    @edge = edge
     @lr = lr
+    @dummy = dummy
     @right_site, @left_site = nil, nil
     @
 
   createDummy: ->
-    return Halfedge(nil, nil)
+    return Halfedge(nil, nil, true)
 
   isLeftOf: (point) =>
     top_site = @edge.right_site
@@ -287,7 +317,6 @@ class Voronoi
 
   addSites: (points) =>
     for i, point in ipairs(points)
-      print(point.x, point.y, i)
       site = Site(point, i)
       @sites\push(site, i)
       @sites_by_location[point] = site
@@ -310,7 +339,6 @@ class Voronoi
     @sites\circles()
 
   fortunesAlgorithm: =>
-    print('fortunes')
     data_bounds = @sites\getSitesBounds()
     sqrt_nsites = math.floor(math.sqrt(@sites\length() + 4))
 
@@ -325,21 +353,22 @@ class Voronoi
     while true
       if not heap\empty()
         newinstar = heap\min()
-      if new_site and (heap\empty() or compareByYThenX(new_site, newinstar) < 0)
+      if new_site and (heap\empty() or @compareByYThenX(new_site, newinstar) < 0)
         -- new site is smallest
         -- Step 8
         -- the Halfedge just to the left of newSite
+
         lbnd = edge_list\edgeListLeftNeighbor(new_site.point)
         -- the Halfedge just to the right
-        rbnd = edge_list\edgeListRightNeighbor(new_site.point)
+        rbnd = edge_list\edgeListRightNeighbor
         -- this is the same as leftRegion(rbnd)
         -- this Site determines the region containing the new site
         bottom_site = @rightRegion(lbnd)
 
 
         -- Step 9
-        edge = Edge.createBisectingEdge(bottom_site, new_site)
-        @edges\push(edge)
+        edge = Edge.createBisectingEdge(bottom_site.point, new_site.point)
+        table.insert(@edges, edge)
 
         bisector = Halfedge(edge, 'left')
         half_edges\push(bisector)
@@ -379,9 +408,9 @@ class Voronoi
         if bottom_site.y > top_site.y
           top_site, bottom_site = bottom_site, top_site
 
-        edge = Edge.createBisectingEdge(bottom_site, top_site)
+        edge = Edge.createBisectingEdge(bottom_site.point, top_site.point)
         @edges\push(edge)
-  
+
         bisector = Halfedge(edge, 'left')
         table.insert(half_edges, bisector)
         edge_list\insert(lbnd, bisector)
@@ -404,8 +433,6 @@ class Voronoi
 
       else
         break
-    for k,v in pairs(edge_list.hash)
-      print(k,v)
 
     -- heap should be empty now
     heap = nil
@@ -417,6 +444,18 @@ class Voronoi
 
     -- but we don't actually ever use them again!
     vertices = nil
+
+  compareByYThenX: (s1, s2) =>
+    if s1.y < s2.y
+      return -1
+    if s1.y > s2.y
+      return 1
+    if s1.x < s2.x
+      return -1
+    if s1.x > s2.x
+      return 1
+    return 0
+
 
   leftRegion: (halfedge) =>
     edge = halfedge.edge

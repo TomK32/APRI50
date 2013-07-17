@@ -43,27 +43,6 @@ class Edge
     @_left_vertex, @_right_vertex = nil, nil
     @
 
-  createBisectingEdge: (site0, site1) =>
-    dx = site1.x - site0.x
-    dy = site1.y - site0.y
-    c = site0.x * dx + site0.y * dy + (dx * dx + dy * dy) * 0.5
-    if math.abs(dx) > math.abs(dy)
-      a = 1.0
-      b = dy / dx
-      c = c / dx
-    else
-      b = 1.0
-      a = dx / dy
-      c = c / dy
-
-    edge = Edge(a, b, c)
-    edge.left_site = site0
-    edge.right_site = site1
-    return edge
-
-  delaunayLine: =>
-    return LineSegment(@left_site.coord, @right_site.coord)
-
 class LineSegment
   new: (edge0, edge1) =>
     @edge0, @edge1 = edge0, edge1
