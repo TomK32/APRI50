@@ -17,6 +17,9 @@ export class Point
     strength = strength or 0.5
     return Point((a.x + b.x) * strength, (a.y + b.y) * strength)
 
+  toString: =>
+    return 'x: ' .. @x .. ', y: ' .. @y
+
 require 'SimplexNoise'
 Voronoi = require 'voronoi'
 
@@ -40,7 +43,7 @@ class Edge
     @a, @b, @c = a, b, c
     @river = 0
     @left_site, @right_site = nil, nil
-    @_left_vertex, @_right_vertex = nil, nil
+    @left_vertex, @right_vertex = nil, nil
     @
 
 class LineSegment
@@ -86,7 +89,7 @@ export class MapGen
   new: (size) =>
     @num_points = 100
     @lake_treshold = 0.3 -- 0...1
-    @num_lloyd_iterations = 1
+    @num_lloyd_iterations = 3
     @size = size -- it's a square
     @bounds = {x0: 0, y0: 0, x1: 100, y1: 100}
 
@@ -170,7 +173,7 @@ export class MapGen
     -- Option 3 is implemented here. If it's run for too many iterations,
     -- it will turn into a grid, but convergence is very slow, and we only
     -- run it a few times.
-    for i=1, @num_lloyd_iterations
+    for iteration = 1, @num_lloyd_iterations
       voronoi = @voronoi()
       for i, point in ipairs(@points)
         point.x = 0.0
