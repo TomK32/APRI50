@@ -23,13 +23,15 @@ require 'underscore'
 
 export class Vertex
 
-  new: (x, y) ->
+  new: (x, y) =>
     @point = Point(x, y)
+    @vertexIndex = 0
 
   intersect: (halfedge0, halfedge1) ->
-    edge0 = halfedge0.edge0
-    edge1 = halfedge1.edge1
-    if edge0 == nil or edg1 == nil
+    halfedge, edge = nil, nil
+    edge0 = halfedge0.edge
+    edge1 = halfedge1.edge
+    if edge0 == nil or edge1 == nil
       return nil
     if edge0.right_site == edge1.right_site
       return nil
@@ -41,17 +43,20 @@ export class Vertex
     intersectionX = (edge0.c * edge1.b - edge1.c * edge0.b) / determinant
     intersectionY = (edge1.c * edge0.a - edge0.c * edge1.a) / determinant
 
-    if Voronoi.compareByYThenX(edge0.right_site, edge1.right_site) < 0
+    if Voronoi.compareByYThenX(edge0.right_site.point, edge1.right_site.point) < 0
       halfedge = halfedge0
       edge = edge0
     else
-      halfedge0 = halfedge1
+      halfedge = halfedge1
       edge = edge1
 
-    right_of_site = intersectionX >= edge.right_site.x
+    right_of_site = (intersectionX >= edge.right_site.point.x)
     if (right_of_site and halfedge.leftRight == 'left') or (not right_of_site and halfedge.leftRight == 'right')
       return nil
     return Vertex(intersectionX, intersectionY)
+
+  setIndex: =>
+    @vertexIndex += 1
 
 export class Site
   new: (point, index) =>
@@ -167,7 +172,7 @@ export class Rectangle
       return @y1 - @y0
 
 export class Polygon
-  new: (vertices) => 
+  new: (vertices) =>
     @vertices = vertices
   winding: =>
     signedDoubleArea = @signedDoubleArea()
@@ -222,7 +227,7 @@ export class Edge
     return @[which .. '_site']
 
   setVertex: (which, vertex) =>
-    @['vertext_' .. which] = vertext
+    @['vertext_' .. which] = vertex
 
   clipVertices: (bounds) =>
     @clipped_vertices = {}
@@ -245,7 +250,7 @@ export class Edge
         y0 = vertex0.point.y
       if y0 > ymax
         return
-      
+
       x0 = @c - @b * y0
 
       y1 = ymax
@@ -281,7 +286,7 @@ export class Edge
           return
 
       y0 = @c - @a * x0
-      
+
       x1 = xmax
 
       if vertex1 ~= nil and vertex1.point.x < xmax
@@ -328,7 +333,7 @@ export class EdgeReorderer
   reorderEdges: (origEdges, criterion) =>
     i, j = nil, nil
     n = 0
-    
+
     -- we're going to reorder the edges in order of traversal
     done = {} -- for each origEdges
     nDone = 0
@@ -356,13 +361,12 @@ export class EdgeReorderer
     firstPoint, lastPoint = criterionOnEdge(edge, criterion)
     -- FIXME edge.leftVertex and rightVertex are nil
 
-    if firstPoint
     if firstPoint == Vertex.VERTEX_AT_INFINITY or lastPoint == Vertex.VERTEX_AT_INFINITY
       return {}
 
     done[i] = true
     nDone += 1
-      
+
     while nDone < n
       for i = 1, n
         if not done[i]
@@ -396,7 +400,7 @@ export class EdgeReorderer
           if (done[i])
             nDone += 1
     return new_edges
-  
+
 export class HalfedgePriorityQueue
   new: (ymin, deltay, sqrt_nsites) =>
     @ymin, @deltay, @sqrt_nsites = ymin, deltay, sqrt_nsites
@@ -415,23 +419,60 @@ export class HalfedgePriorityQueue
   empty: =>
     return @count == 0
 
-  insert: =>
-    @count += 1
-    assert(false)
+  bucket: (halfEdge) =>
+    bucket = math.ceil((halfEdge.ystar - @ymin) / @deltay * @hashsize)
+    if bucket < 1
+      return 1
+    if bucket > @hashsize
+      return @hashsize
+    return bucket
 
-  remove: =>
+  insert: (halfEdge) =>
+    bucket = @bucket(halfEdge)
+    if bucket < @min_bucket
+      @min_bucket = bucket
+
+    previous = @hash[bucket]
+    while previous.nextInPriorityQueue and previous.nextInPriorityQueue ~= nil and (halfEdge.ystar > previous.nextInPriorityQueue.ystar or (halfEdge.ystar == previous.nextInPriorityQueue.ystar and halfEdge.vertex.x > previous.nextInPriorityQueue.vertex.x))
+      previous = previous.nextInPriorityQueue
+    halfEdge.nextInPriorityQueue = previous.nextInPriorityQueue
+    previous.nextInPriorityQueue = halfEdge
+
+    @count += 1
+
+  remove: (halfEdge) =>
+
+    bucket = @bucket(halfEdge)
+
+    previous = @hash[bucket]
+    while previous.nextInPriorityQueue ~= halfEdge
+      previous = previous.nextInPriorityQueue
+    previous.nextInPriorityQueue = halfEdge.nextInPriorityQueue
     @count -= 1
-    assert(false)
+    halfEdge.vertex = nil
+    halfEdge.nextInPriorityQueue = nil
+    return
 
   min: =>
     @adjustMinBucket()
+    answer = nil
     answer = @hash[@min_bucket].nextInPriorityQueue
     return Point(answer.vertex.x, answer.ystar)
 
   adjustMinBucket: =>
-    for i = 1, @hashsize - 1
-      if not @hash[i] or not @hash[i].nextInPriorityQueue
-        @min_bucket += 1
+    @min_bucket = nil
+    for i, b in pairs(@hash)
+      if b.nextInPriorityQueue and not @min_bucket
+        @min_bucket = i
+
+  extractMin: =>
+    -- get the first real Halfedge in @min_bucket
+    answer = @hash[@min_bucket].nextInPriorityQueue
+    @hash[@min_bucket].nextInPriorityQueue = answer.nextInPriorityQueue
+    @count -= 1
+    answer.nextInPriorityQueue = nil
+
+    return answer
 
 export class EdgeList
   new: (xmin, deltax, sqrt_nsites) =>
@@ -502,16 +543,18 @@ export class EdgeList
       @hash[bucket] = halfEdge
     return halfEdge
 
-  edgeListRightNeighbor: (point) =>
-
 
 export class Halfedge
-  new: (edge, lr, dummy) =>
+  new: (edge, leftRight, dummy) =>
     @edge = edge
-    @lr = lr
+    @leftRight = leftRight
     @dummy = dummy
     @right_site, @left_site = nil, nil
+    @ystar = nil
     @
+
+  toString: =>
+    return 'HE: left ' .. @edge.left_site.point\toString() .. ', right ' .. @edge.right_site.point\toString()
 
   createDummy: ->
     return Halfedge(nil, nil, true)
@@ -519,9 +562,9 @@ export class Halfedge
   isLeftOf: (point) =>
     top_site = @edge.right_site
     right_of_site = point.x > top_site.point.x
-    if right_of_site and @lr == 'left'
+    if right_of_site and @leftRight == 'left'
       return true
-    if not right_of_site and @lr == 'right'
+    if not right_of_site and @leftRight == 'right'
       return false
 
     if @edge.a == 1
@@ -550,12 +593,12 @@ export class Halfedge
       t3 = yl - top_site.point.y
       above = t1 * t1 > t2 * t2 + t3 * t3
 
-      if @lr == 'left'
+      if @leftRight == 'left'
         return above
       else
         return not above
 
-class Voronoi
+export class Voronoi
   new: (points, bounds) =>
     @sites = SitesList()
     @sites_by_location = {}
@@ -601,18 +644,19 @@ class Voronoi
     vertices = {}
     @bottom_most_site = @sites\next()
     new_site = @sites\next()
+    newintstar = nil
 
     while true
       if not heap\empty()
         newintstar = heap\min()
-      if new_site and (heap\empty() or @compareByYThenX(new_site, newintstar) < 0)
+      if new_site and (heap\empty() or Voronoi.compareByYThenX(new_site.point, newintstar) < 0)
         -- new site is smallest
         -- Step 8
-        -- the Halfedge just to the left of newSite
 
+        -- the Halfedge just to the left of newSite
         lbnd = edge_list\edgeListLeftNeighbor(new_site.point)
         -- the Halfedge just to the right
-        rbnd = edge_list.edgeListRightNeighbor
+        rbnd = lbnd.edgeListRightNeighbor
         -- this is the same as leftRegion(rbnd)
         -- this Site determines the region containing the new site
         bottom_site = @rightRegion(lbnd)
@@ -631,8 +675,9 @@ class Voronoi
         vertex = Vertex.intersect(lbnd, bisector)
         if vertex
           table.insert(vertices, vertex)
-          bisector.vertex = vertex
-          bisector.ystar = vertex.y + new_site\dist(vertex)
+          heap\remove(lbnd)
+          lbnd.vertex = vertex
+          lbnd.ystar = vertex.point.y + new_site.point\distance(vertex.point)
           heap\insert(lbnd)
 
         lbnd = bisector
@@ -647,7 +692,7 @@ class Voronoi
         if vertex
           table.insert(vertices, vertex)
           bisector.vertex = vertex
-          bisector.ystar = vertex.y + new_site\distance(vertex)
+          bisector.ystar = vertex.point.y + new_site.point\distance(vertex.point)
           heap\insert(bisector)
 
         new_site = @sites\next()
@@ -656,8 +701,8 @@ class Voronoi
         -- intersection is smallest
         lbnd = heap\extractMin()
         llbnd = lbnd.edgeListLeftNeighbor
-        rbd = lbnd.edgeListRightNeighbor
-        rrbd = rbnd.edgeListRightNeighbor
+        rbnd = lbnd.edgeListRightNeighbor
+        rrbnd = rbnd.edgeListRightNeighbor
         bottom_site = @leftRegion(lbnd)
         top_site = @rightRegion(rbnd)
 
@@ -673,35 +718,34 @@ class Voronoi
         heap\remove(rbnd)
         edge_list\remove(rbnd)
 
-        if bottom_site.y > top_site.y
+        if bottom_site.point.y > top_site.point.y
           top_site, bottom_site = bottom_site, top_site
 
         edge = Edge.createBisectingEdge(bottom_site, top_site)
-        @edges\push(edge)
+        table.insert(@edges, edge)
 
         bisector = Halfedge(edge, 'left')
         table.insert(half_edges, bisector)
-        edge_list\insert(lbnd, bisector)
+        edge_list\insert(llbnd, bisector)
         edge\setVertex('right', v)
         vertex = Vertex.intersect(llbnd, bisector)
         if vertex
           table.insert(vertices, vertex)
           heap\remove(llbnd)
           llbnd.vertex = vertex
-          llbnd.ystar = vertex.y + bottom_site\dist(vertex)
+          llbnd.ystar = vertex.point.y + bottom_site.point\distance(vertex.point)
           heap\insert(llbnd)
 
-        vertex = Vertex.intersect(bisector, rrbd)
+        vertex = Vertex.intersect(bisector, rrbnd)
         if vertex
           table.insert(vertices, vertex)
           heap\remove(llbnd)
           llbnd.vertex = vertex
-          llbnd.ystar = vertex.y + bottom_site\dist(vertex)
+          llbnd.ystar = vertex.point.y + bottom_site.point\distance(vertex.point)
           heap\insert(llbnd)
 
       else
         break
-
     -- heap should be empty now
     heap = nil
     edge_list = nil
@@ -713,14 +757,14 @@ class Voronoi
     -- but we don't actually ever use them again!
     vertices = nil
 
-  compareByYThenX: (s1, s2) =>
-    if s1.y < s2.y
+  compareByYThenX: (p1, p2) ->
+    if p1.y < p2.y
       return -1
-    if s1.y > s2.y
+    if p1.y > p2.y
       return 1
-    if s1.x < s2.x
+    if p1.x < p2.x
       return -1
-    if s1.x > s2.x
+    if p1.x > p2.x
       return 1
     return 0
 
@@ -729,7 +773,7 @@ class Voronoi
     edge = halfedge.edge
     if not edge
       return @bottom_most_site
-    return edge.site(halfedge.leftRight)
+    return edge\site(halfedge.leftRight)
 
   rightRegion: (halfedge) =>
     edge = halfedge.edge
@@ -737,3 +781,4 @@ class Voronoi
       return @bottom_most_site
     return edge\site(if halfedge.leftRight == 'right' then 'left' else 'right')
 
+return Voronoi

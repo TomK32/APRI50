@@ -20,6 +20,11 @@ export class Point
   toString: =>
     return 'x: ' .. @x .. ', y: ' .. @y
 
+  distance: (other) =>
+    a = @x - other.x
+    b = @y - other.y
+    return math.sqrt(a * a + b * b)
+
 require 'SimplexNoise'
 Voronoi = require 'voronoi'
 
