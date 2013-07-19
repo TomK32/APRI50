@@ -221,7 +221,7 @@ export class Edge
     return edge
 
   delaunayLine: =>
-    return LineSegment(@left_site.coord, @right_site.coord)
+    return LineSegment(@left_site.point, @right_site.point)
 
   site: (which) =>
     return @[which .. '_site']
@@ -444,13 +444,14 @@ export class HalfedgePriorityQueue
 
     bucket = @bucket(halfEdge)
 
-    previous = @hash[bucket]
-    while previous.nextInPriorityQueue ~= halfEdge
-      previous = previous.nextInPriorityQueue
-    previous.nextInPriorityQueue = halfEdge.nextInPriorityQueue
-    @count -= 1
-    halfEdge.vertex = nil
-    halfEdge.nextInPriorityQueue = nil
+    if halfEdge.vertex ~= nil
+      previous = @hash[bucket]
+      while previous.nextInPriorityQueue and previous.nextInPriorityQueue ~= halfEdge
+        previous = previous.nextInPriorityQueue
+      previous.nextInPriorityQueue = halfEdge.nextInPriorityQueue
+      @count -= 1
+      halfEdge.vertex = nil
+      halfEdge.nextInPriorityQueue = nil
     return
 
   min: =>
@@ -460,10 +461,8 @@ export class HalfedgePriorityQueue
     return Point(answer.vertex.x, answer.ystar)
 
   adjustMinBucket: =>
-    @min_bucket = nil
-    for i, b in pairs(@hash)
-      if b.nextInPriorityQueue and not @min_bucket
-        @min_bucket = i
+    while @min_bucket < @hashsize and @hash[@min_bucket].nextInPriorityQueue == nil
+      @min_bucket += 1
 
   extractMin: =>
     -- get the first real Halfedge in @min_bucket
@@ -649,7 +648,7 @@ export class Voronoi
     while true
       if not heap\empty()
         newintstar = heap\min()
-      if new_site and (heap\empty() or Voronoi.compareByYThenX(new_site.point, newintstar) < 0)
+      if new_site and (heap\empty() or @.compareByYThenX(new_site.point, newintstar) < 0)
         -- new site is smallest
         -- Step 8
 
@@ -718,16 +717,18 @@ export class Voronoi
         heap\remove(rbnd)
         edge_list\remove(rbnd)
 
+        leftRight = 'left'
         if bottom_site.point.y > top_site.point.y
           top_site, bottom_site = bottom_site, top_site
+          leftRight = 'right'
 
         edge = Edge.createBisectingEdge(bottom_site, top_site)
         table.insert(@edges, edge)
 
-        bisector = Halfedge(edge, 'left')
+        bisector = Halfedge(edge, leftRight)
         table.insert(half_edges, bisector)
         edge_list\insert(llbnd, bisector)
-        edge\setVertex('right', v)
+        edge\setVertex(if leftRight == 'left' then 'right' else 'left', v)
         vertex = Vertex.intersect(llbnd, bisector)
         if vertex
           table.insert(vertices, vertex)
@@ -739,10 +740,9 @@ export class Voronoi
         vertex = Vertex.intersect(bisector, rrbnd)
         if vertex
           table.insert(vertices, vertex)
-          heap\remove(llbnd)
-          llbnd.vertex = vertex
-          llbnd.ystar = vertex.point.y + bottom_site.point\distance(vertex.point)
-          heap\insert(llbnd)
+          bisector.vertex = vertex
+          bisector.ystar = vertex.point.y + bottom_site.point\distance(vertex.point)
+          heap\insert(bisector)
 
       else
         break
