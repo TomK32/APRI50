@@ -4,6 +4,7 @@ require 'entities/player'
 
 game = {
   title = 'APRI50',
+  seed = 123,
   debug = true,
   graphics = {
     mode = { }

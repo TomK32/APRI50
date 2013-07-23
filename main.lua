@@ -1,9 +1,13 @@
 --
 -- (C) 2013 Thomas R. Koll
 
-package.path = package.path .. ';lib/?.lua'
+package.path = package.path .. ';./lib/?.lua'
+require 'strict'
 require 'lib/helpers'
 require 'lib/middleclass'
+require 'lib/LuaBit'
+require 'lib/SimplexNoise'
+
 tween = require 'lib/tween'
 require 'game'
 require 'views/view'

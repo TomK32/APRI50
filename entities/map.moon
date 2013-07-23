@@ -2,13 +2,16 @@
 -- Entities are expected to have a position with x, y and z (layer)
 -- and update and draw functions
 
+require 'lib.map_gen'
+
 export class Map
-  new: () =>
+  new: (seed) =>
     @layers = {} -- here the entities are stuffed into
     @layer_indexes = {}
     @tiles = {}
-    @level = level
     @updateAble = {} -- entities that need to be called during update
+    @map_gen = MapGen(seed)
+    @map_gen\newIsland('Simplex', seed, seed)
     @
 
   addEntity: (entity) =>
