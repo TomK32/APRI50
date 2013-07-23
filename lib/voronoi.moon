@@ -503,7 +503,7 @@ export class EdgeList
   remove: (halfEdge) =>
     halfEdge.edgeListLeftNeighbor.edgeListRightNeighbor = halfEdge.edgeListRightNeighbor
     halfEdge.edgeListRightNeighbor.edgeListLeftNeighbor = halfEdge.edgeListLeftNeighbor
-    halfEdge.edge = Edge.DELETED
+    halfEdge.edge = Edge()
     halfEdge.edgeListLeftNeighbor, halfEdge.edgeListRightNeighbor = nil, nil
 
   --Find the rightmost Halfedge that is still left of p
@@ -514,14 +514,14 @@ export class EdgeList
       bucket = 1
     if (bucket >= @hashsize)
       bucket = @hashsize - 1
-    halfEdge = @hash[bucket]
+    halfEdge = @getHash(bucket)
     if halfEdge == nil
       i = 1
       while true
-        halfEdge = @hash[bucket - i]
+        halfEdge = @getHash(bucket - i)
         if halfEdge ~= nil
           break
-        halfEdge = @hash[bucket + i]
+        halfEdge = @getHash(bucket + i)
         if halfEdge ~= nil
           break
         i += 1
@@ -542,6 +542,9 @@ export class EdgeList
       @hash[bucket] = halfEdge
     return halfEdge
 
+  getHash: (bucket) =>
+    if @hash[bucket] and @hash[bucket].edge
+      return @hash[bucket]
 
 export class Halfedge
   new: (edge, leftRight, dummy) =>
