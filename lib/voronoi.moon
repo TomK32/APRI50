@@ -199,6 +199,8 @@ export class Edge
     @left_vertex, @right_vertex = nil, nil
     @a, @b, @c = a, b, c
 
+  DELETED: 'deleted'
+
   createBisectingEdge: (site0, site1) ->
     dx = site1.point.x - site0.point.x
     dy = site1.point.y - site0.point.y
@@ -503,7 +505,7 @@ export class EdgeList
   remove: (halfEdge) =>
     halfEdge.edgeListLeftNeighbor.edgeListRightNeighbor = halfEdge.edgeListRightNeighbor
     halfEdge.edgeListRightNeighbor.edgeListLeftNeighbor = halfEdge.edgeListLeftNeighbor
-    halfEdge.edge = Edge()
+    halfEdge.edge = Edge.DELETED
     halfEdge.edgeListLeftNeighbor, halfEdge.edgeListRightNeighbor = nil, nil
 
   --Find the rightmost Halfedge that is still left of p
@@ -543,7 +545,10 @@ export class EdgeList
     return halfEdge
 
   getHash: (bucket) =>
-    if @hash[bucket] and @hash[bucket].edge
+    if @hash[bucket]
+      if @hash[bucket].edge ~= Edge.DELETED
+        @hash[bucket] = nil
+        return
       return @hash[bucket]
 
 export class Halfedge
