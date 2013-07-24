@@ -353,12 +353,9 @@ export class EdgeReorderer
 
     criterionOnEdge = (edge, criterion) ->
       if criterion == Vertex
-        firstPoint = edge.leftVertex
-        lastPoint = edge.rightVertex
+        return edge.leftVertex, edge.rightVertex
       else
-        firstPoint = edge.left_site
-        lastPoint = edge.right_site
-      return firstPoint, lastPoint
+        return edge.left_site, edge.right_site
 
     firstPoint, lastPoint = criterionOnEdge(edge, criterion)
     -- FIXME edge.leftVertex and rightVertex are nil
@@ -443,10 +440,8 @@ export class HalfedgePriorityQueue
     @count += 1
 
   remove: (halfEdge) =>
-
-    bucket = @bucket(halfEdge)
-
     if halfEdge.vertex ~= nil
+      bucket = @bucket(halfEdge)
       previous = @hash[bucket]
       while previous.nextInPriorityQueue and previous.nextInPriorityQueue ~= halfEdge
         previous = previous.nextInPriorityQueue
@@ -519,7 +514,7 @@ export class EdgeList
     halfEdge = @getHash(bucket)
     if halfEdge == nil
       i = 1
-      while true
+      while i <= @hashsize
         halfEdge = @getHash(bucket - i)
         if halfEdge ~= nil
           break
@@ -544,24 +539,42 @@ export class EdgeList
       @hash[bucket] = halfEdge
     return halfEdge
 
+  hashCount: =>
+    count = 0
+    for i, h in ipairs(@hash)
+      if h and h.edge ~= Edge.DELETED
+        count += 1
+    return count
+
   getHash: (bucket) =>
     if @hash[bucket]
-      if @hash[bucket].edge ~= Edge.DELETED
+      if @hash[bucket].edge == Edge.DELETED
         @hash[bucket] = nil
-        return
+        return nil
       return @hash[bucket]
 
 export class Halfedge
   new: (edge, leftRight, dummy) =>
+    if not dummy
+      assert(edge, 'Halfedge needs an edge')
+    assert(leftRight == 'left' or leftRight == 'right' or leftRight == nil)
     @edge = edge
     @leftRight = leftRight
     @dummy = dummy
-    @right_site, @left_site = nil, nil
     @ystar = nil
     @
 
   toString: =>
-    return 'HE: left ' .. @edge.left_site.point\toString() .. ', right ' .. @edge.right_site.point\toString()
+    if @dummy
+      return 'HE: Dummy'
+    elseif not @edge
+      return 'HE: no edge'
+    elseif not @edge.right_site
+      return 'HE: no right site'
+    elseif not @edge.left_site
+      return 'HE: no left site'
+    else
+      return 'HE: left ' .. @edge.left_site.point\toString() .. ', right ' .. @edge.right_site.point\toString()
 
   createDummy: ->
     return Halfedge(nil, nil, true)
