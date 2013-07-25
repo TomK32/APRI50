@@ -108,12 +108,12 @@ export class Site
       return points
     edge = @edges[visible_index + 1]
     orientation = @edgeOrientations[visible_index]
-    table.insert(points, edge.clippedEnds[orientation])
+    table.insert(points, edge\clippedEnds()[orientation])
     if orientation == 'left'
       orientation = 'right'
     else
       orientation = 'left'
-    table.insert(points, edge.clippedEnds[orientation])
+    table.insert(points, edge\clippedEnds()[orientation])
     for i, edge in ipairs(@edges)
       if edge.visible
         @connect(points, i, bounds)
@@ -124,6 +124,117 @@ export class Site
   compare: (site1, site2) ->
     Voronoi.compareByYThenX(site1.point, site2.point) < 0
 
+  connect: (points, j, bounds, closingUp) =>
+    if closingUp == nil
+      closingUp = false
+    right_point = points[#points]
+    new_edge = @edges[j]
+    new_orientation = @edgeOrientations[j]
+    -- the point that  must be connected to rightPoint:
+    new_point = new_edge\clippedEnds()[new_orientation]
+    if not @.closeEnough(right_point, new_point)
+      -- The points do not coincide, so they must have been clipped at the bounds;
+      -- see if they are on the same border of the bounds:
+      if right_point.x ~= new_point.x and right_point.y ~= new_point.y
+        -- They are on different borders of the bounds;
+        -- insert one or two corners of bounds as needed to hook them up:
+        -- (NOTE this will not be correct if the region should take up more than
+        -- half of the bounds rect, for then we will have gone the wrong way
+        -- around the bounds and included the smaller part rather than the larger)
+        right_check = @checkBounds(right_point, bounds)
+        new_check = @checkBounds(new_point, bounds)
+        px, py = nil, nil
+        if right_check.right
+          px = bounds.right
+          if new_check.bottom
+            py = bounds.bottom
+            table.insert(points, Point(px, py))
+          elseif new_check.top
+            py = bounds.top
+            table.insert(points, Point(px, py))
+          elseif new_check.lefttop
+            if right_point.y - bounds.y + new_point.y - bounds.y > bounds.height
+              py = bounds.top
+            else
+              py = bounds.bottom
+
+            table.insert(points, Point(px, py))
+            table.insert(points, Point(bounds.left, py))
+
+        elseif right_check.left
+          px = bounds.left
+          if new_check.bottom
+            py = bounds.bottom
+            table.insert(points, Point(px, py))
+          elseif new_check.top
+            py = bound.top
+            table.insert(points, Point(px, py))
+
+          elseif new_check.right
+            if right_point.y - bounds.y + new_point.y - bounds.y < bounds.height
+              py = bounds.top
+            else
+              py = bounds.bottom
+            table.insert(points, Point(px, py))
+            table.insert(points, Point(bounds.right, py))
+
+        elseif right_check.top
+          py = bounds.top
+          if new_check.right
+            px = bounds.right
+            table.insert(points, Point(px, py))
+          elseif new_check.left
+            px = bounds.left
+            table.insert(points, Point(px, py))
+
+          elseif new_check.bottom
+            if right_point.x - bounds.x + new_point.x - bounds.x < bounds.width
+              px = bounds.left
+            else
+              px = bounds.right
+            table.insert(points, Point(px, py))
+            table.insert(points, Point(px, bounds.bottom))
+
+        elseif right_check.bottom
+          py = bounds.bottom
+          if new_check.right
+            px = bounds.right
+            table.insert(points, Point(px, py))
+          elseif new_check.left
+            px = bounds.left
+            table.insert(points, Point(px, py))
+          elseif new_check.top
+            if right_point.x - bounds.x + new_point.x - bounds.x < bounds.width
+              px = bounds.left
+            else
+              px = bounds.right
+            table.insert(points, Point(px, py))
+            table.insert(points, Point(px, bounds.top))
+
+      if closingUp
+        -- new_edge's ends have already been added
+        return
+      table.insert(points, new_point)
+    new_right_point = new_edge\clippedEnds()[if new_orientation == 'left' then 'right' else 'left']
+    if not @.closeEnough(points[1], new_right_point)
+      table\insert(new_right_point)
+
+  @EPSILON = 0.005
+  closeEnough: (point1, point2) ->
+    return point1\distance(point2) < Site.EPSILON
+
+  checkBounds: (point, bounds) =>
+    ret = {}
+    if point.x == bounds.left
+      ret.left = true
+    if point.x == bounds.right
+      ret.right = true
+    if point.y == bounds.top
+      ret.top = true
+    if point.y == bounds.bottom
+      ret.bottom = true
+    return ret
+		
 class SitesList
   new: =>
     @sites = {}
@@ -210,11 +321,16 @@ export class Edge
     @left_site, @right_site = nil, nil
     @left_vertex, @right_vertex = nil, nil
     @a, @b, @c = a, b, c
+    @visible = true
+    @clipped_vertices = {}
 
   DELETED: 'deleted'
 
   toString: =>
     print('Edge')
+
+  clippedEnds: =>
+    return @clipped_vertices
 
   createBisectingEdge: (site0, site1) ->
     dx = site1.point.x - site0.point.x
