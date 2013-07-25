@@ -181,6 +181,7 @@ export class MapGen
     for iteration = 1, @num_lloyd_iterations
       voronoi = @voronoi()
       for i, point in ipairs(@points)
+        region = voronoi\region(point)
         point.x = 0.0
         point.y = 0.0
         region = voronoi\region(point)
@@ -191,7 +192,6 @@ export class MapGen
           region_count += 1
         point.x = point.x / region_count
         point.y = point.y / region_count
-        region_count = nil
       voronoi = nil
     @
 

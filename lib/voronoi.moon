@@ -19,7 +19,11 @@
 --   * No weight
 --   * No addSite, all done in addSites
 
-require 'underscore'
+-- TODO
+--   Edge:clippedVertices
+--   Edge:visible
+
+_ = require 'underscore'
 
 export class Vertex
 
@@ -66,17 +70,17 @@ export class Site
 
   region: (bounds) =>
     edges_size = 0
-    @_region = nil
+    region = nil
     for i, edge in ipairs(@edges)
       edges_size += 1
-    if @edges == nil or edges_size == 0
-      return Point()
+    if edges_size == 0
+      return {}
     if @edgeOrientations == nil
       @reorderEdges()
-      @_region = @clipToBounds(bounds)
-      if Polygon(@_region)\winding() == 'clockwise'
-        @_region = @_region\reverse()
-    return @_region
+      region = @clipToBounds(bounds)
+      if Polygon(region)\winding() == 'clockwise'
+        region = region\reverse()
+    return region
 
   reorderEdges: =>
     reorderer = EdgeReorderer(@edges, Vertex)
@@ -91,6 +95,7 @@ export class Site
     visible_index = 0
     all_invisible = true
     n = 1
+
     -- find first visible edge
     for i, edge in ipairs(@edges)
       if edge.visible
@@ -116,6 +121,9 @@ export class Site
     @connect(points, visible_index, bounds, true)
     return points
 
+  compare: (site1, site2) ->
+    Voronoi.compareByYThenX(site1.point, site2.point) < 0
+
 class SitesList
   new: =>
     @sites = {}
@@ -128,6 +136,11 @@ class SitesList
     if not @sites[i]
       @sites_count += 1
     @sites[i] = site
+
+  sort: =>
+    table.sort(@sites, Site.compare)
+    for index, site in ipairs(@sites)
+      site.index = index
 
   -- O(n)
   getSitesBounds: =>
@@ -194,12 +207,14 @@ export class Polygon
 
 export class Edge
   new: (a, b, c) =>
-    @sites = {}
     @left_site, @right_site = nil, nil
     @left_vertex, @right_vertex = nil, nil
     @a, @b, @c = a, b, c
 
   DELETED: 'deleted'
+
+  toString: =>
+    print('Edge')
 
   createBisectingEdge: (site0, site1) ->
     dx = site1.point.x - site0.point.x
@@ -229,7 +244,7 @@ export class Edge
     return @[which .. '_site']
 
   setVertex: (which, vertex) =>
-    @['vertext_' .. which] = vertex
+    @[which .. '_vertex'] = vertex
 
   clipVertices: (bounds) =>
     @clipped_vertices = {}
@@ -315,7 +330,7 @@ export class Edge
         y1 = ymin
         x1 = (@c - y1) / @a
 
-    if vertex0 == @leftVertex
+    if vertex0 == @left_vertex
       @clipped_vertices['left'] = Point(x0, y0)
       @clipped_vertices['right'] = Point(x1, y1)
     else
@@ -329,8 +344,7 @@ export class EdgeReorderer
     edge_count = 0
     for i,e in ipairs(origEdges)
       edge_count += 1
-    if #origEdges > 0
-      @edges = @reorderEdges(origEdges, criterion)
+    @edges = @reorderEdges(origEdges, criterion)
 
   reorderEdges: (origEdges, criterion) =>
     i, j = nil, nil
@@ -341,7 +355,7 @@ export class EdgeReorderer
     nDone = 0
     -- initialize
     for i, edge in ipairs(origEdges)
-      n = n + 1
+      n += 1
       done[i] = false
 
     new_edges = {}
@@ -353,9 +367,11 @@ export class EdgeReorderer
 
     criterionOnEdge = (edge, criterion) ->
       if criterion == Vertex
-        return edge.leftVertex, edge.rightVertex
-      else
+        return edge.left_vertex, edge.right_vertex
+      elseif edge.left_site or edge.right_site
         return edge.left_site, edge.right_site
+      else
+        error('Neither vertex or site on edge')
 
     firstPoint, lastPoint = criterionOnEdge(edge, criterion)
     -- FIXME edge.leftVertex and rightVertex are nil
@@ -365,22 +381,24 @@ export class EdgeReorderer
 
     done[i] = true
     nDone += 1
-
+    r = 0
     while nDone < n
+      r += 1
+      assert(r < 10000, 'reordering is taking too long')
       for i = 1, n
         if not done[i]
           edge = origEdges[i]
           leftPoint, rightPoint = criterionOnEdge(edge, criterion)
           if leftPoint == Vertex.VERTEX_AT_INFINITY or rightPoint == Vertex.VERTEX_AT_INFINITY
             return {}
+
           if leftPoint == lastPoint
             lastPoint = rightPoint
             table.insert(@edgeOrientations, 'left')
-            table.insert(new_edges, edgeOrientations)
+            table.insert(new_edges, edge)
             done[i] = true
-
           elseif rightPoint == firstPoint
-            firstPoint = left
+            firstPoint = leftPoint
             _.unshift(@edgeOrientations, 'left')
             _.unshift(new_edges, edge)
             done[i] = true
@@ -389,14 +407,15 @@ export class EdgeReorderer
             _.unshift(@edgeOrientations, 'right')
             _.unshift(new_edges, edge)
             done[i] = true
-
           elseif rightPoint == lastPoint
             lastPoint = leftPoint
-            _.unshift(@edgeOrientations, 'right')
-            _.unshift(new_edges, edge)
+            table.insert(@edgeOrientations, 'right')
+            table.insert(new_edges, edge)
             done[i] = true
+          else
+            print("no match")
 
-          if (done[i])
+          if done[i]
             nDone += 1
     return new_edges
 
@@ -635,6 +654,7 @@ export class Voronoi
       site = Site(point, i)
       @sites\push(site, i)
       @sites_by_location[point] = site
+    @sites\sort()
 
   region: (point) =>
     if @sites_by_location[point]
@@ -643,7 +663,7 @@ export class Voronoi
       return {}
 
   neighborSitesForSite: (point) =>
-    site = @sites_by_location[poin]
+    site = @sites_by_location[point]
     if not site
       return {}
     points = {}
@@ -684,7 +704,6 @@ export class Voronoi
         -- Step 9
         edge = Edge.createBisectingEdge(bottom_site, new_site)
         table.insert(@edges, edge)
-
         bisector = Halfedge(edge, 'left')
         table.insert(half_edges, bisector)
         -- inserting two Halfedges into edgeList constitutes Step 10:
