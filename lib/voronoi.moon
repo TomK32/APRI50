@@ -20,7 +20,7 @@
 --   * No addSite, all done in addSites
 
 -- TODO
---   Edge:clippedVertices
+--   Edges without vertices
 --   Edge:visible
 
 _ = require 'underscore'
@@ -29,6 +29,7 @@ export class Vertex
 
   new: (x, y) =>
     @point = Point(x, y)
+    @x, @y = @point.x, @point.y
     @vertexIndex = 0
 
   intersect: (halfedge0, halfedge1) ->
@@ -67,6 +68,10 @@ export class Site
     @point = point
     @index = index
     @edges = {}
+    point.site = @
+
+  toString: =>
+    return 'Edges: ' .. #@edges .. ', index: ' .. @index .. ', point: ' .. @point\toString()
 
   region: (bounds) =>
     edges_size = 0
@@ -79,7 +84,7 @@ export class Site
       @reorderEdges()
       region = @clipToBounds(bounds)
       if Polygon(region)\winding() == 'clockwise'
-        region = region\reverse()
+        region = _.reverse(region)
     return region
 
   reorderEdges: =>
@@ -92,7 +97,7 @@ export class Site
 
   clipToBounds: (bounds) =>
     points = {}
-    visible_index = 0
+    visible_index = 1
     all_invisible = true
     n = 1
 
@@ -152,7 +157,7 @@ export class Site
           elseif new_check.top
             py = bounds.top
             table.insert(points, Point(px, py))
-          elseif new_check.lefttop
+          elseif new_check.left
             if right_point.y - bounds.y + new_point.y - bounds.y > bounds.height
               py = bounds.top
             else
@@ -169,7 +174,6 @@ export class Site
           elseif new_check.top
             py = bound.top
             table.insert(points, Point(px, py))
-
           elseif new_check.right
             if right_point.y - bounds.y + new_point.y - bounds.y < bounds.height
               py = bounds.top
@@ -186,7 +190,6 @@ export class Site
           elseif new_check.left
             px = bounds.left
             table.insert(points, Point(px, py))
-
           elseif new_check.bottom
             if right_point.x - bounds.x + new_point.x - bounds.x < bounds.width
               px = bounds.left
@@ -217,7 +220,7 @@ export class Site
       table.insert(points, new_point)
     new_right_point = new_edge\clippedEnds()[if new_orientation == 'left' then 'right' else 'left']
     if not @.closeEnough(points[1], new_right_point)
-      table\insert(new_right_point)
+      table.insert(points, new_right_point)
 
   @EPSILON = 0.005
   closeEnough: (point1, point2) ->
@@ -252,9 +255,13 @@ class SitesList
     table.sort(@sites, Site.compare)
     for index, site in ipairs(@sites)
       site.index = index
+    @sorted = true
 
   -- O(n)
   getSitesBounds: =>
+    if not @sorted
+      @current_index = 0
+      @sort()
     if @sites_count == 0
       return Rectangle(0, 0, 0, 0)
     -- NOTE bug possible if we remove sites
@@ -295,6 +302,9 @@ export class Rectangle
     else
       return @y1 - @y0
 
+  toString: =>
+    return 'Rectangle: ' .. @x0 .. ' ' .. @y0 .. ' ' .. @x1 .. ' ' .. @y1
+
 export class Polygon
   new: (vertices) =>
     @vertices = vertices
@@ -311,7 +321,7 @@ export class Polygon
     signedDoubleArea = 0
     num_vertices = #@vertices
     for i, point in ipairs(@vertices)
-      nextIndex = math.mod(i, num_vertices)
+      nextIndex = math.mod(i, num_vertices) + 1
       next_point = @vertices[nextIndex]
       signedDoubleArea += point.x * next_point.y - next_point.x * point.y
     return signedDoubleArea
@@ -372,8 +382,8 @@ export class Edge
 
     x0, y0, x1, y1 = nil, nil, nil, nil
 
-    vertex0 = @left_site
-    vertex1 = @right_site
+    vertex0 = @left_vertex
+    vertex1 = @right_vertex
     if @a == 1.0 and @b >= 0.0
       vertex0, vertex1 = vertex1, vertex0
 
@@ -501,7 +511,7 @@ export class EdgeReorderer
     while nDone < n
       r += 1
       assert(r < 10000, 'reordering is taking too long')
-      for i = 1, n
+      for i = 2, n
         if not done[i]
           edge = origEdges[i]
           leftPoint, rightPoint = criterionOnEdge(edge, criterion)
@@ -756,7 +766,6 @@ export class Halfedge
 export class Voronoi
   new: (points, bounds) =>
     @sites = SitesList()
-    @sites_by_location = {}
     @addSites(points)
     @bounds = bounds -- a rectangle
     @triangles = {}
@@ -769,22 +778,9 @@ export class Voronoi
     for i, point in ipairs(points)
       site = Site(point, i)
       @sites\push(site, i)
-      @sites_by_location[point] = site
-    @sites\sort()
 
   region: (point) =>
-    if @sites_by_location[point]
-      return @sites_by_location[point]\region(@bounds)
-    else
-      return {}
-
-  neighborSitesForSite: (point) =>
-    site = @sites_by_location[point]
-    if not site
-      return {}
-    points = {}
-    sites = site\neighborSites()
-    return neighbor.point for i, neighbor in ipairs(sites)
+    return point.site\region(@bounds)
 
   circles: =>
     @sites\circles()
@@ -801,6 +797,7 @@ export class Voronoi
     @bottom_most_site = @sites\next()
     new_site = @sites\next()
     newintstar = nil
+    leftRight = ''
 
     while true
       if not heap\empty()

@@ -96,7 +96,7 @@ export class MapGen
     @lake_treshold = 0.3 -- 0...1
     @num_lloyd_iterations = 3
     @size = size -- it's a square
-    @bounds = {x0: 0, y0: 0, x1: 100, y1: 100}
+    @bounds = Rectangle(0, 0, 100, 100)
 
     @island_shape = nil
 
@@ -184,7 +184,6 @@ export class MapGen
         region = voronoi\region(point)
         point.x = 0.0
         point.y = 0.0
-        region = voronoi\region(point)
         region_count = 0
         for j, other_point in ipairs(region)
           point.x += other_point.x
