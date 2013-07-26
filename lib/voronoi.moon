@@ -417,10 +417,10 @@ export class Edge
 
       if x1 > xmax
         x1 = xmax
-        y1 = (c - x1) / @b
+        y1 = (@c - x1) / @b
       elseif x1 < xmin
         x1 = xmin
-        y1 = (c - x1) / @b
+        y1 = (@c - x1) / @b
     else -- x != 1.0
       x0 = xmin
       if vertex0 ~= nil and vertex0.point.x > xmin
@@ -655,7 +655,7 @@ export class EdgeList
     if (bucket < 1)
       bucket = 1
     if (bucket >= @hashsize)
-      bucket = @hashsize - 1
+      bucket = @hashsize
     halfEdge = @getHash(bucket)
     if halfEdge == nil
       i = 1
@@ -673,11 +673,11 @@ export class EdgeList
       halfEdge = halfEdge.edgeListRightNeighbor
       while halfEdge ~= @rightEnd and halfEdge\isLeftOf(point)
         halfEdge = halfEdge.edgeListRightNeighbor
-      halfEdge = halfEdge.edgeListLeftNeighbor
     else
       halfEdge = halfEdge.edgeListLeftNeighbor
       while halfEdge ~= @leftEnd and not halfEdge\isLeftOf(point)
         halfEdge = halfEdge.edgeListLeftNeighbor
+      --halfEdge = halfEdge.edgeListLeftNeighbor
 
     -- Update hash table and reference counts
     if (bucket > 0 and bucket < @hashsize - 1)
