@@ -26,9 +26,13 @@
 _ = require 'underscore'
 
 export class Vertex
+  @index = 0
 
   new: (x, y) =>
     @point = Point(x, y)
+    if (x < 0 and x >= 0) or (y < 0 and y >= 0)
+      @infinity = true
+
     @x, @y = @point.x, @point.y
     @vertexIndex = 0
 
@@ -61,7 +65,8 @@ export class Vertex
     return Vertex(intersectionX, intersectionY)
 
   setIndex: =>
-    @vertexIndex += 1
+    Vertex.index += 1
+    @vertexIndex = Vertex.index
 
 export class Site
   new: (point, index) =>
@@ -97,21 +102,21 @@ export class Site
 
   clipToBounds: (bounds) =>
     points = {}
-    visible_index = 1
-    all_invisible = true
-    n = 1
+    visible_index = 0
+    n = 0
 
     -- find first visible edge
     for i, edge in ipairs(@edges)
-      if edge.visible
-        visible_index = i
-        all_invisible = false
+      n += 1
+      if edge\visible() == false
+        visible_index += 1
         break
 
     -- no edges visible
-    if all_invisible
-      return points
-    edge = @edges[visible_index + 1]
+    if n == visible_index
+      return {}
+    visible_index += 1
+    edge = @edges[visible_index]
     orientation = @edgeOrientations[visible_index]
     table.insert(points, edge\clippedEnds()[orientation])
     if orientation == 'left'
@@ -119,8 +124,8 @@ export class Site
     else
       orientation = 'left'
     table.insert(points, edge\clippedEnds()[orientation])
-    for i, edge in ipairs(@edges)
-      if edge.visible
+    for i=visible_index, n - visible_index
+      if @edges[i]\visible()
         @connect(points, i, bounds)
     -- close up the polygon by adding another corner point to the bounds if needed
     @connect(points, visible_index, bounds, true)
@@ -331,8 +336,7 @@ export class Edge
     @left_site, @right_site = nil, nil
     @left_vertex, @right_vertex = nil, nil
     @a, @b, @c = a, b, c
-    @visible = true
-    @clipped_vertices = {}
+    @clipped_vertices = nil
 
   DELETED: 'deleted'
 
@@ -369,12 +373,13 @@ export class Edge
   site: (which) =>
     return @[which .. '_site']
 
+  visible: =>
+    return @clipped_vertices ~= nil
+
   setVertex: (which, vertex) =>
     @[which .. '_vertex'] = vertex
 
   clipVertices: (bounds) =>
-    @clipped_vertices = {}
-
     xmin = bounds.x0
     ymin = bounds.y0
     xmax = bounds.x1
@@ -456,6 +461,7 @@ export class Edge
         y1 = ymin
         x1 = (@c - y1) / @a
 
+    @clipped_vertices = {}
     if vertex0 == @left_vertex
       @clipped_vertices['left'] = Point(x0, y0)
       @clipped_vertices['right'] = Point(x1, y1)
@@ -502,7 +508,8 @@ export class EdgeReorderer
     firstPoint, lastPoint = criterionOnEdge(edge, criterion)
     -- FIXME edge.leftVertex and rightVertex are nil
 
-    if firstPoint == Vertex.VERTEX_AT_INFINITY or lastPoint == Vertex.VERTEX_AT_INFINITY
+    if (firstPoint and firstPoint.infinity) or (lastPoint and lastPoint.infinity)
+      assert(false, 'no first or last point')
       return {}
 
     done[i] = true
@@ -515,7 +522,7 @@ export class EdgeReorderer
         if not done[i]
           edge = origEdges[i]
           leftPoint, rightPoint = criterionOnEdge(edge, criterion)
-          if leftPoint == Vertex.VERTEX_AT_INFINITY or rightPoint == Vertex.VERTEX_AT_INFINITY
+          if (leftPoint and leftPoint.infinity) or (rightPoint and rightPoint.infinity)
             return {}
 
           if leftPoint == lastPoint
@@ -585,16 +592,16 @@ export class HalfedgePriorityQueue
     @count += 1
 
   remove: (halfEdge) =>
-    if halfEdge.vertex ~= nil
-      bucket = @bucket(halfEdge)
-      previous = @hash[bucket]
-      while previous.nextInPriorityQueue and previous.nextInPriorityQueue ~= halfEdge
-        previous = previous.nextInPriorityQueue
-      previous.nextInPriorityQueue = halfEdge.nextInPriorityQueue
-      @count -= 1
-      halfEdge.vertex = nil
-      halfEdge.nextInPriorityQueue = nil
-    return
+    if halfEdge.vertex == nil
+      return
+    bucket = @bucket(halfEdge)
+    previous = @hash[bucket]
+    while previous.nextInPriorityQueue ~= halfEdge
+      previous = previous.nextInPriorityQueue
+    previous.nextInPriorityQueue = halfEdge.nextInPriorityQueue
+    @count -= 1
+    halfEdge.vertex = nil
+    halfEdge.nextInPriorityQueue = nil
 
   min: =>
     @adjustMinBucket()
@@ -654,7 +661,7 @@ export class EdgeList
     bucket = math.floor((point.x - @xmin) / @deltax * @hashsize)
     if (bucket < 1)
       bucket = 1
-    if (bucket >= @hashsize)
+    if (bucket > @hashsize)
       bucket = @hashsize
     halfEdge = @getHash(bucket)
     if halfEdge == nil
@@ -677,7 +684,6 @@ export class EdgeList
       halfEdge = halfEdge.edgeListLeftNeighbor
       while halfEdge ~= @leftEnd and not halfEdge\isLeftOf(point)
         halfEdge = halfEdge.edgeListLeftNeighbor
-      --halfEdge = halfEdge.edgeListLeftNeighbor
 
     -- Update hash table and reference counts
     if (bucket > 0 and bucket < @hashsize - 1)
@@ -843,7 +849,7 @@ export class Voronoi
         vertex = Vertex.intersect(bisector, rbnd)
         if vertex
           table.insert(vertices, vertex)
-          bisector.vertex = vertex
+          rbnd.vertex = vertex
           bisector.ystar = vertex.point.y + new_site.point\distance(vertex.point)
           heap\insert(bisector)
 
