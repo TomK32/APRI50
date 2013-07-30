@@ -733,6 +733,7 @@ export class Halfedge
   isLeftOf: (point) =>
     top_site = @edge.right_site
     right_of_site = point.x > top_site.point.x
+    above = false
     if right_of_site and @leftRight == 'left'
       return true
     if not right_of_site and @leftRight == 'right'
@@ -764,10 +765,10 @@ export class Halfedge
       t3 = yl - top_site.point.y
       above = t1 * t1 > t2 * t2 + t3 * t3
 
-      if @leftRight == 'left'
-        return above
-      else
-        return not above
+    if @leftRight == 'left'
+      return above
+    else
+      return not above
 
 export class Voronoi
   new: (points, bounds) =>
