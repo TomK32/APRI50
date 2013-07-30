@@ -76,7 +76,10 @@ export class Site
     point.site = @
 
   toString: =>
-    return 'Edges: ' .. #@edges .. ', index: ' .. @index .. ', point: ' .. @point\toString()
+    edges = ""
+    for i, e in pairs(@edges)
+      edges = edges .. "\n  " .. e\toString()
+    return @point\toString(), 'Edges: ' .. edges .. '\nindex: ' .. @index .. ', point: ' .. @point\toString()
 
   region: (bounds) =>
     edges_size = 0
@@ -341,7 +344,16 @@ export class Edge
   DELETED: 'deleted'
 
   toString: =>
-    print('Edge')
+    r = ""
+    if @left_site
+      r = r .. 'ls: ' .. @left_site.point\toString()
+    if @right_site
+      r = r .. 'rs: ' .. @right_site.point\toString()
+    if @left_vertex
+      r = r .. 'lv: ' .. @left_vertex.point\toString()
+    if @right_vertex
+      r = r .. 'rv: ' .. @right_vertex.point\toString()
+    return r
 
   clippedEnds: =>
     return @clipped_vertices
