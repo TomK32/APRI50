@@ -64,6 +64,9 @@ export class Vertex
       return nil
     return Vertex(intersectionX, intersectionY)
 
+  toString: () =>
+    return 'Vertex: ' .. @vertexIndex .. ' ' .. @point\toString()
+
   setIndex: =>
     Vertex.index += 1
     @vertexIndex = Vertex.index
@@ -653,11 +656,11 @@ export class EdgeList
     @hash[@hashsize] = @rightEnd
 
   -- Insert newHalfedge to the right of lb
-  insert: (lb, halfedge) =>
-    halfedge.edgeListLeftNeighbor = lb
-    halfedge.edgeListRightNeighbor = lb.edgeListRightNeighbor
-    lb.edgeListRightNeighbor.edgeListLeftNeighbor = halfedge
-    lb.edgeListRightNeighbor = halfedge
+  insert: (lb, new_halfedge) =>
+    new_halfedge.edgeListLeftNeighbor = lb
+    new_halfedge.edgeListRightNeighbor = lb.edgeListRightNeighbor
+    lb.edgeListRightNeighbor.edgeListLeftNeighbor = new_halfedge
+    lb.edgeListRightNeighbor = new_halfedge
 
   -- This function only removes the Halfedge from the left-right list.
   -- We cannot dispose it yet because we are still using it
@@ -728,16 +731,22 @@ export class Halfedge
     @
 
   toString: =>
-    if @dummy
-      return 'HE: Dummy'
-    elseif not @edge
-      return 'HE: no edge'
-    elseif not @edge.right_site
-      return 'HE: no right site'
-    elseif not @edge.left_site
-      return 'HE: no left site'
+    t = 'HE: '
+    if @ystar
+      t = t .. 'ys' .. math.floor(@ystar*100) / 100
     else
-      return 'HE: left ' .. @edge.left_site.point\toString() .. ', right ' .. @edge.right_site.point\toString()
+      t = t .. '-ystar'
+    t = t .. ','
+    if @dummy
+      return t .. ' Dummy'
+    elseif not @edge
+      return t .. ' no edge'
+    elseif not @edge.right_site
+      return t .. ' no right site'
+    elseif not @edge.left_site
+      return t .. ' no left site'
+    else
+      return t .. ' left ' .. @edge.left_site.point\toString() .. ', right ' .. @edge.right_site.point\toString()
 
   createDummy: ->
     return Halfedge(nil, nil, true)
@@ -746,6 +755,7 @@ export class Halfedge
     top_site = @edge.right_site
     right_of_site = point.x > top_site.point.x
     above = false
+    dxp, dyp, dxs, yl, t1, t2, t3 = nil, nil, nil, nil, nil, nil, nil
     if right_of_site and @leftRight == 'left'
       return true
     if not right_of_site and @leftRight == 'right'
@@ -900,7 +910,7 @@ export class Voronoi
         bisector = Halfedge(edge, leftRight)
         table.insert(half_edges, bisector)
         edge_list\insert(llbnd, bisector)
-        edge\setVertex(if leftRight == 'left' then 'right' else 'left', v)
+        edge\setVertex((if leftRight == 'left' then 'right' else 'left'), v)
         vertex = Vertex.intersect(llbnd, bisector)
         if vertex
           table.insert(vertices, vertex)
