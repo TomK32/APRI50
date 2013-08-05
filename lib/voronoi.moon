@@ -46,7 +46,7 @@ export class Vertex
       return nil
 
     determinant = edge0.a * edge1.b - edge0.b * edge1.a
-    if -0.0000000001 < determinant and determinant < 0.0000000001
+    if (-0.0000000001 < determinant and determinant < 0.0000000001) or determinant ~= determinant
       -- edges are parallel
       return nil
     intersectionX = (edge0.c * edge1.b - edge1.c * edge0.b) / determinant
@@ -114,14 +114,13 @@ export class Site
     -- find first visible edge
     for i, edge in ipairs(@edges)
       n += 1
-      if edge\visible() == false
-        visible_index += 1
+      if edge\visible()
+        visible_index = i
         break
 
     -- no edges visible
-    if n == visible_index
+    if #@edges == visible_index
       return {}
-    visible_index += 1
     edge = @edges[visible_index]
     orientation = @edgeOrientations[visible_index]
     table.insert(points, edge\clippedEnds()[orientation])
@@ -130,7 +129,7 @@ export class Site
     else
       orientation = 'left'
     table.insert(points, edge\clippedEnds()[orientation])
-    for i=visible_index, n - visible_index
+    for i = visible_index, n - visible_index
       if @edges[i]\visible()
         @connect(points, i, bounds)
     -- close up the polygon by adding another corner point to the bounds if needed
@@ -483,6 +482,7 @@ export class Edge
     else
       @clipped_vertices['right'] = Point(x0, y0)
       @clipped_vertices['left'] = Point(x1, y1)
+    return @clipped_vertices
 
 export class EdgeReorderer
   new: (origEdges, criterion) =>
@@ -607,7 +607,7 @@ export class HalfedgePriorityQueue
     @count += 1
 
   remove: (halfEdge) =>
-    if halfEdge.vertex == nil
+    if halfEdge.vertex == nil or halfEdge.ystar == nil
       return
     bucket = @bucket(halfEdge)
     previous = @hash[bucket]
@@ -695,6 +695,7 @@ export class EdgeList
       halfEdge = halfEdge.edgeListRightNeighbor
       while halfEdge ~= @rightEnd and halfEdge\isLeftOf(point)
         halfEdge = halfEdge.edgeListRightNeighbor
+      halfEdge = halfEdge.edgeListLeftNeighbor
     else
       halfEdge = halfEdge.edgeListLeftNeighbor
       while halfEdge ~= @leftEnd and not halfEdge\isLeftOf(point)
