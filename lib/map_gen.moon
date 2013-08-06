@@ -29,16 +29,18 @@ require 'SimplexNoise'
 Voronoi = require 'voronoi'
 
 class Center
-  new: =>
-    @point = nil
+  new: (point) =>
+    @point = point
     @index = 0
     @neighbors = {}
-    @boders = {}
+    @borders = {}
     @corners = {}
+    @adjacent = {}
     @
 -- TODO incomplete
 class Corner
   new: =>
+    @protrudes = {}
     @
 
 -- TODO incomplete
@@ -94,7 +96,7 @@ export class MapGen
   new: (size) =>
     @num_points = 100
     @lake_treshold = 0.3 -- 0...1
-    @num_lloyd_iterations = 3
+    @num_lloyd_iterations = 1
     @size = size -- it's a square
     @bounds = Rectangle(0, 0, 100, 100)
 
@@ -150,9 +152,11 @@ export class MapGen
 
     time('Assign Biomes', @assignBiomes)
 
-  voronoi: =>
+  voronoi: (force) =>
     -- original passes a rectangle for the bounds {0, 0, @size, @size}
-    return Voronoi(@points, @bounds)
+    if force or not @_voronoi
+      @_voronoi = Voronoi(@points, @bounds)
+    return @_voronoi
 
   generateRandomPoints: =>
     x = @bounds.x0
@@ -179,7 +183,9 @@ export class MapGen
     -- it will turn into a grid, but convergence is very slow, and we only
     -- run it a few times.
     for iteration = 1, @num_lloyd_iterations
-      voronoi = @voronoi()
+      voronoi = @voronoi(true)
+      bad = 0
+
       for i, point in ipairs(@points)
         region = voronoi\region(point)
         point.x = 0.0
@@ -235,7 +241,6 @@ export class MapGen
   -- largest ring around the island, and therefore should more
   -- land area than the highest elevation, which is the very
   redistributeElevations: =>
-    @landCorners(corners)
     -- Assign zero elevation to non-land corners
     for i, corner in ipairs(@corners)
       if q.ocean or q.coast
@@ -280,17 +285,10 @@ export class MapGen
     for i, point in ipairs(@points)
       center = Center()
       center.index = center_count
-      center.point = point
 
-      @centers[center_count] = center
+      @centers[i] = center
       center_lookup[point] = center
       center_count += 1
-
-    -- Workaround for Voronoi lib bug: we need to call region()
-    -- before Edges or neighboringSites are available
-    -- TOOD: Necessary for lua?
-    for i, center in ipairs(@centers)
-      voronoi\region(center)
 
     -- The Voronoi library generates multiple Point objects for
     -- corners, and we need to canonicalize to one Corner object.
@@ -299,6 +297,7 @@ export class MapGen
     -- nearby buckets. When we fail to find one, we'll create a new
     -- Corner object.
     @corner_map = {}
+    @corners = {}
 
 
     addToTable = (tbl, element) ->
@@ -317,7 +316,7 @@ export class MapGen
       -- the edge from the voronoi library.
       edge = Edge()
       edge.index = #voronoi.edges
-      table.insert(voronoi.edges, edge)
+      table.insert(@edges, edge)
       edge.midpoint = vedge.p0 and vedge.p1 and Point.interpolate(vedge.p0, vedge.p1)
 
       -- Edges point to corners. Edges point to centers.
@@ -330,11 +329,11 @@ export class MapGen
       if (edge.d0 ~= nil)
         table.insert(edge.d0.borders, edge)
       if (edge.d1 ~= nil)
-        table.insert(edge.d1.border, edge)
+        table.insert(edge.d1.borders, edge)
       if (edge.v0 ~= nil)
-        table.insert(edge.v0.protrude, edge)
+        table.insert(edge.v0.protrudes, edge)
       if (edge.v1 ~= nil)
-        table.insert(edge.v1.protrude, edge)
+        table.insert(edge.v1.protrudes, edge)
 
       -- Centers point to centers
       if edge.d0 ~= nil and edge.d1 ~= nil
@@ -367,9 +366,9 @@ export class MapGen
       return
     -- NOTE: ActionScript uses int, not sure if that is rounding dow
     for bucket = math.floor(point.x) - 1, 2
-      for i, corner in ipairs(@corner_map[bucket])
-        dx = point.x - @corner.point.x
-        dy = point.y - @corner.point.y
+      for i, corner in ipairs(@corner_map[bucket] or {})
+        dx = point.x - corner.point.x
+        dy = point.y - corner.point.y
         if dx * dx + dy * dy < 0.000001
           return corner
 
@@ -377,18 +376,14 @@ export class MapGen
     bucket = math.floor(point.x)
     if not @corner_map[bucket]
       @corner_map[bucket] = {}
-      @corner_map._length += 1
-    coner = Corner()
+    corner = Corner()
 
-    corner.index = corners._length
     corner.point = point
     corner.border = (point.x == 0 or point.x == @size or point.y == 0 or point.y == @size)
     corner.touches = {}
-    corner.protrudes = {}
     corner.adjacent = {}
-    corners[corner.index] = corner
+    table.insert(@corners, corner)
     table.insert(@corner_map[bucket], corner)
-    -- end makeCorner
     return corner
 
 
@@ -436,7 +431,7 @@ export class MapGen
 
         -- If this point changed, we'll add it to the queue so
         -- that we can process its neighbors too.
-        if new_elevation < adjacent.elevation
+        if new_elevation < (adjacent.elevation or 0)
           adjacent.elevation = new_elevation
           queue_count += 1
           queue[queue_count] = adjacent
@@ -451,7 +446,7 @@ export class MapGen
   -- (1-X).  To do this we will sort the corners, then set each
   -- corner to its desired elevation.
   redistributeElevations: =>
-    locations = @points
+    locations = @corners
     -- SCALE_FACTOR increases the mountain area. At 1.0 the maximum
     -- elevation barely shows up on the map, so we set it to 1.1.
     scale_factor = 1.1
@@ -732,58 +727,58 @@ export class MapGen
 
   -- Determine whether a given point should be on the island or in the water.
   inside: (point) =>
-    return IslandShape(Point(2 * (point.x / @size - 0.5), 2 * (point.y / @size - 0.5)))
+    return MapGen.IslandShape(Point(2 * (point.x / @size - 0.5), 2 * (point.y / @size - 0.5)))
 
-MapGen.IslandShape =
-  -- This class has factory functions for generating islands of
-  -- different shapes. The factory returns a function that takes a
-  -- normalized point (x and y are -1 to +1) and returns true if the
-  -- point should be on the island, and false if it should be water
-  -- (lake or ocean).
+  @IslandShape: ->
+    -- This class has factory functions for generating islands of
+    -- different shapes. The factory returns a function that takes a
+    -- normalized point (x and y are -1 to +1) and returns true if the
+    -- point should be on the island, and false if it should be water
+    -- (lake or ocean).
 
-  -- The radial island radius is based on overlapping sine waves
-  makeRadial: (seed) ->
-    ISLAND_FACTOR = 1.07  -- 1.0 means no small islands; 2.0 leads to a lot
-    islandRandom:PM_PRNG = new PM_PRNG()
-    islandRandom.seed = seed
-    bumps = islandRandom.nextIntRange(1, 6)
-    startAngle = islandRandom.nextDoubleRange(0, 2*math.PI)
-    dipAngle = islandRandom.nextDoubleRange(0, 2*math.PI)
-    dipWidth = islandRandom.nextDoubleRange(0.2, 0.7)
+    -- The radial island radius is based on overlapping sine waves
+    makeRadial: (seed) ->
+      ISLAND_FACTOR = 1.07  -- 1.0 means no small islands; 2.0 leads to a lot
+      islandRandom:PM_PRNG = new PM_PRNG(10)
+      islandRandom.seed = seed
+      bumps = islandRandom.nextIntRange(1, 6)
+      startAngle = islandRandom.nextDoubleRange(0, 2*math.PI)
+      dipAngle = islandRandom.nextDoubleRange(0, 2*math.PI)
+      dipWidth = islandRandom.nextDoubleRange(0.2, 0.7)
 
-    inside: (q) =>
-      angle = math.atan2(q.y, q.x)
-      length = 0.5 * (math.max(math.abs(q.x), math.abs(q.y)) + q.length)
+      inside: (q) =>
+        angle = math.atan2(q.y, q.x)
+        length = 0.5 * (math.max(math.abs(q.x), math.abs(q.y)) + q.length)
 
-      r1 = 0.5 + 0.40*math.sin(startAngle + bumps*angle + math.cos((bumps+3)*angle))
-      r2 = 0.7 - 0.20*math.sin(startAngle + bumps*angle - math.sin((bumps+2)*angle))
-      if math.abs(angle - dipAngle) < dipWidth or math.abs(angle - dipAngle + 2 * math.PI) < dipWidth or math.abs(angle - dipAngle - 2*math.PI) < dipWidth
-        r1, r2 = 0.2, 0.2
-      return (length < r1 or (length > r1 * ISLAND_FACTOR and length < r2))
+        r1 = 0.5 + 0.40*math.sin(startAngle + bumps*angle + math.cos((bumps+3)*angle))
+        r2 = 0.7 - 0.20*math.sin(startAngle + bumps*angle - math.sin((bumps+2)*angle))
+        if math.abs(angle - dipAngle) < dipWidth or math.abs(angle - dipAngle + 2 * math.PI) < dipWidth or math.abs(angle - dipAngle - 2*math.PI) < dipWidth
+          r1, r2 = 0.2, 0.2
+        return (length < r1 or (length > r1 * ISLAND_FACTOR and length < r2))
 
-    return inside
+      return inside
 
-  -- The Perlin-based island combines perlin noise with the radius
-  makeSimplex: (seed) ->
-    -- FIXME: Use proper perline noise
-    perlin = BitmapData(256, 256)
-    perlin.perlinNoise(64, 64, 8, seed, false, true)
+    -- The Perlin-based island combines perlin noise with the radius
+    makeSimplex: (seed) ->
+      -- FIXME: Use proper perline noise
+      perlin = BitmapData(256, 256)
+      perlin.perlinNoise(64, 64, 8, seed, false, true)
 
-    return (q) ->
-      -- NOTE: original had & 0xff
-      c = (255 - perlin.getPixel(math.floor((q.x+1)*128), int((q.y+1)*128))) / 255.0
-      return c > (0.3+0.3*q.length*q.length)
+      return (q) ->
+        -- NOTE: original had & 0xff
+        c = (255 - perlin.getPixel(math.floor((q.x+1)*128), int((q.y+1)*128))) / 255.0
+        return c > (0.3+0.3*q.length*q.length)
 
-  -- The square shape fills the entire space with land
-  makeSquare: (seed) ->
-    return (q) ->
-      return true
+    -- The square shape fills the entire space with land
+    makeSquare: (seed) ->
+      return (q) ->
+        return true
 
-  -- The blob island is shaped like Amit's blob logo
-  makeBlob: (seed) ->
-    return (q) ->
-      eye1 = Point(q.x-0.2, q.y/2+0.2).length < 0.05
-      eye2 = Point(q.x+0.2, q.y/2+0.2).length < 0.05
-      body = q.length < 0.8 - 0.18*math.sin(5*math.atan2(q.y, q.x))
-      return body and not eye1 and not eye2
+    -- The blob island is shaped like Amit's blob logo
+    makeBlob: (seed) ->
+      return (q) ->
+        eye1 = Point(q.x-0.2, q.y/2+0.2).length < 0.05
+        eye2 = Point(q.x+0.2, q.y/2+0.2).length < 0.05
+        body = q.length < 0.8 - 0.18*math.sin(5*math.atan2(q.y, q.x))
+        return body and not eye1 and not eye2
 

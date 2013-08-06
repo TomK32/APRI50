@@ -71,6 +71,10 @@ export class Vertex
     Vertex.index += 1
     @vertexIndex = Vertex.index
 
+export class LineSegment
+  new: (point0, point1) =>
+    @p0, @p1 = point0, point1
+
 export class Site
   new: (point, index) =>
     @point = point
@@ -336,154 +340,6 @@ export class Polygon
       signedDoubleArea += point.x * next_point.y - next_point.x * point.y
     return signedDoubleArea
 
-export class Edge
-  new: (a, b, c) =>
-    @left_site, @right_site = nil, nil
-    @left_vertex, @right_vertex = nil, nil
-    @a, @b, @c = a, b, c
-    @clipped_vertices = nil
-
-  DELETED: 'deleted'
-
-  toString: =>
-    r = ""
-    if @left_site
-      r = r .. 'ls: ' .. @left_site.point\toString()
-    if @right_site
-      r = r .. 'rs: ' .. @right_site.point\toString()
-    if @left_vertex
-      r = r .. 'lv: ' .. @left_vertex.point\toString()
-    if @right_vertex
-      r = r .. 'rv: ' .. @right_vertex.point\toString()
-    return r
-
-  clippedEnds: =>
-    return @clipped_vertices
-
-  createBisectingEdge: (site0, site1) ->
-    dx = site1.point.x - site0.point.x
-    dy = site1.point.y - site0.point.y
-    c = site0.point.x * dx + site0.point.y * dy + (dx * dx + dy * dy) * 0.5
-    a, b = nil, nil
-    if math.abs(dx) > math.abs(dy)
-      a = 1.0
-      b = dy / dx
-      c = c / dx
-    else
-      b = 1.0
-      a = dx / dy
-      c = c / dy
-
-    edge = Edge(a, b, c)
-    edge.left_site = site0
-    edge.right_site = site1
-    site0\addEdge(edge)
-    site1\addEdge(edge)
-    return edge
-
-  delaunayLine: =>
-    return LineSegment(@left_site.point, @right_site.point)
-
-  site: (which) =>
-    return @[which .. '_site']
-
-  visible: =>
-    return @clipped_vertices ~= nil
-
-  setVertex: (which, vertex) =>
-    @[which .. '_vertex'] = vertex
-
-  clipVertices: (bounds) =>
-    xmin = bounds.x0
-    ymin = bounds.y0
-    xmax = bounds.x1
-    ymax = bounds.y1
-
-    x0, y0, x1, y1 = nil, nil, nil, nil
-
-    vertex0 = @left_vertex
-    vertex1 = @right_vertex
-    if @a == 1.0 and @b >= 0.0
-      vertex0, vertex1 = vertex1, vertex0
-
-    if @a == 1.0
-      y0 = ymin
-      if vertex0 ~= nil and vertex0.point.y > ymin
-        y0 = vertex0.point.y
-      if y0 > ymax
-        return
-
-      x0 = @c - @b * y0
-
-      y1 = ymax
-      if vertex1 ~= nil and vertex1.point.y < ymax
-        y1 = vertex1.point.y
-      if y1 < ymin
-        return
-
-      x1 = @c - @b * y1
-
-      if (x0 > xmax and x1 > xmax) or (x0 < xmin and x1 < xmin)
-        return
-
-      if x0 > xmax
-        x0 = xmax
-        y0 = (@c - x0) / @b
-      elseif x0 < xmin
-        x0 = xmin
-        y0 = (@c - x0) / @b
-
-
-      if x1 > xmax
-        x1 = xmax
-        y1 = (@c - x1) / @b
-      elseif x1 < xmin
-        x1 = xmin
-        y1 = (@c - x1) / @b
-    else -- x != 1.0
-      x0 = xmin
-      if vertex0 ~= nil and vertex0.point.x > xmin
-        x0 = vertex0.point.x
-        if x0 > xmax
-          return
-
-      y0 = @c - @a * x0
-
-      x1 = xmax
-
-      if vertex1 ~= nil and vertex1.point.x < xmax
-        x1 = vertex1.point.x
-      if x1 < xmin
-        return
-
-      y1 = @c - @a * x1
-
-      if (y0 > ymax and y1 > ymax) or (y0 < ymin and y1 < ymin)
-        return
-
-      if y0 > ymax
-        y0 = ymax
-        x0 = (@c - y0) / @a
-      elseif y0 < ymin
-        y0 = ymin
-        x0 = (@c - y0) / @a
-
-      if y1 > ymax
-        y1 = ymax
-        x1 = (@c - y1) / @a
-      elseif y1 < ymin
-        y1 = ymin
-        x1 = (@c - y1) / @a
-
-    @clipped_vertices = {}
-    if vertex0 == @left_vertex
-      @clipped_vertices['left'] = Point(x0, y0)
-      @clipped_vertices['right'] = Point(x1, y1)
-    else
-      @clipped_vertices['right'] = Point(x0, y0)
-      @clipped_vertices['left'] = Point(x1, y1)
-    return @clipped_vertices
-
 export class EdgeReorderer
   new: (origEdges, criterion) =>
     @edges = {}
@@ -669,7 +525,7 @@ export class EdgeList
   remove: (halfEdge) =>
     halfEdge.edgeListLeftNeighbor.edgeListRightNeighbor = halfEdge.edgeListRightNeighbor
     halfEdge.edgeListRightNeighbor.edgeListLeftNeighbor = halfEdge.edgeListLeftNeighbor
-    halfEdge.edge = Edge.DELETED
+    halfEdge.edge = Voronoi.Edge.DELETED
     halfEdge.edgeListLeftNeighbor, halfEdge.edgeListRightNeighbor = nil, nil
 
   --Find the rightmost Halfedge that is still left of p
@@ -711,13 +567,13 @@ export class EdgeList
   hashCount: =>
     count = 0
     for i, h in ipairs(@hash)
-      if h and h.edge ~= Edge.DELETED
+      if h and h.edge ~= Voronoi.Edge.DELETED
         count += 1
     return count
 
   getHash: (bucket) =>
     if @hash[bucket]
-      if @hash[bucket].edge == Edge.DELETED
+      if @hash[bucket].edge == Voronoi.Edge.DELETED
         @hash[bucket] = nil
         return nil
       return @hash[bucket]
@@ -965,5 +821,159 @@ export class Voronoi
     if not edge
       return @bottom_most_site
     return edge\site(if halfedge.leftRight == 'right' then 'left' else 'right')
+
+  @Edge = class Edge
+    new: (a, b, c) =>
+      @left_site, @right_site = nil, nil
+      @left_vertex, @right_vertex = nil, nil
+      @a, @b, @c = a, b, c
+      @clipped_vertices = nil
+
+    DELETED: 'deleted'
+
+    toString: =>
+      r = ""
+      if @left_site
+        r = r .. 'ls: ' .. @left_site.point\toString()
+      if @right_site
+        r = r .. 'rs: ' .. @right_site.point\toString()
+      if @left_vertex
+        r = r .. 'lv: ' .. @left_vertex.point\toString()
+      if @right_vertex
+        r = r .. 'rv: ' .. @right_vertex.point\toString()
+      return r
+
+    clippedEnds: =>
+      return @clipped_vertices
+
+    createBisectingEdge: (site0, site1) ->
+      dx = site1.point.x - site0.point.x
+      dy = site1.point.y - site0.point.y
+      c = site0.point.x * dx + site0.point.y * dy + (dx * dx + dy * dy) * 0.5
+      a, b = nil, nil
+      if math.abs(dx) > math.abs(dy)
+        a = 1.0
+        b = dy / dx
+        c = c / dx
+      else
+        b = 1.0
+        a = dx / dy
+        c = c / dy
+
+      edge = Voronoi.Edge(a, b, c)
+      edge.left_site = site0
+      edge.right_site = site1
+      site0\addEdge(edge)
+      site1\addEdge(edge)
+      return edge
+
+    delaunayLine: =>
+      return LineSegment(@left_site.point, @right_site.point)
+
+    voronoiEdge: =>
+      if not @visible()
+        return LineSegment(nil, nil)
+      return LineSegment(@clipped_vertices['left'], @clipped_vertices['right'])
+
+    site: (which) =>
+      return @[which .. '_site']
+
+    visible: =>
+      return @clipped_vertices ~= nil
+
+    setVertex: (which, vertex) =>
+      @[which .. '_vertex'] = vertex
+
+    clipVertices: (bounds) =>
+      xmin = bounds.x0
+      ymin = bounds.y0
+      xmax = bounds.x1
+      ymax = bounds.y1
+
+      x0, y0, x1, y1 = nil, nil, nil, nil
+
+      vertex0 = @left_vertex
+      vertex1 = @right_vertex
+      if @a == 1.0 and @b >= 0.0
+        vertex0, vertex1 = vertex1, vertex0
+
+      if @a == 1.0
+        y0 = ymin
+        if vertex0 ~= nil and vertex0.point.y > ymin
+          y0 = vertex0.point.y
+        if y0 > ymax
+          return 1
+
+        x0 = @c - @b * y0
+
+        y1 = ymax
+        if vertex1 ~= nil and vertex1.point.y < ymax
+          y1 = vertex1.point.y
+        if y1 < ymin
+          return 2
+
+        x1 = @c - @b * y1
+
+        if (x0 > xmax and x1 > xmax) or (x0 < xmin and x1 < xmin)
+          return 3
+
+        if x0 > xmax
+          x0 = xmax
+          y0 = (@c - x0) / @b
+        elseif x0 < xmin
+          x0 = xmin
+          y0 = (@c - x0) / @b
+
+
+        if x1 > xmax
+          x1 = xmax
+          y1 = (@c - x1) / @b
+        elseif x1 < xmin
+          x1 = xmin
+          y1 = (@c - x1) / @b
+      else -- x != 1.0
+        x0 = xmin
+        if vertex0 ~= nil and vertex0.point.x > xmin
+          x0 = vertex0.point.x
+          if x0 > xmax
+            return 4
+
+        y0 = @c - @a * x0
+
+        x1 = xmax
+
+        if vertex1 ~= nil and vertex1.point.x < xmax
+          x1 = vertex1.point.x
+        if x1 < xmin
+          return 5
+
+        y1 = @c - @a * x1
+
+        if (y0 > ymax and y1 > ymax) or (y0 < ymin and y1 < ymin)
+          return 6
+
+        if y0 > ymax
+          y0 = ymax
+          x0 = (@c - y0) / @a
+        elseif y0 < ymin
+          y0 = ymin
+          x0 = (@c - y0) / @a
+
+        if y1 > ymax
+          y1 = ymax
+          x1 = (@c - y1) / @a
+        elseif y1 < ymin
+          y1 = ymin
+          x1 = (@c - y1) / @a
+
+      @clipped_vertices = {}
+      if vertex0 == @left_vertex
+        @clipped_vertices['left'] = Point(x0, y0)
+        @clipped_vertices['right'] = Point(x1, y1)
+      else
+        @clipped_vertices['right'] = Point(x0, y0)
+        @clipped_vertices['left'] = Point(x1, y1)
+      return @clipped_vertices
+
 
 return Voronoi
