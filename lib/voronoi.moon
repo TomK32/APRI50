@@ -625,6 +625,7 @@ export class HalfedgePriorityQueue
     return Point(answer.vertex.x, answer.ystar)
 
   adjustMinBucket: =>
+    @min_bucket = 1
     while @min_bucket < @hashsize and @hash[@min_bucket].nextInPriorityQueue == nil
       @min_bucket += 1
 
@@ -659,8 +660,9 @@ export class EdgeList
   insert: (lb, new_halfedge) =>
     new_halfedge.edgeListLeftNeighbor = lb
     new_halfedge.edgeListRightNeighbor = lb.edgeListRightNeighbor
-    lb.edgeListRightNeighbor.edgeListLeftNeighbor = new_halfedge
-    lb.edgeListRightNeighbor = new_halfedge
+    if lb.edgeListRightNeighbor
+      lb.edgeListRightNeighbor.edgeListLeftNeighbor = new_halfedge
+      lb.edgeListRightNeighbor = new_halfedge
 
   -- This function only removes the Halfedge from the left-right list.
   -- We cannot dispose it yet because we are still using it
@@ -873,7 +875,7 @@ export class Voronoi
         vertex = Vertex.intersect(bisector, rbnd)
         if vertex
           table.insert(vertices, vertex)
-          rbnd.vertex = vertex
+          bisector.vertex = vertex
           bisector.ystar = vertex.point.y + new_site.point\distance(vertex.point)
           heap\insert(bisector)
 
