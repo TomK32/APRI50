@@ -11,7 +11,6 @@ export class Map
     @tiles = {}
     @updateAble = {} -- entities that need to be called during update
     @map_gen = MapGen(seed)
-    @map_gen\newIsland('Simplex', seed, seed)
     @
 
   addEntity: (entity) =>

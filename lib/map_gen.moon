@@ -7,6 +7,7 @@
 --  * Edge, Center and Corner have indexes. get rid of them?
 --  * BitmapData
 
+export _ = require('underscore')
 export class Point
   new: (x, y) =>
     @x = x
@@ -25,6 +26,9 @@ export class Point
     b = @y - other.y
     return math.sqrt(a * a + b * b)
 
+  length: =>
+    return math.sqrt(@x * @x + @y * @y)
+
 require 'SimplexNoise'
 Voronoi = require 'voronoi'
 
@@ -41,6 +45,7 @@ class Center
 class Corner
   new: =>
     @protrudes = {}
+    @river = 0
     @
 
 -- TODO incomplete
@@ -66,13 +71,14 @@ class LineSegment
 class PM_PRNG
   prime: math.pow(2, 31) - 1
   new: (seed) =>
-    @seed = seed or 1
+    @seed = seed or math.floor(math.random() * 10)
+    print 'seed' .. @seed
 
   nextInt: =>
     return @generate()
 
   nextDouble: =>
-    return @generate() / @prime
+    return math.floor((@generate() / @prime) * 1000) / 1000
 
   nextIntRange: (min, max) =>
     min -= 0.4999
@@ -93,25 +99,19 @@ class PM_PRNG
 export class MapGen
   -- TODO: accept a table in the constructor
   -- FIXME: Allow width and height for oblong shapes
-  new: (size) =>
+  new: (size, seed, _type) =>
     @num_points = 100
     @lake_treshold = 0.3 -- 0...1
     @num_lloyd_iterations = 1
     @size = size -- it's a square
     @bounds = Rectangle(0, 0, 100, 100)
 
-    @island_shape = nil
-
-    -- TODO: better naming?
-    @map_random = PM_PRNG()
+    @map_random = PM_PRNG(seed)
+    _type = _type or 'Radial'
+    @island_shape = MapGen.IslandShape['make' .. _type]()
 
     @reset()
     @go()
-    return @
-
-  newIsland: (_type, seed, variant) =>
-    @island_hape = MapGen.IslandShape['make' .. _type]--(seed)
-    @map_random.seed = variant
     return @
 
   reset: =>
@@ -198,6 +198,8 @@ export class MapGen
         point.x = point.x / region_count
         point.y = point.y / region_count
       voronoi = nil
+      for i, p in pairs(@points)
+        assert(p.x == p.x and p.y == p.y, 'point is nan')
     @
 
   -- Although Lloyd relaxation improves the uniformity of polygon
@@ -283,7 +285,7 @@ export class MapGen
     -- NOTE: This `centers = {}` is not in the original
     @centers = {}
     for i, point in ipairs(@points)
-      center = Center()
+      center = Center(point)
       center.index = center_count
 
       @centers[i] = center
@@ -418,15 +420,14 @@ export class MapGen
     -- move away from the map border, increase the elevations. This
     -- guarantees that rivers always have a way down to the coast by
     -- going downhill (no local minima).
-    first_corner = 1
     while queue_count > 0
-      corner = queue[first_corner]
-      for i, adjacent in ipairs(corner.adjacent)
+      q = table.remove(queue, 1)
+      for i, adjacent in ipairs(q.adjacent)
         -- Every step up is epsilon over water or 1 over land. The
         -- number doesn't matter because we'll rescale the
         -- elevations later.
-        new_elevation = 0.001 + corner.elevation
-        if not corner.water and not adjacent.water
+        new_elevation = 0.001 + q.elevation
+        if not q.water and not adjacent.water
           new_elevation += 1
 
         -- If this point changed, we'll add it to the queue so
@@ -436,7 +437,6 @@ export class MapGen
           queue_count += 1
           queue[queue_count] = adjacent
 
-        first_corner += 1
         queue_count -= 1
 
 
@@ -451,21 +451,20 @@ export class MapGen
     -- elevation barely shows up on the map, so we set it to 1.1.
     scale_factor = 1.1
     scale_factor_sqrt = math.sqrt(scale_factor)
-
     table.sort(locations, (a, b) -> a.elevation < b.elevation)
     locations_length = #locations
     for i, point in ipairs(locations)
       -- Let y(x) be the total area that we want at elevation <= x.
       -- We want the higher elevations to occur less than lower
       -- ones, and set the area to be y(x) = 1 - (1-x)^2.
-      y = i / (locations.length-1)
+      y = i / (locations_length - 1)
       -- Now we have to solve for x, given the known y.
       --  *  y = 1 - (1-x)^2
       --  *  y = 1 - (1 - 2x + x^2)
       --  *  y = 2x - x^2
       --  *  x^2 - 2x + y = 0
       -- From this we can use the quadratic equation to get:
-      x = scale_factor_sqrt - math.sqrt(SCALE_FACTOR*(1-y))
+      x = scale_factor_sqrt - math.sqrt(scale_factor*(1-y))
       -- TODO: Does sbreak downslopes? (from original AS)
       if x > 1.0
         x = 1.0
@@ -593,8 +592,8 @@ export class MapGen
       if not changed
         break
     -- How long is each watershed?
-    for i, point in ipairs(@corners)
-      point.watershed_size = 1 + (r.watershed_size or 0)
+    for i, corner in ipairs(@corners)
+      corner.watershed_size = 1 + (corner.watershed_size or 0)
 
   -- Create rivers along edges. Pick a random corner point, then
   -- move downslope. Mark the edges and corners as rivers.
@@ -623,15 +622,15 @@ export class MapGen
     -- to avoid Lua table length madness we count manually
     queue_count = 0
 
-    for i, point in ipairs(@corners)
-      if (point.water or point.river > 0) and not point.ocean
-        point.moisture = 1.0
-        if point.river > 0
-          point.moisture = Math.min(3.0, (0.2 * point.river))
+    for i, corner in ipairs(@corners)
+      if (corner.water or corner.river > 0) and not corner.ocean
+        corner.moisture = 1.0
+        if corner.river > 0
+          corner.moisture = Math.min(3.0, (0.2 * corner.river))
         queue_count += 1
-        queue[queue_count] = point
+        queue[queue_count] = corner
       else
-        point.moisture = 0.0
+        corner.moisture = 0.0
 
     first_point = 1
     while queue_count > 0
@@ -655,9 +654,11 @@ export class MapGen
   assignPolygonMoisture: =>
     for i, point in ipairs(@centers)
       sum = 0
+      corners_length = 0
       for j, corner in ipairs(point.corners)
-        sum+= point.moisture
-      point.moisture = sum/ #point.moisture
+        sum += point.moisture
+        corners_length += 1
+      point.moisture = sum / corners_length
 
   -- Determine moisture at corners, starting at rivers
   -- and lakes, but not oceans. Then redistribute
@@ -665,9 +666,9 @@ export class MapGen
   -- to 1.0. Then assign polygon moisture as the average
   -- of the corner moisture.
   distributeMoisture: =>
-    assignCornerMoisture()
-    redistributeMoisture(@landCorners(corners))
-    assignPolygonMoisture()
+    @assignCornerMoisture()
+    @redistributeMoisture(@corners)
+    @assignPolygonMoisture()
 
   -- Assign a biome type to each polygon. If it has
   -- ocean/coast/water, then that's the biome; otherwise it depends
@@ -727,9 +728,9 @@ export class MapGen
 
   -- Determine whether a given point should be on the island or in the water.
   inside: (point) =>
-    return MapGen.IslandShape(Point(2 * (point.x / @size - 0.5), 2 * (point.y / @size - 0.5)))
+    return @island_shape(Point(2 * (point.x / @size - 0.5), 2 * (point.y / @size - 0.5)))
 
-  @IslandShape: ->
+  IslandShape:
     -- This class has factory functions for generating islands of
     -- different shapes. The factory returns a function that takes a
     -- normalized point (x and y are -1 to +1) and returns true if the
@@ -737,22 +738,21 @@ export class MapGen
     -- (lake or ocean).
 
     -- The radial island radius is based on overlapping sine waves
-    makeRadial: (seed) ->
+    makeRadial: (seed) =>
       ISLAND_FACTOR = 1.07  -- 1.0 means no small islands; 2.0 leads to a lot
-      islandRandom:PM_PRNG = new PM_PRNG(10)
-      islandRandom.seed = seed
-      bumps = islandRandom.nextIntRange(1, 6)
-      startAngle = islandRandom.nextDoubleRange(0, 2*math.PI)
-      dipAngle = islandRandom.nextDoubleRange(0, 2*math.PI)
-      dipWidth = islandRandom.nextDoubleRange(0.2, 0.7)
+      random = PM_PRNG(seed)
+      bumps = random\nextIntRange(1, 6)
+      startAngle = random\nextDoubleRange(0, 2 * math.pi)
+      dipAngle = random\nextDoubleRange(0, 2 * math.pi)
+      dipWidth = random\nextDoubleRange(0.2, 0.7)
 
-      inside: (q) =>
+      inside = (q) =>
         angle = math.atan2(q.y, q.x)
-        length = 0.5 * (math.max(math.abs(q.x), math.abs(q.y)) + q.length)
+        length = 0.5 * (math.max(math.abs(q.x), math.abs(q.y)) + q\length())
 
         r1 = 0.5 + 0.40*math.sin(startAngle + bumps*angle + math.cos((bumps+3)*angle))
         r2 = 0.7 - 0.20*math.sin(startAngle + bumps*angle - math.sin((bumps+2)*angle))
-        if math.abs(angle - dipAngle) < dipWidth or math.abs(angle - dipAngle + 2 * math.PI) < dipWidth or math.abs(angle - dipAngle - 2*math.PI) < dipWidth
+        if math.abs(angle - dipAngle) < dipWidth or math.abs(angle - dipAngle + 2 * math.pi) < dipWidth or math.abs(angle - dipAngle - 2 * math.pi) < dipWidth
           r1, r2 = 0.2, 0.2
         return (length < r1 or (length > r1 * ISLAND_FACTOR and length < r2))
 
