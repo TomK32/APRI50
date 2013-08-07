@@ -32,7 +32,7 @@ function love.load()
   --game:mutator()
   game:start()
 end
-
+madeScreenshot = false
 function love.draw()
   if not game.current_state then return end
   game.current_state:draw()
