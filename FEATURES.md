@@ -30,6 +30,7 @@
 * Fauna
   * Bacteria
   * Re-apply for higher cells, upto animals
+  * Butterflies!
 
 ## Sound
 
