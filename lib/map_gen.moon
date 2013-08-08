@@ -165,7 +165,6 @@ export class MapGen
     table.insert(times, {'Group', 'Moisture'})
     time('Calculate downslopes', @calculateDownslopes)
     time('Determine watersheds', @calculateWatersheds)
-    time('Create rivers', @createRivers)
     time('Distribute moisture', @distributeMoisture)
 
     time('Assign Biomes', @assignBiomes)
@@ -612,25 +611,6 @@ export class MapGen
     -- How long is each watershed?
     for i, corner in ipairs(@corners)
       corner.watershed_size = 1 + (corner.watershed_size or 0)
-
-  -- Create rivers along edges. Pick a random corner point, then
-  -- move downslope. Mark the edges and corners as rivers.
-  createRivers: =>
-    corners_length = #@corners
-    for i=1, @size / 2
-      point = @corners[@map_random\nextIntRange(1, corners_length)]
-      if point.ocean or point.elevation < 0.3 or point.elevation > 0.9
-        continue
-      -- Bias rivers to go west: if (q.downslope.x > q.x) continue;
-      while not point.coast
-        if point == point.downslope
-          break
-        edge = @lookupEdgeFromCorner(point, point.downslope)
-        edge.river = edge.river + 1
-        point.river = 1 + (point.river or 0)
-        -- TODO: fix double count
-        point.downslope.river = 1 + (point.downslope.river or 0)
-        point = point.downslope
 
   -- Calculate moisture. Freshwater sources spread moisture: rivers
   -- and lakes (not oceans). Saltwater sources have moisture but do
