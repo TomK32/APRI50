@@ -33,9 +33,12 @@ export class EvolutionKit
     @toImage()
     @
 
-  place: (map, position) =>
+  place: (map, position, center) =>
     @position = position
+    @center = center
     @map = map
+    @map\addEntity(@)
+
     cost = { metal: 1, energy: 1, water: 1, biomass: 1 }
     if game.player\hasResources(cost)
       @apply()
@@ -164,6 +167,7 @@ export class EvolutionKit
 --EvolutionKit\registerExtension('consuming')
 EvolutionKit\registerExtension('growable')
 EvolutionKit\registerExtension('transforming')
+--EvolutionKit\registerExtension('river')
 EvolutionKit\registerExtension('liquifying')
 EvolutionKit\registerExtension('flora')
 EvolutionKit\registerExtension('hardening')

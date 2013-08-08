@@ -13,6 +13,15 @@ export class Map
     @map_gen = MapGen(seed)
     @
 
+  points: =>
+    return @map_gen.points
+
+  corners: =>
+    return @map_gen.corners
+
+  centers: =>
+    return @map_gen.centers
+
   addEntity: (entity) =>
     entity.map = self
     if not @layers[entity.position.z] then
@@ -23,15 +32,16 @@ export class Map
     if entity.update
       table.insert(@updateAble, entity)
 
-  getTile: (x, y) =>
-    if @tiles[x]
-      return @tiles[x][y]
-    return nil
-
-  setTile: (x, y, tile) =>
-    if not @tiles[x]
-      @tiles[x] = {}
-    @tiles[x][y] = tile
+  findCenter: (x, y) =>
+    point = Point(x, y)
+    closest_center = @centers()[1]
+    closest_distance = closest_center.point\distance(point)
+    for i, center in ipairs(@centers())
+      distance = center.point\distance(point)
+      if distance < closest_distance
+        closest_center = center
+        closest_distance = distance
+    return closest_center
 
   update: (dt) =>
     for i, entity in ipairs(@updateAble)
@@ -47,7 +57,7 @@ export class Map
     entity.targetChunk\iterate (x, y, tile) ->
       if tile.transformed
         tile.transformed = nil
-        @\setTile(offset_x + x, offset_y + y, tile)
+        --@\setTile(offset_x + x, offset_y + y, tile)
 
     -- and remove the original entity
     for i, e in pairs(@layers[entity.position.z])

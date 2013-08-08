@@ -35,7 +35,7 @@ export class MapState extends State
       item = game.player.inventory\activeItem()
       if item
         x, y = @view\coordsForXY(x, y)
-        if item\place(@map, {x: x, y: y, z: 1})
-          @map\addEntity(item)
+        center = @map\findCenter(x, y)
+        if item\place(@map, {x: center.point.x, y: center.point.y, z: 1}, center)
           game.player.inventory\removeActive()
 
