@@ -2,3 +2,8 @@
 *zip
 *.love
 *.pxm
+/*.lua
+extensions/*.lua
+entities/*.lua
+views/*.lua
+build/*
