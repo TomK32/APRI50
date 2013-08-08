@@ -36,16 +36,34 @@ class Center
   new: (point) =>
     @point = point
     @index = 0
-    @neighbors = {}
-    @borders = {}
-    @corners = {}
-    @adjacent = {}
+    @moisture = 0 -- 0..1
+    @elevation = 0 -- 0..1
+    @neighbors = {} -- Center
+    @borders = {} -- Edge
+    @corners = {} -- Corner
+    @water = false
+    @ocean = false
+    @coast = false
+    @border = false
+    @biome = nil -- string
     @
--- TODO incomplete
+
 class Corner
   new: =>
-    @protrudes = {}
-    @river = 0
+    @point = nil
+    @water = false
+    @ocean = false
+    @coast = false
+    @border = false
+    @moisture = 0 -- 0..1
+    @elevation = 0 -- 0..1
+    @touches = {} -- Center
+    @adjacent = {} -- Corner
+    @protrudes = {} -- Edge
+    @river = 0 -- 0... volume of liquid in the river
+    @downslope = nil -- adjacent corner that is most downhil
+    @watershed = nil -- coastal corner or nil
+    @watershed_size = 0 -- int
     @
 
 -- TODO incomplete
@@ -319,7 +337,8 @@ export class MapGen
       edge = Edge()
       edge.index = #voronoi.edges
       table.insert(@edges, edge)
-      edge.midpoint = vedge.p0 and vedge.p1 and Point.interpolate(vedge.p0, vedge.p1)
+      if vedge.p0 and vedge.p1
+        edge.midpoint = Point.interpolate(vedge.p0, vedge.p1)
 
       -- Edges point to corners. Edges point to centers.
       edge.v0 = @makeCorner(vedge.p0)
@@ -349,19 +368,20 @@ export class MapGen
 
       -- Centers point to corners
       if edge.d0 ~= nil
-        addToTable(edge.d0.adjacent, edge.v0)
-        addToTable(edge.d0.adjacent, edge.v1)
+        addToTable(edge.d0.corners, edge.v0)
+        addToTable(edge.d0.corners, edge.v1)
       if edge.d1 ~= nil
-        addToTable(edge.d1.adjacent, edge.v0)
-        addToTable(edge.d1.adjacent, edge.v1)
+        addToTable(edge.d1.corners, edge.v0)
+        addToTable(edge.d1.corners, edge.v1)
 
       -- Corners point to centers
       if edge.v0 ~= nil
-        addToTable(edge.v0.adjacent, edge.d0)
-        addToTable(edge.v0.adjacent, edge.d1)
+        addToTable(edge.v0.touches, edge.d0)
+        addToTable(edge.v0.touches, edge.d1)
       if edge.v1 ~= nil
-        addToTable(edge.v1.adjacent, edge.d0)
-        addToTable(edge.v1.adjacent, edge.d1)
+        addToTable(edge.v1.touches, edge.d0)
+        addToTable(edge.v1.touches, edge.d1)
+
 
   makeCorner: (point) =>
     if point == nil
@@ -382,8 +402,6 @@ export class MapGen
 
     corner.point = point
     corner.border = (point.x == 0 or point.x == @size or point.y == 0 or point.y == @size)
-    corner.touches = {}
-    corner.adjacent = {}
     table.insert(@corners, corner)
     table.insert(@corner_map[bucket], corner)
     return corner
@@ -420,8 +438,8 @@ export class MapGen
     -- move away from the map border, increase the elevations. This
     -- guarantees that rivers always have a way down to the coast by
     -- going downhill (no local minima).
-    while queue_count > 0
-      q = table.remove(queue, 1)
+    while #queue > 0
+      q = _.shift(queue)
       for i, adjacent in ipairs(q.adjacent)
         -- Every step up is epsilon over water or 1 over land. The
         -- number doesn't matter because we'll rescale the
@@ -494,7 +512,7 @@ export class MapGen
       for j, corner in ipairs(point.corners)
         if corner.border
           point.border = true
-          p.ocean = true
+          point.ocean = true
           corner.water = true
           queue_count += 1
           queue[queue_count] = point
@@ -504,16 +522,16 @@ export class MapGen
       point.water = (point.ocean or num_water >= #point.corners * @lake_treshold)
 
     first_point = 1
-    while queue_count > 0
+    while queue_count > first_point
       point = queue[first_point]
+      queue[first_point] = nil
+      first_point += 1
       for i, neighbor in ipairs(point.neighbors)
         if neighbor.water and not neighbor.ocean
           neighbor.ocean = true
           queue_count += 1
           queue[queue_count] = neighbor
 
-        first_corner += 1
-        queue_count -= 1
 
     -- Set the polygon attribute 'coast' based on its neighbors. If
     -- it has at least one ocean and at least one land neighbor,
@@ -547,11 +565,11 @@ export class MapGen
 
   -- Polygon elevations are the average of the elevations of their corners.
   assignPolygonElevations: =>
-    for i, point in ipairs(@centers)
+    for i, center in ipairs(@centers)
       sum_elevation = 0
-      for j, corner in ipairs(point.corners)
-        sum_elevation += point.elevation
-      point.elevation = sum_elevation / #point.corners
+      for j, corner in ipairs(center.corners)
+        sum_elevation += corner.elevation
+      center.elevation = sum_elevation / #center.corners
 
   -- Calculate downslope pointers.  At every point, we point to the
   -- point downstream from it, or to itself.  This is used for
@@ -626,15 +644,17 @@ export class MapGen
       if (corner.water or corner.river > 0) and not corner.ocean
         corner.moisture = 1.0
         if corner.river > 0
-          corner.moisture = Math.min(3.0, (0.2 * corner.river))
+          corner.moisture = math.min(3.0, (0.2 * corner.river))
         queue_count += 1
         queue[queue_count] = corner
       else
         corner.moisture = 0.0
 
     first_point = 1
-    while queue_count > 0
+    while queue_count > first_point
       point = queue[first_point]
+      queue[first_point] = nil
+      first_point += 1
       for i, adjacent in ipairs(point.adjacent)
         new_moisture = point.moisture * 0.8
         if new_moisture > adjacent.moisture
@@ -642,8 +662,6 @@ export class MapGen
           queue_count += 1
           queue[queue_count] = adjacent
 
-        first_corner += 1
-        queue_count -= 1
 
     -- Salt water
     for i, corner in ipairs(@corners)
@@ -652,13 +670,13 @@ export class MapGen
 
   -- Polygon moisture are the average of the elevations of their corners.
   assignPolygonMoisture: =>
-    for i, point in ipairs(@centers)
+    for i, center in ipairs(@centers)
       sum = 0
       corners_length = 0
-      for j, corner in ipairs(point.corners)
-        sum += point.moisture
+      for j, corner in ipairs(center.corners)
+        sum += corner.moisture or 0
         corners_length += 1
-      point.moisture = sum / corners_length
+      center.moisture = sum / corners_length
 
   -- Determine moisture at corners, starting at rivers
   -- and lakes, but not oceans. Then redistribute
@@ -722,8 +740,8 @@ export class MapGen
         return edge
 
   lookupEdgeFromCorner: (corner, other_corner) =>
-    for i, edge in ipairs(polygon.protrudes)
-      if edge.v0 == other_polygon or edge.v1 == other_polygon
+    for i, edge in ipairs(corner.protrudes)
+      if edge.v0 == other_corner or edge.v1 == other_corner
         return edge
 
   -- Determine whether a given point should be on the island or in the water.
