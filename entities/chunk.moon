@@ -83,14 +83,12 @@ export class Chunk
     love.graphics.rectangle('fill', 0, 0, @width, @height)
     love.graphics.setStencil()
     if highlight
-      love.graphics.setColor(255, 55, 55, 255)
-      @drawStencil('line')
+      love.graphics.setColor(255, 55, 55, 55)
+      @drawStencil()
 
-  drawStencil: (mode) =>
-    if not mode
-      mode = 'fill'
+  drawStencil: () =>
     for i, polygon in ipairs @polygons
-      love.graphics.polygon(mode, unpack(polygon))
+      love.graphics.polygon('fill', unpack(polygon))
 
   grow: (x, y) =>
     -- get old canvas' content, resize the canvas and draw the content
