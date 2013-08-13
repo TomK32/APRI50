@@ -516,8 +516,6 @@ export class MapGen
       for j, corner in ipairs(point.corners)
         if corner.border
           point.border = true
-          point.ocean = true
-          corner.water = true
           queue_count += 1
           queue[queue_count] = point
 
@@ -525,48 +523,7 @@ export class MapGen
           num_water += 1
       point.water = (point.ocean or num_water >= #point.corners * @lake_treshold)
 
-    first_point = 1
-    while queue_count > first_point
-      point = queue[first_point]
-      queue[first_point] = nil
-      first_point += 1
-      for i, neighbor in ipairs(point.neighbors)
-        if neighbor.water and not neighbor.ocean
-          neighbor.ocean = true
-          queue_count += 1
-          queue[queue_count] = neighbor
-
-
-    -- Set the polygon attribute 'coast' based on its neighbors. If
-    -- it has at least one ocean and at least one land neighbor,
-    -- then this is a coastal polygon.
-    for i, point in ipairs(@centers)
-      num_ocean = 0
-      num_land = 0
-      for j, neighbor in ipairs(point.neighbors)
-        if neighbor.ocean
-          num_ocean += 1
-        elseif not neighbor.water
-          num_land += 1
-      point.coast = num_land > 0 and num_ocean > 0
-
-    -- Set the corner attributes based on the computed polygon
-    -- attributes. If all polygons connected to this corner are
-    -- ocean, then it's ocean; if all are land, then it's land;
-    -- otherwise it's coast.
-    for i, point in ipairs(@corners)
-      num_ocean = 0
-      num_land = 0
-      for j, neighbor in ipairs(point.touches)
-        if neighbor.ocean
-          num_ocean += 1
-        elseif not neighbor.water
-          num_land += 1
-      point.ocean = num_ocean == #point.touches
-      point.coast = num_land > 0 and num_ocean > 0
-      point.water = point.border or (num_land ~= #point.touches and not point.coast)
-
-
+   
   -- Polygon elevations are the average of the elevations of their corners.
   assignPolygonElevations: =>
     for i, center in ipairs(@centers)
