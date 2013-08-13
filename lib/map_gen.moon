@@ -603,7 +603,7 @@ export class MapGen
     -- only takes 20 iterations because most points are not far from
     -- a coast.  TODO: can run faster by looking at
     -- p.watershed.watershed instead of p.downslope.watershed.
-    for i=0, math.floor(@size / 5)
+    for i=0, math.floor(@width + @height / 5)
       changed = false
       for j, corner in ipairs(@corners)
         if not corner.ocean and not corner.coast and not corner.watershed.coast
