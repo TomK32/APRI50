@@ -117,12 +117,13 @@ class PM_PRNG
 export class MapGen
   -- TODO: accept a table in the constructor
   -- FIXME: Allow width and height for oblong shapes
-  new: (size, seed, _type) =>
+  new: (seed, _type) =>
     @num_points = 100
     @lake_treshold = 0.3 -- 0...1
-    @num_lloyd_iterations = 1
-    @size = size -- it's a square
-    @bounds = Rectangle(0, 0, 100, 100)
+    @num_lloyd_iterations = 0
+    @bounds = Rectangle(0, 0, 700, 400)
+    @width = @bounds.x1 - @bounds.x0
+    @height = @bounds.y1 - @bounds.y0
 
     @map_random = PM_PRNG(seed)
     _type = _type or 'Radial'
@@ -170,7 +171,6 @@ export class MapGen
     time('Assign Biomes', @assignBiomes)
 
   voronoi: (force) =>
-    -- original passes a rectangle for the bounds {0, 0, @size, @size}
     if force or not @_voronoi
       @_voronoi = Voronoi(@points, @bounds)
     return @_voronoi
@@ -205,18 +205,24 @@ export class MapGen
 
       for i, point in ipairs(@points)
         region = voronoi\region(point)
+        region_count = 0
         point.x = 0.0
         point.y = 0.0
-        region_count = 0
         for j, other_point in ipairs(region)
           point.x += other_point.x
           point.y += other_point.y
           region_count += 1
-        point.x = point.x / region_count
-        point.y = point.y / region_count
+        if region_count == 0
+          print 'Removing a point', i
+          table.remove(@points, i)
+          @voronoi(true)
+        else
+          point.x = point.x / region_count
+          point.y = point.y / region_count
       voronoi = nil
       for i, p in pairs(@points)
         assert(p.x == p.x and p.y == p.y, 'point is nan')
+    @voronoi(true)
     @
 
   -- Although Lloyd relaxation improves the uniformity of polygon
@@ -399,7 +405,7 @@ export class MapGen
     corner = Corner()
 
     corner.point = point
-    corner.border = (point.x == 0 or point.x == @size or point.y == 0 or point.y == @size)
+    corner.border = (point.x <= @bounds.x0 or point.x >= @bounds.x1 or point.y <= @bounds.y0 or point.y <= @bounds.y1)
     table.insert(@corners, corner)
     table.insert(@corner_map[bucket], corner)
     return corner
@@ -725,7 +731,7 @@ export class MapGen
 
   -- Determine whether a given point should be on the island or in the water.
   inside: (point) =>
-    return @island_shape(Point(2 * (point.x / @size - 0.5), 2 * (point.y / @size - 0.5)))
+    return @island_shape(Point(2 * (point.x / @width - 0.5), 2 * (point.y / @width - 0.5)))
 
   IslandShape:
     -- This class has factory functions for generating islands of

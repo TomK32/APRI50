@@ -388,7 +388,8 @@ export class EdgeReorderer
     r = 0
     while nDone < n
       r += 1
-      assert(r < 10000, 'reordering is taking too long')
+      if r > 1000
+        return {}
       for i = 2, n
         if not done[i]
           edge = origEdges[i]
