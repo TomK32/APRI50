@@ -416,8 +416,6 @@ export class EdgeReorderer
             table.insert(@edgeOrientations, 'right')
             table.insert(new_edges, edge)
             done[i] = true
-          else
-            print("no match")
 
           if done[i]
             nDone += 1

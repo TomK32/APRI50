@@ -326,10 +326,10 @@ export class MapGen
             return -- already in the table
         table.insert(tbl, element)
 
-    for i, edge in ipairs(voronoi.edges)
+    for i, voronoi_edge in ipairs(voronoi.edges)
       -- TODO
-      dedge = edge\delaunayLine()
-      vedge = edge\voronoiEdge()
+      dedge = voronoi_edge\delaunayLine()
+      vedge = voronoi_edge\voronoiEdge()
 
       -- Fill the graph data. Make an Edge object corresponding to
       -- the edge from the voronoi library.
@@ -380,7 +380,6 @@ export class MapGen
       if edge.v1 ~= nil
         addToTable(edge.v1.touches, edge.d0)
         addToTable(edge.v1.touches, edge.d1)
-
 
   makeCorner: (point) =>
     if point == nil

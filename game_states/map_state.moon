@@ -35,7 +35,8 @@ export class MapState extends State
       item = game.player.inventory\activeItem()
       if item
         x, y = @view\coordsForXY(x, y)
-        center = @map\findCenter(x, y)
+        center = @map\findClosestCenter(x, y)
+        assert(center, 'TOOD: Flash display when no center')
         if item\place(@map, {x: center.point.x, y: center.point.y, z: 1}, center)
           game.player.inventory\removeActive()
 

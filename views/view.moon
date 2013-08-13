@@ -15,6 +15,11 @@ export class View
   pointInRect: (x, y) =>
     return x > @display.x and y > @display.y and x < @display.x + @display.width and y < @display.y + @display.height
 
+  -- subtract the views offset
+  getMousePosition: () =>
+    x, y = love.mouse.getPosition()
+    return x - @display.x, y - @display.y
+
   setDisplay: (display) =>
     if not @display then
       @display = {}

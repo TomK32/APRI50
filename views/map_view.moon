@@ -1,11 +1,11 @@
 
 export class MapView extends View
   new: (map) =>
-    @scale = {x: 7, y: 4}
+    @scale = {x: 1, y: 1}
     super(self)
     @map = map
     @top_left = {x: 0, y: 0}
-    @display.y = 40
+    @display = {width: 800, height: 400, y: 60, x: 10}
     @m_x, @m_y = 0, 0
 
   setDisplay: (display) =>
@@ -14,57 +14,34 @@ export class MapView extends View
     @height = math.ceil(@display.height / @scale.y)
 
   coordsForXY: (x, y) =>
-    return math.floor(x / @scale.x) - 1 , math.floor(y / @scale.y) - 1
+    return math.floor(x / @scale.x) - @display.x , math.floor(y / @scale.y) - @display.y
 
   scaledPoint: (point) =>
     return point.x * @scale.x, point.y * @scale.y
 
   drawContent: =>
-    love.graphics.setColor(10,10,10,255)
-    love.graphics.rectangle('fill', 0,0,self.display.width, self.display.height)
-
+    love.graphics.setColor(255,255,255,255)
     --for k,v in pairs @map\centers()[10]
       --print k,v
     for i, center in ipairs @map\centers()
-      x, y = @scaledPoint(center.point)
-      love.graphics.setColor(200 * center.moisture, 200 * center.moisture, 200, 255)
-      if center.biome == 'OCEAN'
-        love.graphics.circle("line", x, y, @scale.x * (0.4 + center.elevation), 6)
-      else
-        love.graphics.circle("fill", x, y, @scale.x * (0.4 + center.elevation), 6)
+      if not center.chunk
+        center.chunk = Chunk(center)
       love.graphics.push()
-      love.graphics.setColor(255,255,255,255)
-      x0, y0, x1, y1 = nil, nil, nil, nil
-      for j, corner in ipairs center.corners
-        for k, adjacent in ipairs corner.adjacent
-          love.graphics.setLineWidth(1)
-          if not x0
-            x0, y0 = @scaledPoint(adjacent.point)
-          else
-            x1, y1 = @scaledPoint(adjacent.point)
-            --print(x0, y0, x1, y1)
-            --love.graphics.line(x0, y0, x1, y1)
-            x0, y0 = x1, y1
-        love.graphics.point(x0, y0)
-        x0, y0 = @scaledPoint(corner.adjacent[1].point)
-        --love.graphics.line(x1, y1, x0, y0)
+      x = center.chunk.position.x
+      y = center.chunk.position.y
+      love.graphics.translate(x, y)
+
+      if @focusedCenter() == center
+        center.chunk\draw('highlight')
+      else
+        center.chunk\draw()
       love.graphics.pop()
 
-      if center.biome ~= 'OCEAN'
-        for j, border in pairs(center.borders)
-          love.graphics.push()
-          if border.river > 0
-            love.graphics.setLineWidth(border.river)
-            love.graphics.setColor(100,100,255,255)
-          else
-            love.graphics.setColor(50,50,50,255)
-            love.graphics.setLineWidth(1)
-          if border.river > 0 or border.biome ~= 'OCEAN'
-            x0, y0 = @scaledPoint(border.d0.point)
-            x1, y1 = @scaledPoint(border.d1.point)
+      if false and game.debug
+        -- center and corners do have absolute positions so they stay
+        -- outside the translate
+        @debugCenter(center)
 
-            love.graphics.line(x0, y0, x1, y1)
-          love.graphics.pop()
 
     -- entities
     for i, layer in ipairs(self.map.layer_indexes) do
@@ -73,21 +50,26 @@ export class MapView extends View
       for i,entity in ipairs(entities) do
         @\drawEntity(entity)
 
-    if game.debug
+    if false and game.debug
       @debugMousePointer()
 
-  debugMousePointer: =>
-    m_x, m_y = love.mouse.getPosition()
-    if not @focusedCenter or math.abs(@m_x - m_x) > @scale.x / 2 and math.abs(@m_y - m_y) > @scale.y / 2
-      x, y = @coordsForXY(m_x - @display.x, m_y - @display.y)
-      @focusedCenter = @map\findCenter(x, y)
+  focusedCenter: =>
+    m_x, m_y = @getMousePosition()
+    if not @focused_center or (math.abs(@m_x - m_x) > 3 and math.abs(@m_y - m_y) > 3)
+      @focused_center = @map\findClosestCenter(m_x, m_y)
       @m_x, @m_y = m_x, m_y
+    return @focused_center
 
-    if not @focusedCenter
+  debugMousePointer: =>
+    m_x, m_y = @getMousePosition()
+    f = @focusedCenter()
+    if not f
       return
     love.graphics.setColor(255,255,255,200)
-    i = 0
-    for k, v in pairs(@focusedCenter)
+    --print 'Position: ' .. f.point.x .. ',' .. f.point.y, m_x, m_y
+    love.graphics.print( 'Position: ' .. f.point.x .. ', ' .. f.point.y .. '(' .. m_x .. ', ' .. m_y .. ')', m_x + 10, m_y + game.fonts.lineHeight)
+    i = 2
+    for k, v in pairs(f)
       if v == true
         v = 'true'
       if v == false
@@ -106,3 +88,19 @@ export class MapView extends View
     else
       print("No method draw on entity " .. entity)
     love.graphics.pop()
+
+  debugCenter: (center) =>
+    x, y = @scaledPoint(center.point)
+    alpha = 100
+    if @focusedCenter() == center
+      alpha = 255
+    love.graphics.setColor(250,0, 0,alpha)
+    love.graphics.circle("fill", x, y, 2 * (0.4 + center.elevation), 6)
+    love.graphics.setColor(250,250,250,alpha)
+    for i, border in pairs center.borders
+      if border.v0
+        x0, y0 = @scaledPoint(border.v0.point)
+        x1, y1 = @scaledPoint(border.v1.point)
+        love.graphics.line(x0, y0, x1, y1)
+
+    love.graphics.setColor(0,0,250,alpha)

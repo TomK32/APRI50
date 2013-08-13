@@ -32,7 +32,7 @@ export class Map
     if entity.update
       table.insert(@updateAble, entity)
 
-  findCenter: (x, y) =>
+  findClosestCenter: (x, y) =>
     point = Point(x, y)
     closest_center = @centers()[1]
     closest_distance = closest_center.point\distance(point)
