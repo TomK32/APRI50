@@ -31,10 +31,7 @@ export class MapView extends View
       y = center.chunk.position.y
       love.graphics.translate(x, y)
 
-      if @focusedCenter() == center
-        center.chunk\draw('highlight')
-      else
-        center.chunk\draw()
+      center.chunk\draw()
       love.graphics.pop()
 
       if false and game.debug
@@ -42,6 +39,13 @@ export class MapView extends View
         -- outside the translate
         @debugCenter(center)
 
+    focused_center = @focusedCenter()
+    if focused_center
+      love.graphics.push()
+      love.graphics.translate(focused_center.chunk.position.x, focused_center.chunk.position.y)
+      love.graphics.setColor(255, 55, 55, 55)
+      focused_center.chunk\drawStencil()
+      love.graphics.pop()
 
     -- entities
     for i, layer in ipairs(self.map.layer_indexes) do

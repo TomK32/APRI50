@@ -77,14 +77,13 @@ export class Chunk
     love.graphics.setCanvas(last_canvas)
     love.graphics.pop()
 
-  fill: (highlight) =>
+  fill: () =>
+    love.graphics.setColor(255, 255, 255, 255)
     love.graphics.setStencil(@drawStencil, @)
+    @colors[4] = 255
     love.graphics.setColor(unpack(@colors))
     love.graphics.rectangle('fill', 0, 0, @width, @height)
     love.graphics.setStencil()
-    if highlight
-      love.graphics.setColor(255, 55, 55, 55)
-      @drawStencil()
 
   drawStencil: () =>
     for i, polygon in ipairs @polygons

@@ -6,7 +6,6 @@
 -- https://github.com/jbrownlee/learning-lua/blob/master/genetic_algorithm.lua
 
 require 'entities/scorable'
-require 'entities/drawable'
 require 'entities/chunk'
 
 export class EvolutionKit
@@ -28,7 +27,6 @@ export class EvolutionKit
     @mutations = {} -- just the dna strings
 
     mixin(@, Scorable)
-    mixin(@, Drawable)
 
     @toImage()
     @
