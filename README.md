@@ -12,7 +12,6 @@
 * *Date of next crew to be sent:* -
 * Sub-lightspeed missions previous/planned:* -/-
 
-
 ## The game
 
 *ApriL* or *APRI50* is a exploration game set on a planet in a nearby solar system.
@@ -30,10 +29,10 @@ regular and unhealty rainfall you need to _establish a base and start exploring_
 
 ## Controls
 
-Use WASD or arrows to move around. You have an inventory of
-automatic blueprints to extend your base. In small domes you will be
-able to experiement with the terraforming process in order to find the
-most efficient use of the planetary resources.
+You have an inventory of evolution kits which you can select with the
+number keys 1..0 or by clicking them in the inventory bar.
+
+To make a screenshot press F2. To toggle the game's debug mode press F3.
 
 
 ## References (other games you should play!)
