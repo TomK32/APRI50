@@ -89,6 +89,11 @@ export class Chunk
     for i, polygon in ipairs @polygons
       love.graphics.polygon('fill', unpack(polygon))
 
+  iterate: (callback) =>
+    for i, corner in ipairs(@center.corners)
+      callback(corner, @center)
+    return true
+
   grow: (x, y) =>
     -- get old canvas' content, resize the canvas and draw the content
     -- into this new one, centered of course

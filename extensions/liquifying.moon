@@ -13,15 +13,8 @@ export class Liquifying
     if score < 0
       return
 
-    @targetChunk\iterate (x, y, tile) ->
-      if tile.harvesting and tile.harvesting > score
-        return
-      tile.hardening = (tile.hardening or 0) - score / 2
-      tile.liquid = score
-
-      tile.color[3] = 255 - math.ceil((255 - tile.color[3]) / (score + x + y))
-      tile.color[2] = math.ceil(tile.color[2] / 2)
-
-      tile.transformed = true
+    @targetChunk\iterate (corner, center) ->
+      corner.hardening = (corner.hardening or 0) - score / 2
+      corner.liquid += score
 
 return Liquifying

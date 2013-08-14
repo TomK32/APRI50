@@ -32,40 +32,6 @@ export class Point
 require 'SimplexNoise'
 Voronoi = require 'voronoi'
 
-class Center
-  new: (point) =>
-    @point = point
-    @index = 0
-    @moisture = 0 -- 0..1
-    @elevation = 0 -- 0..1
-    @neighbors = {} -- Center
-    @borders = {} -- Edge
-    @corners = {} -- Corner
-    @water = false
-    @ocean = false
-    @coast = false
-    @border = false
-    @biome = nil -- string
-    @
-
-class Corner
-  new: =>
-    @point = nil
-    @water = false
-    @ocean = false
-    @coast = false
-    @border = false
-    @moisture = 0 -- 0..1
-    @elevation = 0 -- 0..1
-    @touches = {} -- Center
-    @adjacent = {} -- Corner
-    @protrudes = {} -- Edge
-    @river = 0 -- 0... volume of liquid in the river
-    @downslope = nil -- adjacent corner that is most downhil
-    @watershed = nil -- coastal corner or nil
-    @watershed_size = 0 -- int
-    @
-
 -- TODO incomplete
 class Edge
   new: (a, b, c) =>

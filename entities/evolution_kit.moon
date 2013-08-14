@@ -7,6 +7,8 @@
 
 require 'entities/scorable'
 require 'entities/chunk'
+require 'entities/center'
+require 'entities/corner'
 
 export class EvolutionKit
 
@@ -163,9 +165,7 @@ export class EvolutionKit
 
 -- @extensions = {
 --EvolutionKit\registerExtension('consuming')
-EvolutionKit\registerExtension('growable')
 EvolutionKit\registerExtension('transforming')
---EvolutionKit\registerExtension('river')
 EvolutionKit\registerExtension('liquifying')
 EvolutionKit\registerExtension('flora')
 EvolutionKit\registerExtension('hardening')
