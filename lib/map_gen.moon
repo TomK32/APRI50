@@ -117,13 +117,13 @@ class PM_PRNG
 export class MapGen
   -- TODO: accept a table in the constructor
   -- FIXME: Allow width and height for oblong shapes
-  new: (seed, _type) =>
-    @num_points = 100
+  new: (width, height, seed, _type) =>
+    @num_points = (width + height) / 2
     @lake_treshold = 0.3 -- 0...1
     @num_lloyd_iterations = 0
-    @bounds = Rectangle(0, 0, 700, 400)
-    @width = @bounds.x1 - @bounds.x0
-    @height = @bounds.y1 - @bounds.y0
+    @bounds = Rectangle(0, 0, width, height)
+    @width = width
+    @height = height
 
     @map_random = PM_PRNG(seed)
     _type = _type or 'Radial'
@@ -521,7 +521,6 @@ export class MapGen
 
         if corner.water
           num_water += 1
-      point.water = (point.ocean or num_water >= #point.corners * @lake_treshold)
 
    
   -- Polygon elevations are the average of the elevations of their corners.
@@ -563,10 +562,9 @@ export class MapGen
     for i=0, math.floor(@width + @height / 5)
       changed = false
       for j, corner in ipairs(@corners)
-        if not corner.ocean and not corner.coast and not corner.watershed.coast
+        if not corner.watershed.coast
           r = corner.downslope.watershed
-          if not r.ocean
-            corner.watershed = r
+          corner.watershed = r
           changed = true
       if not changed
         break
@@ -604,12 +602,6 @@ export class MapGen
           queue_count += 1
           queue[queue_count] = adjacent
 
-
-    -- Salt water
-    for i, corner in ipairs(@corners)
-      if corner.ocean or corner.coast
-        corner.moisture = 1.0
-
   -- Polygon moisture are the average of the elevations of their corners.
   assignPolygonMoisture: =>
     for i, center in ipairs(@centers)
@@ -646,7 +638,7 @@ export class MapGen
       if e > 0.8
         return 'ICE'
       return 'LAKE'
-    if e > 0.8
+    if e > 0.6
       if m > 0.5
         return 'SNOW'
       if m > 0.33
@@ -654,21 +646,22 @@ export class MapGen
       if m > 0.16
         return 'BARE'
       return 'SCORCHED'
-    if e > 0.6
+    if e > 0.4
       if m > 0.66
-        return 'Taiga'
+        return 'TAIGA'
       if m > 0.33
         return 'SHRUBLAND'
       return 'TEMPERATE_DESERT'
-    if e > 0.3
-      if m > 0.83
-        return 'TROPICAL_RAIN_FOREST'
-      if m > 0.33
-        return 'TROPICAL_SEASONAL_FOREST'
-      if m > 0.16
-        return 'GRASSLAND'
-      else
-        return 'SUBTROPICAL_DESERT'
+
+    -- lowlands as we won't have an ocean for now
+    if m > 0.83
+      return 'TROPICAL_RAIN_FOREST'
+    if m > 0.33
+      return 'TROPICAL_SEASONAL_FOREST'
+    if m > 0.07
+      return 'GRASSLAND'
+    else
+      return 'SUBTROPICAL_DESERT'
 
   assignBiomes: =>
     for i, point in ipairs(@centers)

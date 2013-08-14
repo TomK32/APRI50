@@ -5,7 +5,7 @@ require 'views/resources_view'
 
 export class MapState extends State
   new: =>
-    @map = Map(game.seed)
+    @map = Map(game.graphics.mode.width - 20, game.graphics.mode.height - 60, game.seed)
     @view = MapView(@map)
     @inventory_view = InventoryView(game.player.inventory)
     @resources_view = ResourcesView(game.player.resources)

@@ -4,7 +4,7 @@ export class Chunk
     SNOW: {250, 250, 250}
     TUNDRA: {220, 220, 185}
     BARE: {185, 185, 185}
-    SCORCHED: {55, 55, 55}
+    SCORCHED: {105, 105, 105}
     TAIGA: {200, 215, 185}
     SHRUBLAND: {195, 205, 185}
     TEMPERATE_DESERT: {230, 230, 200}
