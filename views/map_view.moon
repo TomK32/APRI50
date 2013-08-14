@@ -7,6 +7,7 @@ export class MapView extends View
     @top_left = {x: 0, y: 0}
     @display = {width: 800, height: 400, y: 60, x: 10}
     @m_x, @m_y = 0, 0
+    @debug_mouse_window = {width: 10, height: 10}
 
   setDisplay: (display) =>
     View.setDisplay(@, display)
@@ -54,7 +55,7 @@ export class MapView extends View
       for i,entity in ipairs(entities) do
         @\drawEntity(entity)
 
-    if false and game.debug
+    if game.debug
       @debugMousePointer()
 
   focusedCenter: =>
@@ -66,21 +67,37 @@ export class MapView extends View
 
   debugMousePointer: =>
     m_x, m_y = @getMousePosition()
+    if m_y > @display.height / 2
+      m_y = m_y - @debug_mouse_window.height - 20
+      m_y += 20
+    if m_x > @display.width / 2
+      m_x = m_x - @debug_mouse_window.width - 20
+    else
+      m_x += 20
     f = @focusedCenter()
+    lh = game.fonts.lineHeight
     if not f
       return
+    love.graphics.setColor(50,50,50,200)
+    love.graphics.rectangle('fill', m_x - 5, m_y - 5, @debug_mouse_window.width + 10, @debug_mouse_window.height + 10)
     love.graphics.setColor(255,255,255,200)
     --print 'Position: ' .. f.point.x .. ',' .. f.point.y, m_x, m_y
-    love.graphics.print( 'Position: ' .. f.point.x .. ', ' .. f.point.y .. '(' .. m_x .. ', ' .. m_y .. ')', m_x + 10, m_y + game.fonts.lineHeight)
-    i = 2
+    love.graphics.print( 'Position: ' .. f.point.x .. ', ' .. f.point.y .. '(' .. m_x .. ', ' .. m_y .. ')', m_x + 10, m_y)
+    @debug_mouse_window = {height: lh, width: 0}
+    i = 1
     for k, v in pairs(f)
       if v == true
         v = 'true'
       if v == false
         v = 'false'
       if type(v) == 'string' or type(v) == 'number'
-        love.graphics.print( k .. ': ' .. v, m_x + 10, m_y + i * game.fonts.lineHeight)
+        if type(v) == 'number'
+          v = v .. ''
+        @debug_mouse_window.height += lh
+        @debug_mouse_window.width = math.max(#k + #v, @debug_mouse_window.width)
+        love.graphics.print( k .. ': ' .. v, m_x + 10, m_y + i * lh)
         i += 1
+    @debug_mouse_window.width *= lh / 2
 
   drawEntity: (entity, x, y) =>
     love.graphics.push()
@@ -98,7 +115,7 @@ export class MapView extends View
     alpha = 100
     if @focusedCenter() == center
       alpha = 255
-    love.graphics.setColor(250,0, 0,alpha)
+    love.graphics.setColor(0, 0, 0, alpha)
     love.graphics.circle("fill", x, y, 2 * (0.4 + center.elevation), 6)
     love.graphics.setColor(250,250,250,alpha)
     for i, border in pairs center.borders

@@ -46,7 +46,10 @@ end
 function love.keypressed(key)
   if key == 'f2' then
     makeScreenshot()
+  elseif key == 'f3' then
+    game.debug = not game.debug
   end
+
   if key == 'q' then
     love.quit()
   end
