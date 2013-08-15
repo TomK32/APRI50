@@ -6,6 +6,7 @@
 * Harvest to replentish resources
 * Loose condition when out of resources
 * Continuous terraforming?
+* Stefan's Doomsday mode! Destroy all teh urfs!
 
 ## Map
 * scrollable, if terraforming is stretching out far enough
