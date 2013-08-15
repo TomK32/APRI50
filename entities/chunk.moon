@@ -105,6 +105,7 @@ export class Chunk
     love.graphics.pop()
 
   fill: () =>
+    @setColors()
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.setStencil(@drawStencil, @)
     @colors[4] = 255
@@ -133,7 +134,6 @@ export class Chunk
   mergeAttributes: () =>
     for k,v in pairs @tween_data
       @center[k] = v
-    @setColors()
 
   toString: =>
     string = @width .. 'x' .. @height .. "\n"

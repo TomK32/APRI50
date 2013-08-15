@@ -3,12 +3,15 @@ require 'views/map_view'
 require 'views/inventory_view'
 require 'views/resources_view'
 
+require 'game_plays/game_play'
+
 export class MapState extends State
   new: =>
     @map = Map(game.graphics.mode.width - 20, game.graphics.mode.height - 60, game.seed)
     @view = MapView(@map)
     @inventory_view = InventoryView(game.player.inventory)
     @resources_view = ResourcesView(game.player.resources)
+    @game_play = GamePlay.Doomsday(@)
 
     for i=1, game.evolution_kits_to_start
       game.player.inventory\add(EvolutionKit.random(game.dna_length))
@@ -22,6 +25,7 @@ export class MapState extends State
 
   update: (dt) =>
     @map\update(dt)
+    @game_play\update(dt)
 
   keypressed: (key, unicode) =>
     if key\match("[0-9]")
