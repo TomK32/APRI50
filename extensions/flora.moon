@@ -13,13 +13,11 @@ export class Flora
     if score < 0
       return
 
-    tmp = @targetChunk.width * @targetChunk.height / 2
-    @targetChunk.center.flora += score
-    @targetChunk.center.hardening -= score / 2
+    @targetChunk.center\increment('flora', 0.1)
+    if @targetChunk.center.hardening < 0.3
+      @targetChunk.center\increment('hardening', 0.1)
 
-    @targetChunk\iterate (corner, center) ->
-      corner.hardening = (corner.hardening or 0) - score / 2
-      corner.flora += score
+    -- TODO: Corners
 
 return Flora
 

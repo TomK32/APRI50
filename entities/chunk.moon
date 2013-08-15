@@ -21,7 +21,6 @@ export class Chunk
     @canvas = nil
     @tween_data = {} -- going to be merged into the center(s) after the transformation
     @center = center
-    @setColors()
 
     @width = 0
     @height = 0
@@ -58,8 +57,10 @@ export class Chunk
     @display_rect = { 0, 0, @width, @height}
     @position = {x: x0, y: y0}
     @evolution_kit = evolution_kit
+    @setColors()
     @drawCanvas()
-    return @
+
+    @
 
   nextPowerOfTwo: (n) =>
     i = 2
@@ -106,18 +107,19 @@ export class Chunk
   mergeAttributes: () =>
     for k,v in pairs @tween_data
       @center[k] = v
+    @setColors()
 
   toString: =>
     string = @width .. 'x' .. @height .. "\n"
     return string
 
   setColors: (colors) =>
+    @center.biome = @center\getBiome()
     if colors ~= nil
       @colors = colors
-      return
-    @colors = Chunk.BIOME_COLORS[@center.biome]
-    if not @colors
-        @colors = Chunk.BIOME_COLORS['SCORCHED']
+    else
+      @colors = Chunk.BIOME_COLORS[@center.biome]
+    return @colors
 
   draw: (highlight) =>
     @fill(highlight)
