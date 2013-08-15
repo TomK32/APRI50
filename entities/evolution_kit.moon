@@ -122,7 +122,7 @@ export class EvolutionKit
       @to_string = @to_string .. ' • '
       for i, extension in ipairs(EvolutionKit.extensions)
         if extension.score
-          @to_string = @to_string .. extension.__name .. ': ' .. extension.score(@) .. ' '
+          @to_string = @to_string .. extension.__name .. ': ' .. string.format("%.1f", extension.score(@)) .. ' '
       return @to_string
     else
       return 'Evolution Kit'

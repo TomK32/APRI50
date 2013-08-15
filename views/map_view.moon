@@ -22,8 +22,6 @@ export class MapView extends View
 
   drawContent: =>
     love.graphics.setColor(255,255,255,255)
-    --for k,v in pairs @map\centers()[10]
-      --print k,v
     for i, center in ipairs @map\centers()
       if not center.chunk
         center.chunk = Chunk(center)
@@ -81,7 +79,6 @@ export class MapView extends View
     love.graphics.setColor(50,50,50,200)
     love.graphics.rectangle('fill', m_x - 5, m_y - 5, @debug_mouse_window.width + 10, @debug_mouse_window.height + 10)
     love.graphics.setColor(255,255,255,200)
-    --print 'Position: ' .. f.point.x .. ',' .. f.point.y, m_x, m_y
     love.graphics.print( 'Position: ' .. f.point.x .. ', ' .. f.point.y .. '(' .. m_x .. ', ' .. m_y .. ')', m_x + 10, m_y)
     @debug_mouse_window = {height: lh, width: 0}
     i = 1
@@ -92,7 +89,7 @@ export class MapView extends View
         v = 'false'
       if type(v) == 'string' or type(v) == 'number'
         if type(v) == 'number'
-          v = v .. ''
+          v = string.format('%.2f', v)
         @debug_mouse_window.height += lh
         @debug_mouse_window.width = math.max(#k + #v, @debug_mouse_window.width)
         love.graphics.print( k .. ': ' .. v, m_x + 10, m_y + i * lh)

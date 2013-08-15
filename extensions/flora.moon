@@ -4,7 +4,7 @@ export class Flora
   @matcher = game.matchers.flora
 
   score: =>
-    return 1 + @\score(Flora.matcher)
+    return @\score(Flora.matcher)
 
   finish: (chunk) =>
     score = Flora.score(@)
@@ -13,7 +13,7 @@ export class Flora
     if score < 0
       return
 
-    @targetChunk.center\increment('flora', 0.1)
+    @targetChunk.center\increment('flora', score)
     if @targetChunk.center.hardening < 0.3
       @targetChunk.center\increment('hardening', 0.1)
 

@@ -7,6 +7,7 @@ export class Scorable
   -- any space indicates a insignficiant dns position.
   @score: (dna_matcher) =>
     value = 0
+    divisor = 0
     if dna_matcher == nil
       return nil
     for i = 1, math.min(#dna_matcher, #self.dna) do
@@ -15,10 +16,12 @@ export class Scorable
         -- do nothing
         1
       elseif c and c == self.dna[i]
+        divisor += 1
         value += 1
       else
+        divisor += 1
         value -= 1
-    return value
+    return value / divisor
 
   -- for more than one matcher
   @scores: (dna_matchers) =>
