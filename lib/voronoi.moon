@@ -22,6 +22,7 @@
 -- TODO
 --   Edges without vertices
 --   Edge:visible
+-- Site region point in infitite causing the downward shift point
 
 _ = require 'underscore'
 

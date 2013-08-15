@@ -37,7 +37,7 @@ function love.draw()
   if not game.current_state then return end
   game.current_state:draw()
 
-  if not madeScreenshot and game.debug then
+  if not madeScreenshot then
     madeScreenshot = true
     makeScreenshot()
   end
@@ -71,9 +71,7 @@ function love.update(dt)
 end
 
 function love.quit()
-  if game.debug then
-    makeScreenshot()
-  end
+  makeScreenshot()
 end
 
 function makeScreenshot()
