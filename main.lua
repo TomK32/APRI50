@@ -48,6 +48,10 @@ function love.keypressed(key)
     makeScreenshot()
   elseif key == 'f3' then
     game.debug = not game.debug
+  elseif key == 'f4' then
+    game.map_debug = math.max(0, game.map_debug - 1)
+  elseif key == 'f5' then
+    game.map_debug = math.min(4, game.map_debug + 1)
   end
 
   if key == 'q' then

@@ -33,7 +33,7 @@ export class MapView extends View
       center.chunk\draw()
       love.graphics.pop()
 
-      if false and game.debug
+      if game.map_debug > 0
         -- center and corners do have absolute positions so they stay
         -- outside the translate
         @debugCenter(center)
@@ -109,12 +109,13 @@ export class MapView extends View
 
   debugCenter: (center) =>
     x, y = @scaledPoint(center.point)
-    alpha = 100
+    alpha = 20
     if @focusedCenter() == center
-      alpha = 255
+      alpha = 50
+    alpha = alpha * game.map_debug
     love.graphics.setColor(0, 0, 0, alpha)
     love.graphics.circle("fill", x, y, 2 * (0.4 + center.elevation), 6)
-    love.graphics.setColor(250,250,250,alpha)
+    love.graphics.setColor(250,250,250, alpha)
     for i, border in pairs center.borders
       if border.v0
         x0, y0 = @scaledPoint(border.v0.point)

@@ -32,8 +32,12 @@ regular and unhealty rainfall you need to _establish a base and start exploring_
 You have an inventory of evolution kits which you can select with the
 number keys 1..0 or by clicking them in the inventory bar.
 
-To make a screenshot press F2. To toggle the game's debug mode press F3.
+To make a screenshot press F2.
 
+Toggle the game's debug mode by pressing F3.
+
+Press F4/F5 to increase/decrese the debug level for the map, this
+independet from the F3 debug mode
 
 ## References (other games you should play!)
 

@@ -7,6 +7,9 @@
 * Loose condition when out of resources
 * Continuous terraforming?
 * Stefan's Doomsday mode! Destroy all teh urfs!
+* Separate save-games for map and expedition team, allow playing with
+  two expeditions on one map.
+* Gamepad support
 
 ## Map
 * scrollable, if terraforming is stretching out far enough
