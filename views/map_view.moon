@@ -38,6 +38,15 @@ export class MapView extends View
         -- outside the translate
         @debugCenter(center)
 
+    for i, center in ipairs @map\centers()
+      if #center.chunk.particle_systems > 0
+        love.graphics.push()
+        x = center.chunk.position.x
+        y = center.chunk.position.y
+        love.graphics.translate(x, y)
+        center.chunk\drawParticles()
+        love.graphics.pop()
+
     focused_center = @focusedCenter()
     if focused_center
       love.graphics.push()

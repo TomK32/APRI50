@@ -24,6 +24,9 @@ export class Center
     @[key] = math.max(0.0, math.min(1.0, @[key] + value))
     @biome = @getBiome()
 
+  addParticleSystem: (system) =>
+    @chunk\addParticleSystem(system)
+
   -- Assign a biome type to each polygon. If it has
   -- ocean/coast/water, then that's the biome; otherwise it depends
   -- on low/high elevation and low/medium/high moisture. This is

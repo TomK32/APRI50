@@ -48,6 +48,8 @@ export class Chunk
     @canvas = nil
     @tween_data = {} -- going to be merged into the center(s) after the transformation
     @center = center
+    @center.chunk = @
+    @particle_systems = {}
 
     @width = 0
     @height = 0
@@ -89,6 +91,9 @@ export class Chunk
 
     @
 
+  addParticleSystem: (system) =>
+    table.insert(@particle_systems, system)
+
   nextPowerOfTwo: (n) =>
     i = 2
     while i < n
@@ -103,9 +108,10 @@ export class Chunk
     @canvas\clear()
     @fill()
     love.graphics.setCanvas(last_canvas)
+
     love.graphics.pop()
 
-  fill: () =>
+  fill: =>
     @setColors()
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.setStencil(@drawStencil, @)
@@ -113,6 +119,12 @@ export class Chunk
     love.graphics.setColor(unpack(@colors))
     love.graphics.rectangle('fill', 0, 0, @width, @height)
     love.graphics.setStencil()
+
+  drawParticles: =>
+    for i, system in ipairs @particle_systems
+      if not system\isActive()
+        table.remove(@particle_systems, i)
+      love.graphics.draw(system)
 
   drawStencil: () =>
     for i, polygon in ipairs @polygons

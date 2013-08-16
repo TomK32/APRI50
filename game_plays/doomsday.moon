@@ -4,9 +4,12 @@ GamePlay.Doomsday = class Doomsday extends GamePlay
     super(...)
     @dt = 0
     @burning_centers = {}
+    @particle_systems = {}
 
   update: (dt) =>
     @dt += dt
+    for i, system in ipairs @particle_systems
+      system\update(dt)
     if @dt < 1
       return
 
@@ -18,6 +21,9 @@ GamePlay.Doomsday = class Doomsday extends GamePlay
 
     center\increment('burning', 1)
     table.insert(@burning_centers, center)
+    system = @@particle_systems.burning({position: {0, 0}})
+    center\addParticleSystem(system)
+    table.insert(@particle_systems, system)
 
     @updateCenters(dt)
 
@@ -45,4 +51,8 @@ GamePlay.Doomsday = class Doomsday extends GamePlay
         BURNING: {255, 50, 50}
         SMOLDERING: {125, 50, 50}
     })
+
+  @particle_systems:
+    burning: (options) ->
+      require('particle_systems/doomsday_burning')(game\image('images/particle_explosion.png'), options)
 

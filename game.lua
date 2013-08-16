@@ -28,8 +28,16 @@ game = {
     hardening  = splitDNA(' TG   A GGT ')
   },
   player = Player(),
-  icon_size = 32
+  icon_size = 32,
+  images = {}
 }
+
+function game:image(path)
+  if not self.images[path] then
+    self.images[path] = love.graphics.newImage(path)
+  end
+  return self.images[path]
+end
 
 function game:createFonts(offset)
   local font_file = 'fonts/Comfortaa-Regular.ttf'
