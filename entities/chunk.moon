@@ -1,5 +1,6 @@
 -- A piece of landscape surrounding a Center
 export class Chunk
+  @extensions: {}
   @PASTEL_BIOME_COLORS:
     SNOW: {250, 250, 250}
     TUNDRA: {220, 220, 185}
@@ -141,6 +142,11 @@ export class Chunk
 
   setColors: (colors) =>
     @center.biome = @center\getBiome()
+    for i, extension in pairs @@extensions
+      if extension.BIOME_COLORS and extension.BIOME_COLORS[@center.biome]
+        @colors = extension.BIOME_COLORS[@center.biome]
+        return @colors
+
     if colors ~= nil
       @colors = colors
     else

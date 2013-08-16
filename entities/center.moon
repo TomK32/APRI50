@@ -1,5 +1,6 @@
 
 export class Center
+  @extensions: {}
   new: (point) =>
     @point = point
     @index = 0
@@ -32,7 +33,11 @@ export class Center
     e = @elevation
     m = @moisture
 
-    -- TODO: callbacks from extensions
+    for i, extension in pairs @@extensions
+      if extension.getBiome
+        ret = extension.getBiome(@)
+        if ret
+          return ret
 
     if @ocean
       return "OCEAN"

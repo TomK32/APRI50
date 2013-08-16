@@ -355,7 +355,7 @@ export class MapGen
     if point == nil
       return
     -- NOTE: ActionScript uses int, not sure if that is rounding dow
-    for bucket = math.floor(point.x) - 1, 2
+    for bucket = math.floor(point.x) - 1, 3
       for i, corner in ipairs(@corner_map[bucket] or {})
         dx = point.x - corner.point.x
         dy = point.y - corner.point.y
