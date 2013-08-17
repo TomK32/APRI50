@@ -10,11 +10,10 @@ GamePlay.Doomsday = class Doomsday extends GamePlay
     @dt += dt
     for i, system in ipairs @particle_systems
       system\update(dt)
-    @updateCenters(dt)
     if @dt > 3
-      @destroyNewCenter()
+      @hitNewCenter()
 
-  destroyNewCenter: () =>
+  hitNewCenter: () =>
     @dt = 0
     centers = @map_state.map\centers()
     center = centers[math.floor(math.random() * #centers)]
@@ -22,18 +21,10 @@ GamePlay.Doomsday = class Doomsday extends GamePlay
       return
 
     center\increment('burning', 1)
-    table.insert(@burning_centers, center)
     system = @@particle_systems.burning({position: {0, 0}})
     center\addParticleSystem(system)
     table.insert(@particle_systems, system)
-
-  updateCenters: (dt) =>
-    for i, center in ipairs @burning_centers
-      if center.burning <= 0.2
-        table.remove(@burning_centers, i)
-      else
-        center\increment('moisture', -dt * 0.2)
-        center\increment('burning', -dt * 0.1)
+    tween(10, center, {moisture: center.moisture / 10, burning: 0})
 
   @registerExtensions: =>
     table.insert(Center.extensions, {
