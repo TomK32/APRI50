@@ -3,7 +3,7 @@ export class ResourcesView extends View
   new: (resources) =>
     @scale = 1
     super(self)
-    @setDisplay({x: love.graphics.getWidth() - 120, y: 30})
+    @setDisplay({x: love.graphics.getWidth() - 100, y: 10})
     assert(resources)
     @resources = resources
 

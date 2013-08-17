@@ -2,15 +2,25 @@
 require 'views/map_view'
 require 'views/inventory_view'
 require 'views/resources_view'
+require 'views/scores_view'
 
 require 'game_plays/game_play'
 
 export class MapState extends State
+  @extensions = {}
   new: =>
     @map = Map(game.graphics.mode.width - 20, game.graphics.mode.height - 60, game.seed)
     @view = MapView(@map)
     @inventory_view = InventoryView(game.player.inventory)
     @resources_view = ResourcesView(game.player.resources)
+
+    -- change @compute_scores from your game play,
+    -- and add at least one extension with
+    --  * scoreForCenter(all_scores, center)
+    --  * resetScore(map_state)
+    @compute_scores = false
+    @scores = {}
+    @scores_view = ScoresView(@)
     @game_play = GamePlay.Doomsday(@)
 
     for i=1, game.evolution_kits_to_start
@@ -22,10 +32,18 @@ export class MapState extends State
     @view\draw()
     @inventory_view\draw()
     @resources_view\draw()
+    @scores_view\draw()
 
   update: (dt) =>
     @map\update(dt)
     @game_play\update(dt)
+    if @compute_scores
+      for i, extension in ipairs @@extensions
+        if extension.resetScore
+          extension.resetScore(@)
+        if extension.scoreForCenter
+          for j, center in ipairs @map\centers()
+            extension.scoreForCenter(@scores, center)
 
   keypressed: (key, unicode) =>
     if key\match("[0-9]")

@@ -1,7 +1,12 @@
 
 GamePlay.Doomsday = class Doomsday extends GamePlay
-  new: (...) =>
-    super(...)
+  new: (map_state) =>
+    @map_state = map_state
+    super(map_state)
+
+    @map_state.scores.biomass = {label: 'Biomass', score: 0}
+    @map_state.compute_scores = true
+
     @dt = 0
     @burning_centers = {}
     @particle_systems = {}
@@ -10,6 +15,7 @@ GamePlay.Doomsday = class Doomsday extends GamePlay
     @dt += dt
     for i, system in ipairs @particle_systems
       system\update(dt)
+
     if @dt > 3
       @hitNewCenter()
 
@@ -41,6 +47,12 @@ GamePlay.Doomsday = class Doomsday extends GamePlay
       BIOME_COLORS:
         BURNING: {255, 50, 50}
         SMOLDERING: {125, 50, 50}
+    })
+    table.insert(MapState.extensions, {
+      scoreForCenter: (scores, center) ->
+        scores.biomass.score += center.flora
+      resetScore: (map_state) ->
+        map_state.scores.biomass.score = 0
     })
 
   @particle_systems:
