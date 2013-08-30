@@ -21,7 +21,7 @@ export class Scorable
       else
         divisor += 1
         value -= 1
-    return math.max(-1.0, math.min(1.0, value / divisor)) + (probability or 1)
+    return math.max(-1.0, math.min(1.0, value / divisor)) + (probability or 0)
 
   -- for more than one matcher
   @scores: (dna_matchers) =>
