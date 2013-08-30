@@ -51,6 +51,9 @@ export class MapState extends State
     if key\match("m")
       if game.player.inventory.active
         game.player.inventory\replaceActive(game.player.inventory\activeItem()\mutate())
+    if key\match("r")
+      if game.player.inventory.activeItem
+        game.player.inventory\replaceActive(EvolutionKit.random(game.dna_length))
 
   mousepressed: (x, y, button) =>
     item_number = @inventory_view\clickedItem(x, y)

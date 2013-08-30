@@ -114,7 +114,7 @@ export class EvolutionKit
       new_dna[pos] = EvolutionKit.genes[math.ceil(#EvolutionKit.genes * math.random())]
     return new_dna
 
-  toString: =>
+  toString: (no_score_text) =>
     if @to_string
       return @to_string
     if @dna
@@ -125,8 +125,8 @@ export class EvolutionKit
         if extension.score and extension.score(@) > 0
           has_score = true
           @to_string = @to_string .. extension.__name .. ': ' .. string.format("%.1f", extension.score(@)) .. ' '
-      if not has_score
-        @to_string = @to_string .. 'no fuction. [m] to mutate'
+      if not has_score and no_score_text
+        @to_string = @to_string .. no_score_text
       return @to_string
     else
       return 'Evolution Kit'
