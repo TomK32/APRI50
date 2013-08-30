@@ -112,8 +112,6 @@ export class MapView extends View
       entity\draw()
     elseif entity.color
       game.renderer\rectangle('fill', entity.color, x or entity.position.x, y or entity.position.y)
-    else
-      print("No method draw on entity " .. entity)
     love.graphics.pop()
 
   debugCenter: (center) =>

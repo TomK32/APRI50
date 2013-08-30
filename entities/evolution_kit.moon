@@ -37,7 +37,6 @@ export class EvolutionKit
     @position = position
     @center = center
     @map = map
-    @map\addEntity(@)
 
     cost = { metal: 1, energy: 1, water: 1, biomass: 1 }
     if game.player\hasResources(cost)
@@ -78,11 +77,9 @@ export class EvolutionKit
       @\merge()
 
   merge: =>
-    @targetChunk.offset = @currentChunk.offset
     for extension in *EvolutionKit.extensions
       if extension.onMerge
         extension.onMerge(self)
-    @map\merge(self)
     @.deleted = true
     @ = nil
 
