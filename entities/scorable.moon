@@ -5,7 +5,7 @@ export class Scorable
   -- dna_matcher is a table of letters from the genes or spaces.
   -- For every gene the EvolutionKit matches the value is increased,
   -- any space indicates a insignficiant dns position.
-  @score: (dna_matcher) =>
+  @score: (dna_matcher, probability) =>
     value = 0
     divisor = 0
     if dna_matcher == nil
@@ -21,7 +21,7 @@ export class Scorable
       else
         divisor += 1
         value -= 1
-    return value / divisor
+    return math.max(-1.0, math.min(1.0, value / divisor)) + (probability or 1)
 
   -- for more than one matcher
   @scores: (dna_matchers) =>

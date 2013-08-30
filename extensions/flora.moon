@@ -4,7 +4,7 @@ export class Flora
   @matcher = game.matchers.flora
 
   score: =>
-    return @\score(Flora.matcher)
+    return @\score(Flora.matcher, 0.3)
 
   finish: (chunk) =>
     score = Flora.score(@)

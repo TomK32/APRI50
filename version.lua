@@ -1,1 +1,1 @@
-return '0.3beta'
+return '0.2.74'

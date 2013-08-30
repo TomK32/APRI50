@@ -3,7 +3,7 @@ export class Seeding
   @matcher = game.matchers.seeding
 
   score: =>
-    return @\score(Seeding.matcher)
+    return @\score(Seeding.matcher, 0.75)
 
   onMerge: =>
     score = Seeding.score(@)
