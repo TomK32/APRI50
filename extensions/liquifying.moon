@@ -4,7 +4,7 @@ export class Liquifying
   @matcher = game.matchers.liquifying
 
   score: =>
-    return @\score(Liquifying.matcher)
+    return 0.3 + @\score(Liquifying.matcher)
 
   finish: (chunk) =>
     score = Liquifying.score(@)

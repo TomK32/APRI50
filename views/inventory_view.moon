@@ -27,8 +27,9 @@ export class InventoryView extends View
       else
         love.graphics.setColor(255, 255, 255, 255)
       if @inventory.items[i]
-        if @inventory.items[i].image
-          love.graphics.draw(@inventory.items[i].image, @padding, @padding)
+        item = @inventory.items[i]
+        if item.image
+          love.graphics.draw(item.image, @padding, @padding)
       else
         love.graphics.setColor(255, 255, 255, 255)
         love.graphics.rectangle('line', @padding, @padding, @item_size+@padding, @item_size)

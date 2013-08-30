@@ -48,6 +48,9 @@ export class MapState extends State
   keypressed: (key, unicode) =>
     if key\match("[0-9]")
       game.player.inventory.active = tonumber(key)
+    if key\match("m")
+      if game.player.inventory.active
+        game.player.inventory\replaceActive(game.player.inventory\activeItem()\mutate())
 
   mousepressed: (x, y, button) =>
     item_number = @inventory_view\clickedItem(x, y)

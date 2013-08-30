@@ -28,6 +28,9 @@ export class Inventory
       return false
     return @items[@active]
 
+  replaceActive: (other) =>
+    @items[@active] = other
+
   removeActive: =>
     @\remove(nil, @active)
     @active = nil

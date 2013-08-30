@@ -120,9 +120,13 @@ export class EvolutionKit
     if @dna
       @to_string = table.concat(@dna, '')
       @to_string = @to_string .. ' • '
+      has_score = false
       for i, extension in ipairs(EvolutionKit.extensions)
-        if extension.score
+        if extension.score and extension.score(@) > 0
+          has_score = true
           @to_string = @to_string .. extension.__name .. ': ' .. string.format("%.1f", extension.score(@)) .. ' '
+      if not has_score
+        @to_string = @to_string .. 'no fuction. [m] to mutate'
       return @to_string
     else
       return 'Evolution Kit'
