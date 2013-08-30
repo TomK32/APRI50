@@ -24,6 +24,7 @@ export class EvolutionKit
     @updateCallbacks = {} -- e.g. for methods to be called if the kit if growing over a longer time
     @dna = dna -- a table
     @parent = parent
+    @entities = {}
     if position then
       @\place(position)
     @mutations = {} -- just the dna strings
@@ -80,7 +81,11 @@ export class EvolutionKit
     for extension in *EvolutionKit.extensions
       if extension.onMerge
         extension.onMerge(self)
-    @.deleted = true
+    for i, entity in pairs(@entities)
+      if not entity.position
+        entity.position = @position
+      @map\addEntity(entity)
+    @deleted = true
     @ = nil
 
   -- if dna_matcher is given it will mutate upto 10 times until

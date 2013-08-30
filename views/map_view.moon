@@ -56,7 +56,7 @@ export class MapView extends View
       love.graphics.pop()
 
     -- entities
-    for i, layer in ipairs(self.map.layer_indexes) do
+    for l, layer in ipairs(@map.layer_indexes) do
       entities = @map.layers[layer]
       table.sort(entities, (a, b) -> return a.position.y > b.position.y)
       for i,entity in ipairs(entities) do
@@ -107,9 +107,12 @@ export class MapView extends View
 
   drawEntity: (entity, x, y) =>
     love.graphics.push()
-    if entity.draw
+    if entity.draw or entity.drawable
       game.renderer\translate(entity.position.x, entity.position.y)
-      entity\draw()
+      if entity.draw
+        entity\draw()
+      else
+        love.graphics.draw(entity.drawable)
     elseif entity.color
       game.renderer\rectangle('fill', entity.color, x or entity.position.x, y or entity.position.y)
     love.graphics.pop()
