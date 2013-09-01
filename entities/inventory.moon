@@ -29,10 +29,11 @@ export class Inventory
     return @items[@active]
 
   replaceActive: (other) =>
+    if not @activeItem()
+      return false
     @items[@active] = other
 
   removeActive: =>
     @\remove(nil, @active)
     @active = nil
-
 
