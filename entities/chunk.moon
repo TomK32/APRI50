@@ -1,6 +1,7 @@
 -- A piece of landscape surrounding a Center
 export class Chunk
   @extensions: {}
+  @sun_angle = math.pi / 2
   @PASTEL_BIOME_COLORS:
     SNOW: {250, 250, 250}
     TUNDRA: {220, 220, 185}
@@ -55,8 +56,12 @@ export class Chunk
     @height = 0
     x0, y0, x1, y1 = nil, nil, nil, nil
 
+    x = center.point.x
+    y = center.point.y
     for i, border in ipairs(center.borders)
       if border.v0 and border.v1
+        if border.v0.point.y < y and border.v1.point.y < y
+          border.angle = border.v0\angle(border.v1)
         for i, corner in ipairs({border.v0, border.v1})
 
           if not x0 or corner.point.x < x0
@@ -84,12 +89,41 @@ export class Chunk
     -- 64 - 140 + 100 = 24
     -- 40
     @display_rect = { 0, 0, @width, @height}
+    @absolute_display_rect = {x0, y0, x1, y1}
     @position = {x: x0, y: y0}
     @evolution_kit = evolution_kit
     @setColors()
     @drawCanvas()
+    @sunlight = {}
+    @sunlight_borders = {}
 
     @
+
+  setSunlight: (suns) =>
+    for i, sun in ipairs(suns)
+      @sunlight[sun] = 0
+      @sunlight_borders[sun] = {}
+      -- TODO: Find borders that are exposed to the sun, i.e. closest,
+      -- and if they are lower than the center(!) it is sunny
+      border_count = 0
+      pi_sun_angle = (2 * math.pi - Chunk.sun_angle)
+      for j, border in ipairs(@center.borders)
+        if border.angle
+          r = sun.angle - border.angle
+          wrap_left = sun.angle < -Chunk.sun_angle and border.angle > sun.angle + Chunk.sun_angle + math.pi
+          wrap_right = sun.angle > Chunk.sun_angle and border.angle < sun.angle - Chunk.sun_angle - math.pi
+          r = math.abs(sun.angle - border.angle)
+          if r < Chunk.sun_angle or r > pi_sun_angle
+            ratio = ((border.v0.elevation + border.v1.elevation) / 2) - @center.elevation
+            if ratio > 0
+              @sunlight[sun] += ratio
+              border_count += 1
+              table.insert(@sunlight_borders[sun], border)
+      @sunlight[sun] = @sunlight[sun] / border_count
+      @center['sun' .. i] = @sunlight[sun]
+    @center.sunlight = @sunlight
+
+    return @sunlight
 
   addParticleSystem: (system) =>
     table.insert(@particle_systems, system)
@@ -118,7 +152,30 @@ export class Chunk
     @colors[4] = 255
     love.graphics.setColor(unpack(@colors))
     love.graphics.rectangle('fill', 0, 0, @width, @height)
+    love.graphics.setColor(0, 0, 0, 100)
+    love.graphics.rectangle('fill', 0, 0, @width, @height)
+    love.graphics.setBlendMode('additive')
+    in_shadow = true
+    for sun, light in pairs(@sunlight or {})
+      if light > 0 and sun.color
+        in_shadow = false
+        love.graphics.setColor(sun.color[1], sun.color[2], sun.color[3], (sun.color[4] * light))
+        love.graphics.rectangle('fill', 0, 0, @width, @height)
+    if in_shadow
+      love.graphics.setColor(0, 0, 0, 255)
+      love.graphics.rectangle('fill', 0, 0, @width, @height)
+
     love.graphics.setStencil()
+    if game.sun_debug
+      for sun, borders in pairs(@sunlight_borders or {})
+        love.graphics.setColor(sun.color[1], sun.color[2], sun.color[3], 255)
+        for i, border in ipairs(borders)
+          x0, y0 = border.v0.point.x - @position.x, border.v0.point.y - @position.y
+          x1, y1 = border.v1.point.x - @position.x, border.v1.point.y - @position.y
+          love.graphics.line(x0, y0, x1, y1)
+          love.graphics.print(math.floor(@sunlight[sun] * 100) , (x0 + x1) / 2, (y0 + y1) / 2)
+
+    love.graphics.setBlendMode('alpha')
 
   drawParticles: =>
     for i, system in ipairs @particle_systems
@@ -165,7 +222,7 @@ export class Chunk
       @colors = Chunk.BIOME_COLORS[@center.biome]
     return @colors
 
-  draw: (highlight) =>
-    @fill(highlight)
+  draw: () =>
+    @fill()
     --love.graphics.draw(@canvas, 0, 0)
 

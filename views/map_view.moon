@@ -8,6 +8,10 @@ export class MapView extends View
     @display = {width: 800, height: 400, y: 60, x: 10}
     @m_x, @m_y = 0, 0
     @debug_mouse_window = {width: 10, height: 10}
+    @suns = {
+      {speed: 1, angle: 0, color: {255, 230, 0, 200}, name: 'Jebol'}
+      {speed: 3, angle: math.pi / 6, color: {200, 20, 0, 155}, name: 'Minmol'}
+    }
 
   setDisplay: (display) =>
     View.setDisplay(@, display)
@@ -20,11 +24,20 @@ export class MapView extends View
   scaledPoint: (point) =>
     return point.x * @scale.x, point.y * @scale.y
 
+  updateLight: (dt) =>
+    for i, sun in pairs @suns
+      sun.angle += dt * sun.speed
+      if sun.angle > math.pi
+        sun.angle = -math.pi
+    for i, center in ipairs(@map\centers())
+      center.chunk\setSunlight(@suns)
+
   drawContent: =>
     love.graphics.setColor(255,255,255,255)
     for i, center in ipairs @map\centers()
       if not center.chunk
         center.chunk = Chunk(center)
+        center.chunk\setSunlight(@suns)
       love.graphics.push()
       x = center.chunk.position.x
       y = center.chunk.position.y
@@ -64,6 +77,12 @@ export class MapView extends View
 
     if game.debug
       @debugMousePointer()
+    if game.sun_debug
+      love.graphics.setColor(255, 255, 255, 255)
+      love.graphics.rectangle('fill', 5, 5, 80, 10 + #@suns * 10)
+      love.graphics.setColor(0, 0, 0, 255)
+      for i, sun in ipairs @suns
+        love.graphics.print(sun.name .. ' ' .. math.floor(sun.angle * 10), 10, 7 + (i - 1) * 20)
 
   focusedCenter: =>
     m_x, m_y = @getMousePosition()
@@ -124,7 +143,7 @@ export class MapView extends View
       alpha = 50
     alpha = alpha * game.map_debug
     love.graphics.setColor(0, 0, 0, alpha)
-    love.graphics.circle("fill", x, y, 2 * (0.4 + center.elevation), 6)
+    love.graphics.circle("fill", x, y, 3 * (0.1 + center.elevation), 6)
     love.graphics.setColor(250,250,250, alpha)
     for i, border in pairs center.borders
       if border.v0

@@ -10,6 +10,7 @@ game = {
     mode = { }
   },
   map_debug = 1,
+  sun_debug = false,
   renderer = require('renderers/default'),
   fonts = { },
   version = require('version'),

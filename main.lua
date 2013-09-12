@@ -52,6 +52,8 @@ function love.keypressed(key)
     game.map_debug = math.max(0, game.map_debug - 1)
   elseif key == 'f5' then
     game.map_debug = math.min(4, game.map_debug + 1)
+  elseif key == 'f6' then
+    game.sun_debug = not game.sun_debug
   end
 
   if key == 'q' then

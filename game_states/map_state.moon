@@ -10,9 +10,11 @@ export class MapState extends State
   @extensions = {}
   new: =>
     @map = Map(game.graphics.mode.width - 20, game.graphics.mode.height - 60, game.seed)
+
     @view = MapView(@map)
     @inventory_view = InventoryView(game.player.inventory)
     @resources_view = ResourcesView(game.player.resources)
+    @light_dt = 0
 
     -- change @compute_scores from your game play,
     -- and add at least one extension with
@@ -36,7 +38,14 @@ export class MapState extends State
 
   update: (dt) =>
     @map\update(dt)
-    @game_play\update(dt)
+    if @game_play
+      @game_play\update(dt)
+    if @light_dt > 8 * dt
+      @view\updateLight(dt)
+      @light_dt = 0
+    @light_dt += dt
+
+
     if @compute_scores
       for i, extension in ipairs @@extensions
         if extension.resetScore
