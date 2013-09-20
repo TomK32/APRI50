@@ -41,6 +41,20 @@ Toggle the game's debug mode by pressing `F3`.
 Press `F4/F5` to increase/decrese the debug level for the map, this
 independent from the `F3` debug mode.
 
+## Game play
+
+There are several variations of the game play in planning, the game
+should even allow you to create mods to have your own gameplay including
+custom entities, extensions and more.
+
+The first game play started was a Doomsday mod where meteroids are
+hitting the map burning everything.
+
+The second, more serious gameplay mod includes colonists which will give
+the player a more direct immersion in the game. The colonists and
+not a nameless mouse pointer will be the ones who place evolution kits
+on the map. You can also switch between the colonists, and move around
+with them.
 
 ## References (other games you should play!)
 

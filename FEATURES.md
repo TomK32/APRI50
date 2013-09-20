@@ -14,6 +14,7 @@
 
 ### Colonists
 
+* [active] Static landing craft (Base 1)
 * [active] Colonists with moving, controllable entities
 * [active] Plant EvoKit where colonist stands
 * Switch between colonists

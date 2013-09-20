@@ -7,3 +7,4 @@ export class GamePlay
     print "How about implementing registerExtensions in your GamePlay?"
 
 require 'game_plays/doomsday'
+require 'game_plays/colony'

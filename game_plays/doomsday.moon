@@ -1,7 +1,6 @@
 
 GamePlay.Doomsday = class Doomsday extends GamePlay
   new: (map_state) =>
-    @map_state = map_state
     super(map_state)
 
     @map_state.scores.biomass = {label: 'Biomass', score: 0}

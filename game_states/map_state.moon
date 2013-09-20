@@ -23,12 +23,18 @@ export class MapState extends State
     @compute_scores = false
     @scores = {}
     @scores_view = ScoresView(@)
-    @game_play = GamePlay.Doomsday(@)
+    --@game_play = GamePlay.Doomsday(@)
+    @game_play = GamePlay.Colony(@)
 
     for i=1, game.evolution_kits_to_start
       game.player.inventory\add(EvolutionKit.random(game.dna_length))
 
     return @
+
+  setScore: (name, score) =>
+    if not @scores
+      @scores = {}
+    @scores[name] = {label: name, score: score}
 
   draw: =>
     @view\draw()
@@ -75,5 +81,6 @@ export class MapState extends State
         center = @map\findClosestCenter(x, y)
         assert(center, 'TOOD: Flash display when no center')
         if item\place(@map, {x: center.point.x, y: center.point.y, z: 1}, center)
+          @map\addEntity(item)
           game.player.inventory\removeActive()
 
