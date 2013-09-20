@@ -10,6 +10,8 @@ export class Map
     @layer_indexes = {}
     @tiles = {}
     @updateAble = {} -- entities that need to be called during update
+    @width = width
+    @height = height
     @map_gen = MapGen(width, height, seed)
     @
 

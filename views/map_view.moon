@@ -1,11 +1,13 @@
 
 export class MapView extends View
   new: (map) =>
-    @scale = {x: 1, y: 1}
+    @scale = {x: 4, y: 4}
     super(self)
     @map = map
-    @top_left = {x: 0, y: 0}
-    @display = {width: 800, height: 400, y: 60, x: 10}
+    @display = {width: 780, height: 440, y: 60, x: 10}
+    @top_left = {x: @map.width / 2 - @display.width / 2, y: @map.height / 2 - @display.height / 2}
+    @max_x = @map.width - @display.width / 2
+    @max_y = @map.height - @display.height / 2
     @m_x, @m_y = 0, 0
     @debug_mouse_window = {width: 10, height: 10}
     @suns = {
@@ -21,6 +23,39 @@ export class MapView extends View
   coordsForXY: (x, y) =>
     return math.floor(x / @scale.x) - @display.x , math.floor(y / @scale.y) - @display.y
 
+  move: (direction) =>
+    @top_left.x += direction.x
+    @top_left.y += direction.y
+    @fitMap(@top_left)
+
+
+  zoom: (factor) =>
+    if @scale.x <= 1 and factor < 1
+      @scale.x, @scale.y = 1, 1
+      return true
+    if @scale.x >= 16 and factor > 1
+      @scale.x, @scale.y = 16, 16
+      return
+    tween(0.2, @scale, {x: @scale.x * factor, y: @scale.y * factor})
+    dir = 1
+    if factor < 1
+      dir = -1
+    r = 2 * 1 / math.abs(1 - factor) * @scale.x * factor
+
+    new_top_left = @fitMap({x: @top_left.x + (dir * @display.width / r), y: @top_left.y + (dir * @display.height / r)})
+    tween(0.2, @top_left, new_top_left)
+
+  fitMap: (pos) =>
+    if pos.x < 0
+      pos.x = 0
+    if pos.x > @max_x
+      pos.x = @max_x
+    if pos.y < 0
+      pos.y = 0
+    if pos.y > @max_y
+      pos.y = @max_y
+    return pos
+
   scaledPoint: (point) =>
     return point.x * @scale.x, point.y * @scale.y
 
@@ -33,7 +68,9 @@ export class MapView extends View
       center.chunk\setSunlight(@suns)
 
   drawContent: =>
+    love.graphics.translate(-@top_left.x * @scale.x, -@top_left.y * @scale.y)
     love.graphics.setColor(255,255,255,255)
+    love.graphics.scale(@scale.x, @scale.y)
     for i, center in ipairs @map\centers()
       if not center.chunk
         center.chunk = Chunk(center)
@@ -67,6 +104,7 @@ export class MapView extends View
       love.graphics.setColor(255, 55, 55, 55)
       focused_center.chunk\drawStencil()
       love.graphics.pop()
+    love.graphics.setColor(255, 255, 255, 255)
 
     -- entities
     for l, layer in ipairs(@map.layer_indexes) do
@@ -137,7 +175,7 @@ export class MapView extends View
     love.graphics.pop()
 
   debugCenter: (center) =>
-    x, y = @scaledPoint(center.point)
+    x, y = center.point.x, center.point.y
     alpha = 20
     if @focusedCenter() == center
       alpha = 50
@@ -147,8 +185,8 @@ export class MapView extends View
     love.graphics.setColor(250,250,250, alpha)
     for i, border in pairs center.borders
       if border.v0
-        x0, y0 = @scaledPoint(border.v0.point)
-        x1, y1 = @scaledPoint(border.v1.point)
+        x0, y0 = border.v0.point.x, border.v0.point.y
+        x1, y1 = border.v1.point.x, border.v1.point.y
         love.graphics.line(x0, y0, x1, y1)
 
     love.graphics.setColor(0,0,250,alpha)

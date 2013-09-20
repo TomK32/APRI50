@@ -8,8 +8,14 @@ require 'game_plays/game_play'
 
 export class MapState extends State
   @extensions = {}
+  @controls =
+    w: {x: 0,  y: -4},
+    a: {x: -4, y:  0},
+    s: {x: 0,  y:  4},
+    d: {x: 4,  y:  0}
+
   new: =>
-    @map = Map(game.graphics.mode.width - 20, game.graphics.mode.height - 60, game.seed)
+    @map = Map(1400, 800, game.seed)
 
     @view = MapView(@map)
     @inventory_view = InventoryView(game.player.inventory)
@@ -51,6 +57,9 @@ export class MapState extends State
       @light_dt = 0
     @light_dt += dt
 
+    for key, direction in pairs(MapState.controls)
+      if love.keyboard.isDown(key)
+        @view\move(direction)
 
     if @compute_scores
       for i, extension in ipairs @@extensions
@@ -69,6 +78,11 @@ export class MapState extends State
     if key\match("r")
       if game.player.inventory.activeItem
         game.player.inventory\replaceActive(EvolutionKit.random(game.dna_length))
+
+    if key\match("q")
+      @view\zoom(3/4)
+    if key\match("e")
+      @view\zoom(5/4)
 
   mousepressed: (x, y, button) =>
     item_number = @inventory_view\clickedItem(x, y)

@@ -18,7 +18,7 @@ export class View
   -- subtract the views offset
   getMousePosition: () =>
     x, y = love.mouse.getPosition()
-    return x - @display.x, y - @display.y
+    return x * @scale.x - @display.x, y * @scale.y - @display.y
 
   setDisplay: (display) =>
     if not @display then

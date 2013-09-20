@@ -41,6 +41,8 @@ Toggle the game's debug mode by pressing `F3`.
 Press `F4/F5` to increase/decrese the debug level for the map, this
 independent from the `F3` debug mode.
 
+To move the map you can use WASD and to zoom in/out use q/e.
+
 ## Game play
 
 There are several variations of the game play in planning, the game
