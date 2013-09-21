@@ -5,7 +5,6 @@ export class MapView extends View
     @map = map
     @display = {width: 780, height: 440, y: 60, x: 10}
     @camera = Camera(@map.width / 2 - @display.width / 2, @map.height / 2 - @display.height / 2)
-    @camera\zoomTo(2)
     super(self)
     @max_x = @map.width - @display.width / 2
     @max_y = @map.height - @display.height / 2
@@ -25,13 +24,21 @@ export class MapView extends View
 
   move: (x, y) =>
     @camera\move(x, y)
+    if @camera.x < @display.width / 2 / @camera.scale
+      @camera.x = @display.width / 2 / @camera.scale
+    if @camera.y < @display.height / 2 / @camera.scale
+      @camera.y = @display.height / 2 / @camera.scale
+    if @camera.x > @map.width - @display.width / 2 / @camera.scale
+      @camera.x = @map.width - @display.width / 2 / @camera.scale
+    if @camera.y > @map.height - @display.height / 2 / @camera.scale
+      @camera.y = @map.height - @display.height / 2 / @camera.scale
 
   zoom: (factor) =>
-    if @camera.scale * factor <= 0.75 and factor < 1
-      @camera.scale = 0.75
+    if @camera.scale * factor <= 0.5 and factor < 1
+      @camera.scale = 0.5
       return true
-    if @camera.scale * factor >= 3 and factor > 1
-      @camera.scale = 3
+    if @camera.scale * factor >= 2 and factor > 1
+      @camera.scale = 2
       return
     tween(0.2, @camera, {scale: @camera.scale * factor})
     dir = 1
@@ -66,6 +73,7 @@ export class MapView extends View
       center.chunk\setSunlight(@suns)
 
   drawContent: =>
+    @move(0,0)
     love.graphics.setCanvas(@canvas)
     @canvas\clear()
 

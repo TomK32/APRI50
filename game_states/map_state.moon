@@ -84,9 +84,9 @@ export class MapState extends State
         game.player.inventory\replaceActive(EvolutionKit.random(game.dna_length))
 
     if key\match("q")
-      @view\zoom(3/4)
+      @view\zoom(0.5)
     if key\match("e")
-      @view\zoom(4/3)
+      @view\zoom(2)
 
   mousepressed: (x, y, button) =>
     item_number = @inventory_view\clickedItem(x, y)
