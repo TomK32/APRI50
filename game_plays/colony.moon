@@ -10,7 +10,9 @@ GamePlay.Colony = class Colony extends GamePlay
     for i=1, 5
       @addColonist(GamePlay.Colony.Colonist())
 
-    @map_state.map\addEntity(GamePlay.Colony.SpaceShip('images/entities/ship1.png', {x: @map_state.map.width / 2, y: @map_state.map.height / 2, z: 10}))
+    start_position = {x: @map_state.map.width / 2, y: @map_state.map.height / 2, z: 10}
+    @map_state.map\addEntity(GamePlay.Colony.SpaceShip('images/entities/ship1.png', start_position))
+    @map_state.view.camera\lookAt(start_position.x, start_position.y)
     @dt = 0
     @burning_centers = {}
     @particle_systems = {}
