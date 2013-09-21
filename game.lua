@@ -15,8 +15,7 @@ game = {
   fonts = { },
   version = require('version'),
   url = 'http://ananasblau.com/apri50',
-  current_level = 1,
-  dna_length = 12,
+  dna_length = 16,
   evolution_kits_to_start = 7,
   matchers = {
     -- make sure they are unique and don't overlap too much.
