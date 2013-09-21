@@ -5,14 +5,14 @@
 require 'lib.map_gen'
 
 export class Map
-  new: (width, height, seed) =>
+  new: (width, height, seed, number_of_points) =>
     @layers = {} -- here the entities are stuffed into
     @layer_indexes = {}
     @tiles = {}
     @updateAble = {} -- entities that need to be called during update
     @width = width
     @height = height
-    @map_gen = MapGen(width, height, seed)
+    @map_gen = MapGen(width, height, seed, number_of_points)
     @
 
   points: =>

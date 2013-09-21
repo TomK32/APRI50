@@ -83,8 +83,8 @@ class PM_PRNG
 export class MapGen
   -- TODO: accept a table in the constructor
   -- FIXME: Allow width and height for oblong shapes
-  new: (width, height, seed, _type) =>
-    @num_points = (width + height) / 2
+  new: (width, height, seed, number_of_points, _type) =>
+    @num_points = number_of_points
     @lake_treshold = 0.3 -- 0...1
     @num_lloyd_iterations = 0
     @bounds = Rectangle(0, 0, width, height)

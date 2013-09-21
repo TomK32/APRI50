@@ -15,7 +15,7 @@ export class MapState extends State
     d: {x: 4,  y:  0}
 
   new: =>
-    @map = Map(1400, 800, game.seed)
+    @map = Map(2000, 1000, game.seed, 500)
 
     @view = MapView(@map)
     @inventory_view = InventoryView(game.player.inventory)
