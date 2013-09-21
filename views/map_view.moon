@@ -1,11 +1,12 @@
+Camera = require "hump.camera"
 
 export class MapView extends View
   new: (map) =>
-    @scale = {x: 4, y: 4}
-    super(self)
     @map = map
     @display = {width: 780, height: 440, y: 60, x: 10}
-    @top_left = {x: @map.width / 2 - @display.width / 2, y: @map.height / 2 - @display.height / 2}
+    @camera = Camera(@map.width / 2 - @display.width / 2, @map.height / 2 - @display.height / 2)
+    @camera\zoomTo(2)
+    super(self)
     @max_x = @map.width - @display.width / 2
     @max_y = @map.height - @display.height / 2
     @m_x, @m_y = 0, 0
@@ -14,38 +15,35 @@ export class MapView extends View
       {speed: 1, angle: 0, color: {255, 230, 0, 200}, name: 'Jebol'}
       {speed: 3, angle: math.pi / 6, color: {200, 20, 0, 155}, name: 'Minmol'}
     }
+    @canvas = love.graphics.newCanvas(@map.width + 2 * @display.x, @map.height + 2 * @display.y)
 
   setDisplay: (display) =>
     View.setDisplay(@, display)
-    @width = math.ceil(@display.width / @scale.x)
-    @height = math.ceil(@display.height / @scale.y)
 
   coordsForXY: (x, y) =>
-    return math.floor(x / @scale.x) - @display.x , math.floor(y / @scale.y) - @display.y
+    return math.floor(x / @camera.scale) - @display.x , math.floor(y / @camera.scale) - @display.y
 
-  move: (direction) =>
-    @top_left.x += direction.x
-    @top_left.y += direction.y
-    @fitMap(@top_left)
-
+  move: (x, y) =>
+    @camera\move(x, y)
 
   zoom: (factor) =>
-    if @scale.x <= 1 and factor < 1
-      @scale.x, @scale.y = 1, 1
+    if @camera.scale * factor <= 0.75 and factor < 1
+      @camera.scale = 0.75
       return true
-    if @scale.x >= 16 and factor > 1
-      @scale.x, @scale.y = 16, 16
+    if @camera.scale * factor >= 3 and factor > 1
+      @camera.scale = 3
       return
-    tween(0.2, @scale, {x: @scale.x * factor, y: @scale.y * factor})
+    tween(0.2, @camera, {scale: @camera.scale * factor})
     dir = 1
     if factor < 1
       dir = -1
-    r = 2 * 1 / math.abs(1 - factor) * @scale.x * factor
+    r = 2 * 1 / math.abs(1 - factor) * @camera.scale * factor
 
-    new_top_left = @fitMap({x: @top_left.x + (dir * @display.width / r), y: @top_left.y + (dir * @display.height / r)})
-    tween(0.2, @top_left, new_top_left)
+    new_top_left = @fitToMap({x: @camera.x + (dir * @display.width / r), y: @camera.y + (dir * @display.height / r)})
+    tween(0.2, @camera, new_top_left)
+    @drawContent()
 
-  fitMap: (pos) =>
+  fitToMap: (pos) =>
     if pos.x < 0
       pos.x = 0
     if pos.x > @max_x
@@ -57,7 +55,7 @@ export class MapView extends View
     return pos
 
   scaledPoint: (point) =>
-    return point.x * @scale.x, point.y * @scale.y
+    return point.x * @camera.scale, point.y * @camera.scale
 
   updateLight: (dt) =>
     for i, sun in pairs @suns
@@ -68,9 +66,10 @@ export class MapView extends View
       center.chunk\setSunlight(@suns)
 
   drawContent: =>
-    love.graphics.translate(-@top_left.x * @scale.x, -@top_left.y * @scale.y)
+    love.graphics.setCanvas(@canvas)
+    @canvas\clear()
+
     love.graphics.setColor(255,255,255,255)
-    love.graphics.scale(@scale.x, @scale.y)
     for i, center in ipairs @map\centers()
       if not center.chunk
         center.chunk = Chunk(center)
@@ -121,6 +120,7 @@ export class MapView extends View
       love.graphics.setColor(0, 0, 0, 255)
       for i, sun in ipairs @suns
         love.graphics.print(sun.name .. ' ' .. math.floor(sun.angle * 10), 10, 7 + (i - 1) * 20)
+    love.graphics.setCanvas()
 
   focusedCenter: =>
     m_x, m_y = @getMousePosition()
@@ -165,13 +165,11 @@ export class MapView extends View
   drawEntity: (entity, x, y) =>
     love.graphics.push()
     if entity.draw or entity.drawable
-      game.renderer\translate(entity.position.x, entity.position.y)
+      love.graphics.translate(entity.position.x, entity.position.y)
       if entity.draw
         entity\draw()
       else
         love.graphics.draw(entity.drawable)
-    elseif entity.color
-      game.renderer\rectangle('fill', entity.color, x or entity.position.x, y or entity.position.y)
     love.graphics.pop()
 
   debugCenter: (center) =>

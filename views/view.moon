@@ -5,12 +5,16 @@ export class View
     @\setDisplay({x: 0, y: 0, width: 0, height: 0})
 
   draw: =>
+    if @camera
+      @camera\attach()
     love.graphics.setColor(255,255,255,255)
-    love.graphics.push()
-    if @display.x ~= 0 or @display.y ~= 0 then
-      love.graphics.translate(@display.x, @display.y)
-    @\drawContent()
-    love.graphics.pop()
+    if @canvas
+      love.graphics.setColor(255,255,255)
+      love.graphics.draw(@canvas)
+    else
+      @\drawContent()
+    if @camera
+      @camera\detach()
 
   pointInRect: (x, y) =>
     return x > @display.x and y > @display.y and x < @display.x + @display.width and y < @display.y + @display.height
@@ -18,7 +22,9 @@ export class View
   -- subtract the views offset
   getMousePosition: () =>
     x, y = love.mouse.getPosition()
-    return x * @scale.x - @display.x, y * @scale.y - @display.y
+    if not @camera
+      return x - @display.x, y - @display.y
+    return x * @camera.scale - @camera.x, y * @camera.scale - @camera.y
 
   setDisplay: (display) =>
     if not @display then

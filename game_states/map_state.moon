@@ -57,9 +57,12 @@ export class MapState extends State
       @light_dt = 0
     @light_dt += dt
 
+    speed = 1
+    if love.keyboard.isDown("lshift") or love.keyboard.isDown('rshift')
+      speed = 4
     for key, direction in pairs(MapState.controls)
       if love.keyboard.isDown(key)
-        @view\move(direction)
+        @view\move(direction.x * speed, direction.y * speed)
 
     if @compute_scores
       for i, extension in ipairs @@extensions
@@ -68,6 +71,7 @@ export class MapState extends State
         if extension.scoreForCenter
           for j, center in ipairs @map\centers()
             extension.scoreForCenter(@scores, center)
+    @view\drawContent()
 
   keypressed: (key, unicode) =>
     if key\match("[0-9]")
@@ -82,7 +86,7 @@ export class MapState extends State
     if key\match("q")
       @view\zoom(3/4)
     if key\match("e")
-      @view\zoom(5/4)
+      @view\zoom(4/3)
 
   mousepressed: (x, y, button) =>
     item_number = @inventory_view\clickedItem(x, y)
