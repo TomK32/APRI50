@@ -13,6 +13,8 @@ export class Map
     @width = width
     @height = height
     @map_gen = MapGen(width, height, seed, number_of_points)
+    @bucket_size = 128
+    @createCenterBuckets()
     @
 
   points: =>
@@ -23,6 +25,39 @@ export class Map
 
   centers: =>
     return @map_gen.centers
+
+  centersInRect: (x0, y0, w, h) =>
+    x0 = math.max(math.ceil(x0 / @bucket_size) - 1, 1)
+    y0 = math.max(math.ceil(y0 / @bucket_size) - 1, 1)
+    w = math.ceil(w / @bucket_size) + 1
+    h = math.ceil(h / @bucket_size) + 1
+    if @last and @last == {x0, y0, w, h}
+      return @last_centers_in_rect
+    @last = {x0, y0, w, h}
+    @last_centers_in_rect = {}
+
+    all = 1
+    for x = x0, x0 + w
+      if @center_buckets[x]
+        for y = y0, y0 + h
+          if @center_buckets[x][y]
+            for i, center in ipairs(@center_buckets[x][y])
+              @last_centers_in_rect[all] = center
+              all += 1
+
+    return @last_centers_in_rect
+
+  createCenterBuckets: =>
+    @center_buckets = {}
+    for x = 1, math.ceil(@width / @bucket_size)
+      @center_buckets[x] = {}
+      for y = 1, math.ceil(@height / @bucket_size)
+        @center_buckets[x][y] = {}
+
+    for i, center in ipairs(@map_gen.centers)
+      x = math.floor(center.point.x / @bucket_size) + 1
+      y = math.floor(center.point.y / @bucket_size) + 1
+      table.insert(@center_buckets[x][y], center)
 
   addEntity: (entity) =>
     entity.map = self

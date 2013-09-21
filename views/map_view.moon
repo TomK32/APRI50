@@ -70,7 +70,8 @@ export class MapView extends View
     @canvas\clear()
 
     love.graphics.setColor(255,255,255,255)
-    for i, center in ipairs @map\centers()
+    centers = @map\centersInRect(@camera.x - @display.width, @camera.y - @display.height, 2 * @display.width, 2 * @display.height)
+    for i, center in ipairs centers
       if not center.chunk
         center.chunk = Chunk(center)
         center.chunk\setSunlight(@suns)
@@ -87,7 +88,7 @@ export class MapView extends View
         -- outside the translate
         @debugCenter(center)
 
-    for i, center in ipairs @map\centers()
+    for i, center in ipairs centers
       if #center.chunk.particle_systems > 0
         love.graphics.push()
         x = center.chunk.position.x
@@ -97,7 +98,7 @@ export class MapView extends View
         love.graphics.pop()
 
     focused_center = @focusedCenter()
-    if focused_center
+    if focused_center and focused_center.chunk
       love.graphics.push()
       love.graphics.translate(focused_center.chunk.position.x, focused_center.chunk.position.y)
       love.graphics.setColor(255, 55, 55, 55)
