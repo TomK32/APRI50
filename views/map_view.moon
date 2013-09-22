@@ -34,11 +34,11 @@ export class MapView extends View
       @camera.y = @map.height - @display.height / 2 / @camera.scale
 
   zoom: (factor) =>
-    if @camera.scale * factor <= 0.5 and factor < 1
-      @camera.scale = 0.5
+    if @camera.scale * factor < 0.48 and factor < 1
+      @camera.scale = 0.48
       return true
-    if @camera.scale * factor >= 2 and factor > 1
-      @camera.scale = 2
+    if @camera.scale * factor > 1 and factor > 1
+      @camera.scale = 1
       return
     tween(0.2, @camera, {scale: @camera.scale * factor})
     dir = 1
@@ -46,8 +46,6 @@ export class MapView extends View
       dir = -1
     r = 2 * 1 / math.abs(1 - factor) * @camera.scale * factor
 
-    new_top_left = @fitToMap({x: @camera.x + (dir * @display.width / r), y: @camera.y + (dir * @display.height / r)})
-    tween(0.2, @camera, new_top_left)
     @drawContent()
 
   fitToMap: (pos) =>

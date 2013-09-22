@@ -86,9 +86,9 @@ export class MapState extends State
 
     if not (love.keyboard.isDown("lmeta") or love.keyboard.isDown('rmeta'))
       if key\match("q")
-        @view\zoom(0.5)
+        @view\zoom(1/1.2)
       if key\match("e")
-        @view\zoom(2)
+        @view\zoom(1.2)
 
   mousepressed: (x, y, button) =>
     item_number = @inventory_view\clickedItem(x, y)
