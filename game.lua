@@ -9,8 +9,9 @@ game = {
   graphics = {
     mode = { }
   },
-  map_debug = 1,
+  map_debug = 0,
   sun_debug = false,
+  show_sun = false,
   renderer = require('renderers/default'),
   fonts = { },
   version = require('version'),

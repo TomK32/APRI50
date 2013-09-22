@@ -153,6 +153,13 @@ export class Chunk
     love.graphics.rectangle('fill', 0, 0, @width, @height)
     love.graphics.setColor(0, 0, 0, 100)
     love.graphics.rectangle('fill', 0, 0, @width, @height)
+    if game.show_sun
+      @applySunlight()
+    love.graphics.setStencil()
+    true
+
+  applySunlight: =>
+    love.graphics.push()
     love.graphics.setBlendMode('additive')
     in_shadow = true
     for sun, light in pairs(@sunlight or {})
@@ -164,7 +171,6 @@ export class Chunk
       love.graphics.setColor(0, 0, 0, 255)
       love.graphics.rectangle('fill', 0, 0, @width, @height)
 
-    love.graphics.setStencil()
     if game.sun_debug
       for sun, borders in pairs(@sunlight_borders or {})
         love.graphics.setColor(sun.color[1], sun.color[2], sun.color[3], 255)
@@ -173,8 +179,8 @@ export class Chunk
           x1, y1 = border.v1.point.x - @position.x, border.v1.point.y - @position.y
           love.graphics.line(x0, y0, x1, y1)
           love.graphics.print(math.floor(@sunlight[sun] * 100) , (x0 + x1) / 2, (y0 + y1) / 2)
-
     love.graphics.setBlendMode('alpha')
+    love.graphics.pop()
 
   drawParticles: =>
     for i, system in ipairs @particle_systems

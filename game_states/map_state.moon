@@ -52,7 +52,7 @@ export class MapState extends State
     @map\update(dt)
     if @game_play
       @game_play\update(dt)
-    if @light_dt > 8 * dt
+    if game.show_sun and @light_dt > 8 * dt
       @view\updateLight(dt)
       @light_dt = 0
     @light_dt += dt
