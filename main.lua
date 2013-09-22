@@ -56,9 +56,6 @@ function love.keypressed(key)
     game.sun_debug = not game.sun_debug
   end
 
-  if key == 'q' then
-    love.quit()
-  end
   if not game.current_state then return end
   game.current_state:keypressed(key)
 end
