@@ -7,12 +7,16 @@ export class View
   draw: =>
     if @camera
       @camera\attach()
+    love.graphics.push()
+    if @display.x ~= 0 or @display.y ~= 0
+      love.graphics.translate(@display.x, @display.y)
     love.graphics.setColor(255,255,255,255)
     if @canvas
       love.graphics.setColor(255,255,255)
       love.graphics.draw(@canvas)
     else
       @\drawContent()
+    love.graphics.pop()
     if @camera
       @camera\detach()
 
