@@ -192,6 +192,13 @@ export class Chunk
     for i, polygon in ipairs @polygons
       love.graphics.polygon('fill', unpack(polygon))
 
+  drawBorders: =>
+    for i, border in pairs @center.borders
+      if border.v0
+        x0, y0 = border.v0.point.x, border.v0.point.y
+        x1, y1 = border.v1.point.x, border.v1.point.y
+        love.graphics.line(x0, y0, x1, y1)
+
   iterate: (callback) =>
     for i, corner in ipairs(@center.corners)
       callback(corner, @center)

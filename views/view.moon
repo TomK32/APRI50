@@ -19,6 +19,8 @@ export class View
     love.graphics.pop()
     if @camera
       @camera\detach()
+    if @drawGUI
+      @drawGUI()
 
   pointInRect: (x, y) =>
     return x > @display.x and y > @display.y and x < @display.x + @display.width and y < @display.y + @display.height
@@ -26,9 +28,7 @@ export class View
   -- subtract the views offset
   getMousePosition: () =>
     x, y = love.mouse.getPosition()
-    if not @camera
-      return x - @display.x, y - @display.y
-    return x * @camera.scale - @camera.x, y * @camera.scale - @camera.y
+    return x - @display.x, y - @display.y
 
   setDisplay: (display) =>
     if not @display then
