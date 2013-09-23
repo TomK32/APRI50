@@ -11,8 +11,9 @@ export class MapView extends View
     @m_x, @m_y = 0, 0
     @debug_mouse_window = {width: 10, height: 10}
     @suns = {
-      {speed: 1, angle: 0, color: {255, 230, 0, 200}, name: 'Jebol'}
-      {speed: 3, angle: math.pi / 6, color: {200, 20, 0, 155}, name: 'Minmol'}
+      {speed: 1, strength: 0.5, point: {x: 0, y: 0}, angle: 0, color: {255, 230, 0, 200}, name: 'Jebol'}
+      {speed: 3, strength: 0.3, point: {x: 0, y: 0}, angle: 230, color: {200, 20, 0, 155}, name: 'Minmol'}
+      --{speed: 4, strength: 0.9, point: {x: 0, y: 0}, angle: 230, color: {0, 20, 200, 255}, name: 'Hanol'}
     }
     @canvas = love.graphics.newCanvas(@map.width + 2 * @display.x, @map.height + 2 * @display.y)
 
@@ -67,10 +68,13 @@ export class MapView extends View
   updateLight: (dt) =>
     for i, sun in pairs @suns
       sun.angle += dt * sun.speed
-      if sun.angle > math.pi
-        sun.angle = -math.pi
+      if sun.angle > 360
+        sun.angle = 0
+      sun.point.x = math.cos(sun.angle)
+      sun.point.y = math.sin(sun.angle)
+    suns = _.select(@suns, (sun) -> return sun.angle < 180)
     for i, center in ipairs(@centersInRect())
-      center.chunk\setSunlight(@suns)
+      center.chunk\setSunlight(suns)
 
   drawContent: =>
     @move(0,0)
@@ -108,8 +112,7 @@ export class MapView extends View
     focused_center = @focusedCenter()
     if focused_center --and focused_center.chunk
       love.graphics.push()
-      love.graphics.setColor(250,250,0, 255)
-      focused_center.chunk\drawBorders()
+      focused_center.chunk\drawDebug()
       love.graphics.pop()
     love.graphics.setColor(255, 255, 255, 255)
 
@@ -131,6 +134,14 @@ export class MapView extends View
   drawGUI: =>
     if game.debug
       @debugMousePointer()
+    if game.show_sun
+      scale = 40
+      x, y = love.mouse.getPosition()
+      for i, sun in ipairs @suns
+        love.graphics.setColor(unpack(sun.color))
+        love.graphics.circle("fill", x + scale * sun.point.x, y + scale * sun.point.y, scale / 4 * sun.strength)
+        love.graphics.setColor(0,0,0,255)
+        love.graphics.print(sun.name, x + scale * sun.point.x + 5, y + scale * sun.point.y + 3)
 
   getMousePosition: =>
     x, y = love.mouse.getPosition()

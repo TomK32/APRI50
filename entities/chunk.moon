@@ -118,6 +118,7 @@ export class Chunk
               @sunlight[sun] += ratio
               border_count += 1
               table.insert(@sunlight_borders[sun], border)
+      -- TODO: Tween
       @sunlight[sun] = @sunlight[sun] / border_count
       @center['sun' .. i] = @sunlight[sun]
     @center.sunlight = @sunlight
@@ -195,9 +196,12 @@ export class Chunk
   drawBorders: =>
     for i, border in pairs @center.borders
       if border.v0
+        love.graphics.push()
+        love.graphics.setColor(255,255,255,100)
         x0, y0 = border.v0.point.x, border.v0.point.y
         x1, y1 = border.v1.point.x, border.v1.point.y
         love.graphics.line(x0, y0, x1, y1)
+        love.graphics.pop()
 
   iterate: (callback) =>
     for i, corner in ipairs(@center.corners)
@@ -233,6 +237,24 @@ export class Chunk
     else
       @colors = Chunk.BIOME_COLORS[@center.biome]
     return @colors
+
+  drawDebug: =>
+    love.graphics.setColor(250,250,0, 255)
+    @drawBorders()
+    if game.sun_debug
+      all = 0
+      for i, border in ipairs(@center.borders)
+        if border.midpoint
+          love.graphics.print(i, border.midpoint.x, border.midpoint.y)
+        if border.v0
+          all += 1
+          love.graphics.print('v0 ' .. all, border.v0.point.x, border.v0.point.y - 6)
+          love.graphics.point(border.v0.point.x, border.v0.point.y)
+        if border.v1
+          all += 1
+          love.graphics.print('v1 ' .. all, border.v1.point.x, border.v1.point.y + 6)
+          love.graphics.point(border.v1.point.x, border.v1.point.y)
+
 
   draw: () =>
     @fill()

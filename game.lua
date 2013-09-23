@@ -11,7 +11,7 @@ game = {
   },
   map_debug = 0,
   sun_debug = false,
-  show_sun = false,
+  show_sun = true,
   renderer = require('renderers/default'),
   fonts = { },
   version = require('version'),
