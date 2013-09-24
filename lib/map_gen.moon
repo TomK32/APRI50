@@ -432,18 +432,18 @@ export class MapGen
   -- (1-X).  To do this we will sort the corners, then set each
   -- corner to its desired elevation.
   redistributeElevations: =>
-    locations = @corners
+    corners = _.extend({}, @corners)
     -- SCALE_FACTOR increases the mountain area. At 1.0 the maximum
     -- elevation barely shows up on the map, so we set it to 1.1.
     scale_factor = 1.1
     scale_factor_sqrt = math.sqrt(scale_factor)
-    table.sort(locations, (a, b) -> a.elevation < b.elevation)
-    locations_length = #locations
-    for i, point in ipairs(locations)
+    table.sort(corners, (a, b) -> a.elevation < b.elevation)
+    corners_length = #corners
+    for i, corner in ipairs(corners)
       -- Let y(x) be the total area that we want at elevation <= x.
       -- We want the higher elevations to occur less than lower
       -- ones, and set the area to be y(x) = 1 - (1-x)^2.
-      y = i / (locations_length - 1)
+      y = 3 * i / (corners_length - 1)
       -- Now we have to solve for x, given the known y.
       --  *  y = 1 - (1-x)^2
       --  *  y = 1 - (1 - 2x + x^2)
@@ -454,7 +454,8 @@ export class MapGen
       -- TODO: Does sbreak downslopes? (from original AS)
       if x > 1.0
         x = 1.0
-      point.elevation = x
+      corner.elevation = x
+      corner.point.z = x * 1000
 
   -- Change the overall distribution of moisture to be evenly distributed.
   redistributeMoisture: (locations) =>
@@ -494,6 +495,7 @@ export class MapGen
       for j, corner in ipairs(center.corners)
         sum_elevation += corner.elevation
       center.elevation = sum_elevation / #center.corners
+      center.point.z = center.elevation * 1000
 
   -- Calculate downslope pointers.  At every point, we point to the
   -- point downstream from it, or to itself.  This is used for
