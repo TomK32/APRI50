@@ -98,29 +98,24 @@ export class Chunk
 
     @
 
-  setSunlight: (suns) =>
+  setSunlight: (suns, setting_suns) =>
+    if setting_suns
+      for i, sun in ipairs setting_suns
+        -- Tween them down
+        @sunlight[sun.id] = {}
     for i, sun in ipairs(suns)
-      @sunlight[sun] = 0
-      @sunlight_borders[sun] = {}
+      if not @sunlight[sun.id]
+        @sunlight[sun.id] = {}
       -- TODO: Find borders that are exposed to the sun, i.e. closest,
       -- and if they are lower than the center(!) it is sunny
       border_count = 0
       pi_sun_angle = (2 * math.pi - Chunk.sun_angle)
       for j, border in ipairs(@center.borders)
-        if border.angle
-          r = sun.angle - border.angle
-          wrap_left = sun.angle < -Chunk.sun_angle and border.angle > sun.angle + Chunk.sun_angle + math.pi
-          wrap_right = sun.angle > Chunk.sun_angle and border.angle < sun.angle - Chunk.sun_angle - math.pi
-          r = math.abs(sun.angle - border.angle)
-          if r < Chunk.sun_angle or r > pi_sun_angle
-            ratio = ((border.v0.elevation + border.v1.elevation) / 2) - @center.elevation
-            if ratio > 0
-              @sunlight[sun] += ratio
-              border_count += 1
-              table.insert(@sunlight_borders[sun], border)
-      -- TODO: Tween
-      @sunlight[sun] = @sunlight[sun] / border_count
-      @center['sun' .. i] = @sunlight[sun]
+        -- TODO: Tween
+        if border.v0 and border.v1
+          light = sun\colorForTriangle(border.v0.point, border.v1.point, @center.point)
+          if light
+            @sunlight[sun.id][j] = light
     @center.sunlight = @sunlight
 
     return @sunlight
@@ -163,23 +158,21 @@ export class Chunk
     love.graphics.push()
     love.graphics.setBlendMode('additive')
     in_shadow = true
-    for sun, light in pairs(@sunlight or {})
-      if light > 0 and sun.color
-        in_shadow = false
-        love.graphics.setColor(sun.color[1], sun.color[2], sun.color[3], (sun.color[4] * light))
-        love.graphics.rectangle('fill', 0, 0, @width, @height)
+    for sun, borders in pairs(@sunlight or {})
+      for i, border in pairs(borders)
+        if border.v0 and border.v1
+          in_shadow = false
+          x0, y0 = border.v0.point.x - @position.x, border.v0.point.y - @position.y
+          x1, y1 = border.v1.point.x - @position.x, border.v1.point.y - @position.y
+          love.graphics.setColor(sun.r, sun.g, sun.b, @sunlight[sun.id][i])
+          love.graphics.line(x0, y0, x1, y1)
+          love.graphics.polygon('fill', x0, y0, x1, y1, border.midpoint.x, border.midpoint.y)
+          love.graphics.print(math.floor(@sunlight[sun.id][i] * 100) , (x0 + x1) / 2, (y0 + y1) / 2)
+
     if in_shadow
       love.graphics.setColor(0, 0, 0, 255)
       love.graphics.rectangle('fill', 0, 0, @width, @height)
 
-    if game.sun_debug
-      for sun, borders in pairs(@sunlight_borders or {})
-        love.graphics.setColor(sun.color[1], sun.color[2], sun.color[3], 255)
-        for i, border in ipairs(borders)
-          x0, y0 = border.v0.point.x - @position.x, border.v0.point.y - @position.y
-          x1, y1 = border.v1.point.x - @position.x, border.v1.point.y - @position.y
-          love.graphics.line(x0, y0, x1, y1)
-          love.graphics.print(math.floor(@sunlight[sun] * 100) , (x0 + x1) / 2, (y0 + y1) / 2)
     love.graphics.setBlendMode('alpha')
     love.graphics.pop()
 

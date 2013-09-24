@@ -1,4 +1,5 @@
 Camera = require "hump.camera"
+require "entities/sun"
 
 export class MapView extends View
   new: (map) =>
@@ -11,9 +12,9 @@ export class MapView extends View
     @m_x, @m_y = 0, 0
     @debug_mouse_window = {width: 10, height: 10}
     @suns = {
-      {speed: 1, strength: 0.5, point: {x: 0, y: 0}, angle: 0, color: {255, 230, 0, 200}, name: 'Jebol'}
-      {speed: 3, strength: 0.3, point: {x: 0, y: 0}, angle: 230, color: {200, 20, 0, 155}, name: 'Minmol'}
-      --{speed: 4, strength: 0.9, point: {x: 0, y: 0}, angle: 230, color: {0, 20, 200, 255}, name: 'Hanol'}
+      Sun(1, 0.5, {255, 230, 0}, {x: 0, y: 0, z: 2000}, 'Jebol')
+      Sun(3, 0.3, {200, 20, 0}, {x: Sun.max_x * 0.6 , y: 0, z: 2000}, 'Minmol')
+      Sun(4, 0.9, {20, 0, 200}, {x: Sun.max_x * 0.8, y: 0, z: 2000}, 'Hanol')
     }
     @canvas = love.graphics.newCanvas(@map.width + 2 * @display.x, @map.height + 2 * @display.y)
 
@@ -67,14 +68,11 @@ export class MapView extends View
 
   updateLight: (dt) =>
     for i, sun in pairs @suns
-      sun.angle += dt * sun.speed
-      if sun.angle > 360
-        sun.angle = 0
-      sun.point.x = math.cos(sun.angle)
-      sun.point.y = math.sin(sun.angle)
-    suns = _.select(@suns, (sun) -> return sun.angle < 180)
+      sun\update(dt)
+    suns = @suns -- _.select(@suns, (sun) -> return sun.angle < 180)
+    setting_suns = {} --_.select(@suns, (sun) -> return sun.angle > 180)
     for i, center in ipairs(@centersInRect())
-      center.chunk\setSunlight(suns)
+      center.chunk\setSunlight(suns, setting_suns)
 
   drawContent: =>
     @move(0,0)
@@ -86,7 +84,6 @@ export class MapView extends View
     for i, center in ipairs centers
       if not center.chunk
         center.chunk = Chunk(center)
-        center.chunk\setSunlight(@suns)
       love.graphics.push()
       x = center.chunk.position.x
       y = center.chunk.position.y
@@ -135,13 +132,18 @@ export class MapView extends View
     if game.debug
       @debugMousePointer()
     if game.show_sun
-      scale = 40
-      x, y = love.mouse.getPosition()
+      width = 300
+      x, y = 420, 30
+      factor = width / Sun.max_x
+
+      love.graphics.setColor(0,0,0,255)
+      love.graphics.rectangle('fill', x - 5, y - 10, 310, 20)
       for i, sun in ipairs @suns
-        love.graphics.setColor(unpack(sun.color))
-        love.graphics.circle("fill", x + scale * sun.point.x, y + scale * sun.point.y, scale / 4 * sun.strength)
-        love.graphics.setColor(0,0,0,255)
-        love.graphics.print(sun.name, x + scale * sun.point.x + 5, y + scale * sun.point.y + 3)
+        if sun.point.x > 0
+          love.graphics.setColor(unpack(sun.color))
+          love.graphics.circle("fill", x + sun.point.x * factor, y, 10 * sun.brightness)
+          love.graphics.setColor(255,255,255,255)
+          love.graphics.print(sun.name, x + sun.point.x * factor + 10, y - 3)
 
   getMousePosition: =>
     x, y = love.mouse.getPosition()
