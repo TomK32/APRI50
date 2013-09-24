@@ -223,17 +223,6 @@ export class MapGen
       if edge.v0 and edge.v1
         edge.midpoint = Point.interpolate(edge.v0.point, edge.v1.point, 0.5)
 
-  -- Rescale elevations so that the highest is 1.0, and they're
-  -- distributed well. We want lower elevations to be more common
-  -- than higher elevations, in proportions approximately matching
-  -- concentric rings. That is, the lowest elevation is the
-  -- largest ring around the island, and therefore should more
-  -- land area than the highest elevation, which is the very
-  redistributeElevations: =>
-    -- Assign zero elevation to non-land corners
-    for i, corner in ipairs(@corners)
-      if q.ocean or q.coast
-        q.elevation = 0.0
 
   -- Create an array of corners that are on land only, for use by
   -- algorithms that work only on land.  We return an array instead
@@ -432,7 +421,7 @@ export class MapGen
   -- (1-X).  To do this we will sort the corners, then set each
   -- corner to its desired elevation.
   redistributeElevations: =>
-    corners = _.extend({}, @corners)
+    corners = @corners
     -- SCALE_FACTOR increases the mountain area. At 1.0 the maximum
     -- elevation barely shows up on the map, so we set it to 1.1.
     scale_factor = 1.1
@@ -443,7 +432,7 @@ export class MapGen
       -- Let y(x) be the total area that we want at elevation <= x.
       -- We want the higher elevations to occur less than lower
       -- ones, and set the area to be y(x) = 1 - (1-x)^2.
-      y = 3 * i / (corners_length - 1)
+      y = i / (corners_length - 1)
       -- Now we have to solve for x, given the known y.
       --  *  y = 1 - (1-x)^2
       --  *  y = 1 - (1 - 2x + x^2)
