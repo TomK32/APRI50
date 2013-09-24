@@ -59,10 +59,7 @@ export class Chunk
     y = center.point.y
     for i, border in ipairs(center.borders)
       if border.v0 and border.v1
-        if border.v0.point.y < y and border.v1.point.y < y
-          border.angle = border.v0\angle(border.v1)
         for i, corner in ipairs({border.v0, border.v1})
-
           if not x0 or corner.point.x < x0
             x0 = corner.point.x
           if not y0 or corner.point.y < y0
@@ -109,7 +106,6 @@ export class Chunk
       -- TODO: Find borders that are exposed to the sun, i.e. closest,
       -- and if they are lower than the center(!) it is sunny
       border_count = 0
-      pi_sun_angle = (2 * math.pi - Chunk.sun_angle)
       for j, border in ipairs(@center.borders)
         -- TODO: Tween
         if border.v0 and border.v1
@@ -234,20 +230,6 @@ export class Chunk
   drawDebug: =>
     love.graphics.setColor(250,250,0, 255)
     @drawBorders()
-    if game.sun_debug
-      all = 0
-      for i, border in ipairs(@center.borders)
-        if border.midpoint
-          love.graphics.print(i, border.midpoint.x, border.midpoint.y)
-        if border.v0
-          all += 1
-          love.graphics.print('v0 ' .. all, border.v0.point.x, border.v0.point.y - 6)
-          love.graphics.point(border.v0.point.x, border.v0.point.y)
-        if border.v1
-          all += 1
-          love.graphics.print('v1 ' .. all, border.v1.point.x, border.v1.point.y + 6)
-          love.graphics.point(border.v1.point.x, border.v1.point.y)
-
 
   draw: () =>
     @fill()

@@ -120,12 +120,6 @@ export class MapView extends View
       for i,entity in ipairs(entities) do
         @\drawEntity(entity)
 
-    if game.sun_debug
-      love.graphics.setColor(255, 255, 255, 255)
-      love.graphics.rectangle('fill', 5, 5, 80, 10 + #@suns * 10)
-      love.graphics.setColor(0, 0, 0, 255)
-      for i, sun in ipairs @suns
-        love.graphics.print(sun.name .. ' ' .. math.floor(sun.angle * 10), 10, 7 + (i - 1) * 20)
     love.graphics.setCanvas()
 
   drawGUI: =>
