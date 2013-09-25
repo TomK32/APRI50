@@ -72,11 +72,12 @@ export class Chunk
     @polygons = {}
     -- TODO Case where point is in a corner and has only two corners,
     -- we need at least three vertices
-    for i, edge in ipairs(center.borders)
+    for i, border in ipairs(center.borders)
       x = center.point.x - x0
       y = center.point.y - y0
-      if edge.v0 and edge.v1
-        table.insert(@polygons, {x, y, edge.v0.point.x - x0, edge.v0.point.y - y0, edge.v1.point.x - x0, edge.v1.point.y - y0})
+      if border.v0 and border.v1
+        table.insert(@polygons, {x, y, border.v0.point.x - x0, border.v0.point.y - y0, border.v1.point.x - x0, border.v1.point.y - y0})
+        border.midpoint = Point.interpolate(border.v0.point, border.v1.point)
 
     @width = math.ceil(x1 - x0)
     @height = math.ceil(y1 - y0)
@@ -108,8 +109,10 @@ export class Chunk
       border_count = 0
       for j, border in ipairs(@center.borders)
         -- TODO: Tween
-        if border.v0 and border.v1
-          light = sun\colorForTriangle(border.v0.point, border.v1.point, @center.point)
+        if border.v0 and border.v1 and border.midpoint
+          light = {
+            sun\colorForTriangle(border.midpoint, border.v0.point, @center.point),
+            sun\colorForTriangle(border.midpoint, border.v1.point, @center.point) }
           if light
             @sunlight[sun.id][j] = light
     @center.sunlight = @sunlight
@@ -152,24 +155,30 @@ export class Chunk
 
   applySunlight: =>
     love.graphics.push()
-    love.graphics.setBlendMode('additive')
     in_shadow = true
-    for sun, borders in pairs(@sunlight or {})
-      for i, border in pairs(borders)
-        if border.v0 and border.v1
+    love.graphics.setBlendMode('additive')
+    for i, border in ipairs(@center.borders)
+      for sun_id, borders in pairs(@sunlight or {})
+        if border.v0 and border.v1 and borders[i]
           in_shadow = false
+          xm, ym = border.midpoint.x - @position.x, border.midpoint.y - @position.y
           x0, y0 = border.v0.point.x - @position.x, border.v0.point.y - @position.y
           x1, y1 = border.v1.point.x - @position.x, border.v1.point.y - @position.y
-          love.graphics.setColor(sun.r, sun.g, sun.b, @sunlight[sun.id][i])
-          love.graphics.line(x0, y0, x1, y1)
-          love.graphics.polygon('fill', x0, y0, x1, y1, border.midpoint.x, border.midpoint.y)
-          love.graphics.print(math.floor(@sunlight[sun.id][i] * 100) , (x0 + x1) / 2, (y0 + y1) / 2)
-
-    if in_shadow
-      love.graphics.setColor(0, 0, 0, 255)
-      love.graphics.rectangle('fill', 0, 0, @width, @height)
+          xc, yc = @center.point.x - @position.x, @center.point.y - @position.y
+          if borders[i][1]
+            r, g, b = unpack(borders[i][1])
+            love.graphics.setColor(r, b, g, 40)
+            love.graphics.polygon('fill', xc, yc, x0, y0, xm, ym)
+          if borders[i][2]
+            r, g, b = unpack(borders[i][2])
+            love.graphics.setColor(r, b, g, 40)
+            love.graphics.polygon('fill', xc, yc, x1, y1, xm, ym)
 
     love.graphics.setBlendMode('alpha')
+    --if in_shadow
+    --  love.graphics.setColor(0, 0, 0, 100)
+    --  love.graphics.rectangle('fill', 0, 0, @width, @height)
+
     love.graphics.pop()
 
   drawParticles: =>
