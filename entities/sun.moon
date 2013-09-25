@@ -20,9 +20,8 @@ export class Sun
     if @point.x > Sun.max_x
       @point.x = -Sun.max_x + (@point.x % Sun.max_x)
     sin_x = math.sin(@point.x / Sun.max_x * math.pi)
-    @point.z = sin_x
-    @lightMag = math.sqrt(@point.x * @point.x + @point.y * @point.y + @point.z * @point.z)
-    --@lightMag = @lightMag * sin_x
+    @point.z = math.asin(sin_x)
+    @lightMag = math.sqrt(@point.x * @point.x + @point.y * @point.y + @point.z * @point.z) * sin_x
     true
 
   getLightFactor: (pointA, pointB, pointC) =>
