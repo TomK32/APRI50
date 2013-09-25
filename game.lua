@@ -20,7 +20,7 @@ game = {
   dna_length = 16,
   evolution_kits_to_start = 7,
   shader = {
-    bloom_noise = require('shader/bloom_noise')
+    noise = require('shader/noise')
   },
   matchers = {
     -- make sure they are unique and don't overlap too much.

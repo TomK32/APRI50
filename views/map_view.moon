@@ -83,7 +83,7 @@ export class MapView extends View
   drawContent: =>
     if @canvas
       if game.use_shaders
-        love.graphics.setShader(game.shader.bloom_noise)
+        love.graphics.setShader(game.shader.noise)
       love.graphics.setColor(255,255,255)
       love.graphics.draw(@canvas)
       if game.use_shaders
