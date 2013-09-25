@@ -54,6 +54,10 @@ function love.keypressed(key)
     game.map_debug = math.min(4, game.map_debug + 1)
   elseif key == 'f7' then
     game.show_sun = not game.show_sun
+  elseif key == 'i' then
+    game.speed = game.speed * 2
+  elseif key == 'j' then
+    game.speed = game.speed / 2
   end
 
   if not game.current_state then return end
@@ -70,7 +74,7 @@ function love.update(dt)
   dt = 0.05
   tween.update(dt)
   if not game.current_state then return end
-  game.current_state:update(dt)
+  game.current_state:update(dt * game.speed)
 end
 
 function love.quit()

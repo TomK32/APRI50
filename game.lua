@@ -9,6 +9,7 @@ game = {
   graphics = {
     mode = { }
   },
+  speed = 1,
   map_debug = 0,
   sun_debug = false,
   show_sun = true,

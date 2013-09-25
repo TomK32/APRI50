@@ -45,6 +45,8 @@ F7 will toggle the sun light.
 
 To move the map you can use WASD and to zoom in/out use q/e.
 
+To speed up or slow down the game press `i` and `j`.
+
 ## Game play
 
 There are several variations of the game play in planning, the game
