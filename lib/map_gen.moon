@@ -223,11 +223,6 @@ export class MapGen
     for i, point in pairs(new_corners)
       @corners[i].point = point
 
-    for i, edge in ipairs(@edges)
-      if edge.v0 and edge.v1
-        edge.midpoint = Point.interpolate(edge.v0.point, edge.v1.point, 0.5)
-
-
   -- Create an array of corners that are on land only, for use by
   -- algorithms that work only on land.  We return an array instead
   -- of a vector because the redistribution algorithms want to sort
