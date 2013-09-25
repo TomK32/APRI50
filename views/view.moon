@@ -11,16 +11,15 @@ export class View
     if @display.x ~= 0 or @display.y ~= 0
       love.graphics.translate(@display.x, @display.y)
     love.graphics.setColor(255,255,255,255)
-    if @canvas
-      love.graphics.setColor(255,255,255)
-      love.graphics.draw(@canvas)
-    else
-      @\drawContent()
+    @\drawContent()
     love.graphics.pop()
     if @camera
       @camera\detach()
     if @drawGUI
       @drawGUI()
+
+  update: (dt) =>
+    true
 
   pointInRect: (x, y) =>
     return x > @display.x and y > @display.y and x < @display.x + @display.width and y < @display.y + @display.height

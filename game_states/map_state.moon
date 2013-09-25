@@ -55,6 +55,7 @@ export class MapState extends State
     if game.show_sun and @light_dt > 8 * dt
       @view\updateLight(dt)
       @light_dt = 0
+    @view\update(dt)
     @light_dt += dt
 
     speed = 1

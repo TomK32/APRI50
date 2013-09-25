@@ -69,6 +69,9 @@ export class MapView extends View
   centersInRect: =>
     @map\centersInRect(@camera.x - @display.width, @camera.y - @display.height, 2 * @display.width, 2 * @display.height)
 
+  update: (dt) =>
+    @drawCanvas()
+
   updateLight: (dt) =>
     for i, sun in pairs @suns
       sun\update(dt)
@@ -78,6 +81,30 @@ export class MapView extends View
       center.chunk\setSunlight(suns, setting_suns)
 
   drawContent: =>
+    if @canvas
+      if game.use_shaders
+        love.graphics.setShader(game.shader.bloom_noise)
+      love.graphics.setColor(255,255,255)
+      love.graphics.draw(@canvas)
+      if game.use_shaders
+        love.graphics.setShader()
+
+    focused_center = @focusedCenter()
+    if focused_center --and focused_center.chunk
+      love.graphics.push()
+      focused_center.chunk\drawDebug()
+      love.graphics.pop()
+    love.graphics.setColor(255, 255, 255, 255)
+
+    -- entities
+    for l, layer in ipairs(@map.layer_indexes) do
+      entities = @map.layers[layer]
+      table.sort(entities, (a, b) -> return a.position.y > b.position.y)
+      for i,entity in ipairs(entities) do
+        @\drawEntity(entity)
+
+
+  drawCanvas: =>
     @move(0,0)
     love.graphics.setCanvas(@canvas)
     @canvas\clear()
@@ -108,21 +135,6 @@ export class MapView extends View
         love.graphics.translate(x, y)
         center.chunk\drawParticles()
         love.graphics.pop()
-
-    focused_center = @focusedCenter()
-    if focused_center --and focused_center.chunk
-      love.graphics.push()
-      focused_center.chunk\drawDebug()
-      love.graphics.pop()
-    love.graphics.setColor(255, 255, 255, 255)
-
-    -- entities
-    for l, layer in ipairs(@map.layer_indexes) do
-      entities = @map.layers[layer]
-      table.sort(entities, (a, b) -> return a.position.y > b.position.y)
-      for i,entity in ipairs(entities) do
-        @\drawEntity(entity)
-
     love.graphics.setCanvas()
 
   drawGUI: =>

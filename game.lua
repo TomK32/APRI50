@@ -11,7 +11,7 @@ game = {
   },
   speed = 1,
   map_debug = 0,
-  sun_debug = false,
+  use_shaders = true,
   show_sun = true,
   renderer = require('renderers/default'),
   fonts = { },
@@ -19,6 +19,9 @@ game = {
   url = 'http://ananasblau.com/apri50',
   dna_length = 16,
   evolution_kits_to_start = 7,
+  shader = {
+    bloom_noise = require('shader/bloom_noise')
+  },
   matchers = {
     -- make sure they are unique and don't overlap too much.
     markable   = splitDNA('A  C  G  T A'),
