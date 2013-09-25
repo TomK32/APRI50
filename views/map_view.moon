@@ -5,6 +5,8 @@ export class MapView extends View
   new: (map) =>
     @map = map
     @display = {width: 780, height: 440, y: 60, x: 10}
+    @zoom_max = 1.728
+    @zoom_min = 0.48
     @camera = Camera(@map.width / 2 - @display.width / 2, @map.height / 2 - @display.height / 2)
     super(self)
     @max_x = @map.width - @display.width / 2
@@ -36,11 +38,11 @@ export class MapView extends View
       @camera.y = @map.height - @display.height / 2 / @camera.scale
 
   zoom: (factor) =>
-    if @camera.scale * factor < 0.48 and factor < 1
-      @camera.scale = 0.48
+    if @camera.scale * factor < @zoom_min and factor < 1
+      @camera.scale = @zoom_min
       return true
-    if @camera.scale * factor > 1 and factor > 1
-      @camera.scale = 1
+    if @camera.scale * factor > @zoom_max and factor > 1
+      @camera.scale = @zoom_max
       return
     tween(0.2, @camera, {scale: @camera.scale * factor})
     dir = 1
