@@ -207,6 +207,22 @@ export class Chunk
   drawDebug: =>
     love.graphics.setColor(250,250,0, 255)
     @drawBorders()
+    for i, border in ipairs(@center.borders)
+      if border.v0
+        size = border.v0.elevation / @center.elevation * 3
+        if border.v0.elevation > @center.elevation
+          love.graphics.setColor(0,0,0,255)
+        else
+          love.graphics.setColor(200,200,200,255)
+        love.graphics.circle('fill', border.v0.point.x, border.v0.point.y, size)
+      if border.v1
+        size = border.v1.elevation / @center.elevation * 3
+        if border.v1.elevation > @center.elevation
+          love.graphics.setColor(0,0,0,255)
+        else
+          love.graphics.setColor(200,200,200,255)
+        love.graphics.circle('fill', border.v1.point.x, border.v1.point.y, size)
+
 
   draw: () =>
     @fill()
