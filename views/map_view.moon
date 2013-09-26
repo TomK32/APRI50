@@ -75,8 +75,8 @@ export class MapView extends View
   updateLight: (dt) =>
     for i, sun in pairs @suns
       sun\update(dt)
-    suns = _.select(@suns, (sun) -> return sun.point.x > 0)
-    setting_suns = _.select(@suns, (sun) -> return sun.point.x <0)
+    suns = _.select(@suns, (sun) -> return sun.shining)
+    setting_suns = _.select(@suns, (sun) -> return not sun.shining)
     for i, center in ipairs(@centersInRect())
       center.chunk\setSunlight(suns, setting_suns)
 
