@@ -96,6 +96,8 @@ export class Chunk
     @
 
   setSunlight: (suns, setting_suns) =>
+    -- TODO: calc the time at when the sun does hit and for how long and
+    -- use this to tween.
     if setting_suns
       for i, sun in ipairs setting_suns
         -- Tween them down
@@ -135,12 +137,10 @@ export class Chunk
 
   applySunlight: =>
     love.graphics.push()
-    in_shadow = true
     love.graphics.setBlendMode('additive')
     for i, border in ipairs(@center.borders)
       for sun_id, borders in pairs(@sunlight or {})
         if border.v0 and border.v1 and borders[i]
-          in_shadow = false
           xm, ym = border.midpoint.x - @position.x, border.midpoint.y - @position.y
           x0, y0 = border.v0.point.x - @position.x, border.v0.point.y - @position.y
           x1, y1 = border.v1.point.x - @position.x, border.v1.point.y - @position.y
