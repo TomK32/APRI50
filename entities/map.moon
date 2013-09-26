@@ -13,7 +13,7 @@ export class Map
     @width = width
     @height = height
     @map_gen = MapGen(width, height, seed, number_of_points)
-    @bucket_size = 128
+    @bucket_size = 32
     @createCenterBuckets()
     @
 
@@ -27,10 +27,10 @@ export class Map
     return @map_gen.centers
 
   centersInRect: (x0, y0, w, h) =>
-    x0 = math.max(math.ceil(x0 / @bucket_size) - 1, 1)
-    y0 = math.max(math.ceil(y0 / @bucket_size) - 1, 1)
-    w = math.ceil(w / @bucket_size) + 1
-    h = math.ceil(h / @bucket_size) + 1
+    x0 = math.ceil(x0 / @bucket_size)
+    y0 = math.ceil(y0 / @bucket_size)
+    w = math.ceil(w / @bucket_size)
+    h = math.ceil(h / @bucket_size)
     if @last and @last == {x0, y0, w, h}
       return @last_centers_in_rect
     @last = {x0, y0, w, h}

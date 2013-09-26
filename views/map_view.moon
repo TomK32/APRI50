@@ -4,6 +4,9 @@ require "entities/sun"
 export class MapView extends View
   new: (map) =>
     @map = map
+    for i, center in ipairs @map\centers()
+      if not center.chunk
+        center.chunk = Chunk(center)
     @display = {width: 780, height: 440, y: 60, x: 10}
     @zoom_max = 1.728
     @zoom_min = 0.48
@@ -67,7 +70,9 @@ export class MapView extends View
     return point.x * @camera.scale, point.y * @camera.scale
 
   centersInRect: =>
-    @map\centersInRect(@camera.x - @display.width, @camera.y - @display.height, 2 * @display.width, 2 * @display.height)
+    w = @display.width / @camera.scale / 2
+    h = @display.height / @camera.scale / 2
+    @map\centersInRect(@camera.x - w + 2 * @display.x, @camera.y - h + 2 * @display.y, w * 2, h * 2)
 
   update: (dt) =>
     @drawCanvas()
@@ -90,7 +95,7 @@ export class MapView extends View
         love.graphics.setShader()
 
     focused_center = @focusedCenter()
-    if focused_center --and focused_center.chunk
+    if focused_center and focused_center.chunk
       love.graphics.push()
       focused_center.chunk\drawDebug()
       love.graphics.pop()
