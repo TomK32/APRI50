@@ -90,7 +90,6 @@ export class Chunk
     @position = {x: x0, y: y0}
     @evolution_kit = evolution_kit
     @setColors()
-    @drawCanvas()
     @sunlight = {}
     @sunlight_borders = {}
 
@@ -121,23 +120,6 @@ export class Chunk
 
   addParticleSystem: (system) =>
     table.insert(@particle_systems, system)
-
-  nextPowerOfTwo: (n) =>
-    i = 2
-    while i < n
-      i = i * 2
-    return i
-
-  drawCanvas: =>
-    @canvas = love.graphics.newCanvas(@nextPowerOfTwo(@width), @nextPowerOfTwo(@height))
-    last_canvas = love.graphics.getCanvas()
-    love.graphics.push()
-    love.graphics.setCanvas(@canvas)
-    @canvas\clear()
-    @fill()
-    love.graphics.setCanvas(last_canvas)
-
-    love.graphics.pop()
 
   fill: =>
     @setColors()
@@ -175,9 +157,6 @@ export class Chunk
             love.graphics.polygon('fill', xc, yc, x1, y1, xm, ym)
 
     love.graphics.setBlendMode('alpha')
-    --if in_shadow
-    --  love.graphics.setColor(0, 0, 0, 100)
-    --  love.graphics.rectangle('fill', 0, 0, @width, @height)
 
     love.graphics.pop()
 
@@ -205,15 +184,6 @@ export class Chunk
     for i, corner in ipairs(@center.corners)
       callback(corner, @center)
     return true
-
-  grow: (x, y) =>
-    -- get old canvas' content, resize the canvas and draw the content
-    -- into this new one, centered of course
-    @width += x
-    @height += y
-    @drawCanvas()
-    @\fill()
-    true
 
   mergeAttributes: () =>
     for k,v in pairs @tween_data
