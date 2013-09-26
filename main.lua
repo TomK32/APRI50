@@ -73,9 +73,10 @@ function love.mousepressed(x,y,button)
 end
 
 function love.update(dt)
-  dt = 0.05
+  dt = game.dt -- we ignore the real dt and use our 0.5
   tween.update(dt)
   if not game.current_state then return end
+  game.time = game.time + dt * game.speed
   game.current_state:update(dt * game.speed)
 end
 

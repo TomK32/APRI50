@@ -13,6 +13,11 @@ game = {
   map_debug = 0,
   use_shaders = true,
   show_sun = true,
+  dt = 0.05,
+  time = 0, -- counts dt. 1 (about 50 ticks)is 1 hour
+  time_minutes = 15 * 0.075,
+  time_hours = 4 * 15 * 0.075,
+  time_days = 24 * 4 * 15 * 0.075,
   renderer = require('renderers/default'),
   fonts = { },
   version = require('version'),
@@ -83,4 +88,17 @@ end
 
 function game:showCredits()
   game.current_state = State(self, 'Credits', CreditsView())
+end
+
+function game:timeInWords()
+  self.time_string = ''
+  local t = self.time
+  local days = ((math.floor(t / game.time_days)) % 365) + 1
+  if days > 0 then
+    self.time_string = 'Day ' .. days .. ' '
+  end
+  local hours = (math.floor(t / game.time_hours)) % 24
+  local minutes = (math.floor(t / game.time_minutes) * 15) % 60
+  self.time_string = self.time_string .. ' ' .. hours .. ': ' .. minutes
+  return self.time_string
 end
