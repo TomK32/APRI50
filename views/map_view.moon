@@ -14,9 +14,9 @@ export class MapView extends View
     @m_x, @m_y = 0, 0
     @debug_mouse_window = {width: 10, height: 10}
     @suns = {
-      Sun(1, 0.7, {255, 230, 0}, {x: -Sun.max_x * 0.005, y: @map.height / 4, z: 200}, 'Jebol')
-      Sun(3, 0.3, {200, 20, 0}, {x: Sun.max_x * -0.6 , y: 0, z: 200}, 'Minmol')
-      Sun(2.5, 0.7, {20, 0, 200}, {x: Sun.max_x * -0.3, y: @map.height, z: 200}, 'Hanol')
+      Sun(1, 0.7, {255, 230, 100}, {x: -Sun.max_x * 0.005, y: @map.height / 4, z: 200}, 'Jebol')
+      Sun(3, 0.3, {200, 120, 100}, {x: Sun.max_x * -0.6 , y: 0, z: 200}, 'Minmol')
+      Sun(2.5, 0.7, {120, 100, 200}, {x: Sun.max_x * -0.3, y: @map.height, z: 200}, 'Hanol')
     }
     @canvas = love.graphics.newCanvas(@map.width + 2 * @display.x, @map.height + 2 * @display.y)
 
