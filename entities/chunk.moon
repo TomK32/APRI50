@@ -128,8 +128,6 @@ export class Chunk
     @colors[4] = 255
     love.graphics.setColor(unpack(@colors))
     love.graphics.rectangle('fill', 0, 0, @width, @height)
-    love.graphics.setColor(0, 0, 0, 100)
-    love.graphics.rectangle('fill', 0, 0, @width, @height)
     if game.show_sun
       @applySunlight()
     love.graphics.setStencil()
