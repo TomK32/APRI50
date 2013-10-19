@@ -112,12 +112,11 @@ export class MapGen
   go: (first, last) =>
 
     -- Keep track of the time each step needs
-    times = {}
     time = (message, callback) ->
-      start = os.time()
-      print(message)
+      start = os.clock()
+      io.write(message .. ' ')
       callback(@)
-      table.insert(times, {message, os.time() - start})
+      io.write(math.floor(1000 * (os.clock() - start)) .. "ms\n")
 
     time('Reset', @reset)
     time('Placing random points', @generateRandomPoints)
@@ -126,17 +125,15 @@ export class MapGen
     time('Improve corners', @improveCorners)
 
     -- NOTE: The original had these four in one timer
-    table.insert(times, {'Group', 'Elevations'})
     time('Assign corner elevations', @assignCornerElevations)
     time('Assign ocean coast and land', @assignOceanCoastAndLand)
     time('Redistribute Elevations', @redistributeElevations)
     time('Assign polygon Elevations', @assignPolygonElevations)
+    time('Calculate downslopes', @calculateDownslopes)
+    --time('Determine watersheds', @calculateWatersheds)
 
     -- NOTE: The original had these six in one timer
-    table.insert(times, {'Group', 'Moisture'})
-    time('Calculate downslopes', @calculateDownslopes)
-    time('Determine watersheds', @calculateWatersheds)
-    time('Distribute moisture', @distributeMoisture)
+    --time('Distribute moisture', @distributeMoisture)
 
   voronoi: (force) =>
     if force or not @_voronoi
