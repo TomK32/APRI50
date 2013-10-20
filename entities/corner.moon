@@ -5,7 +5,6 @@ export class Corner
     @border = false
 
     @moisture = 0 -- 0..1
-    @elevation = 0 -- 0..1
     @hardening = 0
     @flora = 0
     @liquid = 0

@@ -23,7 +23,7 @@ export class Point
     return Point((a.x + b.x) * strength, (a.y + b.y) * strength, z)
 
   toString: =>
-    return 'x: ' .. @x .. ', y: ' .. @y .. ', z: '
+    return 'x: ' .. @x .. ', y: ' .. @y .. ', z: ' .. @z
 
   distance: (other) =>
     a = @x - other.x
@@ -126,8 +126,7 @@ export class MapGen
 
     -- NOTE: The original had these four in one timer
     time('Assign corner elevations', @assignCornerElevations)
-    time('Assign ocean coast and land', @assignOceanCoastAndLand)
-    time('Redistribute Elevations', @redistributeElevations)
+    --time('Assign ocean coast and land', @assignOceanCoastAndLand)
     time('Assign polygon Elevations', @assignPolygonElevations)
     time('Calculate downslopes', @calculateDownslopes)
     --time('Determine watersheds', @calculateWatersheds)
@@ -148,7 +147,6 @@ export class MapGen
 
     for i=1, @num_points
       @points[i] = Point(@map_random\nextDoubleRange(x, w), @map_random\nextDoubleRange(y, h))
-        -- we keep a margin of 10 ot the border of the map
     @
 
   -- Improve the random set of points with Lloyd Relaxation.
@@ -359,7 +357,6 @@ export class MapGen
     table.insert(@corner_map[bucket], corner)
     return corner
 
-
   -- Determine elevations and water at Voronoi corners. By
   -- construction, we have no local minima. This is important for
   -- the downslope vectors later, which are used in the river
@@ -373,74 +370,7 @@ export class MapGen
     -- to avoid Lua table length madness we count manually
     queue_count = 0
     for i, corner in ipairs(@corners)
-      corner.water = not @\inside(corner.point)
-
-      if corner.border
-        -- The edges of the map are elevation 0
-        corner.elevation = 0.0
-        queue_count += 1
-        queue[queue_count] = corner
-      else
-        -- This is infinity so in the next step we start
-        -- to increase the elevation first for those points
-        -- next to the 0.0 border points and slowly
-        -- work inwards
-        corner.elevation = math.huge
-
-    -- Traverse the graph and assign elevations to each point. As we
-    -- move away from the map border, increase the elevations. This
-    -- guarantees that rivers always have a way down to the coast by
-    -- going downhill (no local minima).
-    while #queue > 0
-      q = _.shift(queue)
-      for i, adjacent in ipairs(q.adjacent)
-        -- Every step up is epsilon over water or 1 over land. The
-        -- number doesn't matter because we'll rescale the
-        -- elevations later.
-        new_elevation = 0.001 + q.elevation
-        if not q.water and not adjacent.water
-          new_elevation += 1
-
-        -- If this point changed, we'll add it to the queue so
-        -- that we can process its neighbors too.
-        if new_elevation < (adjacent.elevation or 0)
-          adjacent.elevation = new_elevation
-          queue_count += 1
-          queue[queue_count] = adjacent
-
-        queue_count -= 1
-
-
-  -- Change the overall distribution of elevations so that lower
-  -- elevations are more common than higher
-  -- elevations. Specifically, we want elevation X to have frequency
-  -- (1-X).  To do this we will sort the corners, then set each
-  -- corner to its desired elevation.
-  redistributeElevations: =>
-    corners = @corners
-    -- SCALE_FACTOR increases the mountain area. At 1.0 the maximum
-    -- elevation barely shows up on the map, so we set it to 1.1.
-    scale_factor = 1.1
-    scale_factor_sqrt = math.sqrt(scale_factor)
-    table.sort(corners, (a, b) -> a.elevation < b.elevation)
-    corners_length = #corners
-    for i, corner in ipairs(corners)
-      -- Let y(x) be the total area that we want at elevation <= x.
-      -- We want the higher elevations to occur less than lower
-      -- ones, and set the area to be y(x) = 1 - (1-x)^2.
-      y = i / (corners_length - 1)
-      -- Now we have to solve for x, given the known y.
-      --  *  y = 1 - (1-x)^2
-      --  *  y = 1 - (1 - 2x + x^2)
-      --  *  y = 2x - x^2
-      --  *  x^2 - 2x + y = 0
-      -- From this we can use the quadratic equation to get:
-      x = scale_factor_sqrt - math.sqrt(scale_factor*(1-y))
-      -- TODO: Does sbreak downslopes? (from original AS)
-      if x > 1.0
-        x = 1.0
-      corner.elevation = x
-      corner.point.z = x * 1000
+      corner.point.z = @map_random\nextDoubleRange(0, 1)
 
   -- Change the overall distribution of moisture to be evenly distributed.
   redistributeMoisture: (locations) =>
@@ -478,20 +408,20 @@ export class MapGen
     for i, center in ipairs(@centers)
       sum_elevation = 0
       for j, corner in ipairs(center.corners)
-        sum_elevation += corner.elevation
-      center.elevation = sum_elevation / #center.corners
-      center.point.z = center.elevation * 1000
+        sum_elevation += corner.point.z
+      center.point.z = math.floor(100 * sum_elevation / #center.corners) / 100
 
   -- Calculate downslope pointers.  At every point, we point to the
   -- point downstream from it, or to itself.  This is used for
   -- generating rivers and watersheds.
   calculateDownslopes: =>
-    for i, point in ipairs(@corners)
-      r = point
-      for j, adjacent in ipairs(point.adjacent)
-        if adjacent.elevation < r.elevation
+    for i, corner in ipairs(@corners)
+      r = corner
+      for j, adjacent in ipairs(corner.adjacent)
+        --print adjacent.point, r.point
+        if adjacent.point.z < r.point.z
           r = adjacent
-      point.downslope = r
+      corner.downslope = r
 
   -- Calculate the watershed of every land point. The watershed is
   -- the last downstream land point in the downslope graph.

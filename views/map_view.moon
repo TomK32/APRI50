@@ -190,7 +190,7 @@ export class MapView extends View
     love.graphics.setColor(50,50,50,200)
     love.graphics.rectangle('fill', -5, -5, @debug_mouse_window.width + 10, @debug_mouse_window.height + 10)
     love.graphics.setColor(255,255,255,200)
-    love.graphics.print( 'Position: ' .. f.point.x .. ', ' .. f.point.y, 10, 5)
+    love.graphics.print( 'Position: ' .. f.point.x .. ', ' .. f.point.y .. ', ' .. f.point.z, 10, 5)
     @debug_mouse_window = {height: lh, width: 0}
     i = 1
     for k, v in pairs(f)
@@ -225,7 +225,7 @@ export class MapView extends View
       alpha = 50
     alpha = alpha * game.map_debug
     love.graphics.setColor(0, 0, 0, alpha)
-    love.graphics.circle("fill", x, y, 3 * (0.1 + center.elevation), 6)
+    love.graphics.circle("fill", x, y, 3 * (0.1 + center.point.z), 6)
     love.graphics.setColor(250,250,250, alpha)
     center.chunk\drawBorders()
     love.graphics.setColor(0,0,250,alpha)

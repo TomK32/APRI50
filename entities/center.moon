@@ -6,7 +6,6 @@ export class Center
     @index = 0
 
     @moisture = point.moisture or 0 -- 0..1
-    @elevation = point.elevation or 0 -- 0..1
     @flora = 0
     @hardening = 0
 
@@ -14,7 +13,7 @@ export class Center
     @borders = {} -- Edge
     @corners = {} -- Corner
     @border = false
-    @biome = @getBiome() -- string
+    @biome = nil -- string
     @
 
   -- for all those 0..1 values
@@ -33,7 +32,7 @@ export class Center
   -- roughly based on the Whittaker diagram but adapted to fit the
   -- needs of the island map generator.
   getBiome: () =>
-    e = @elevation
+    z = @point.z
     m = @moisture
 
     for i, extension in pairs @@extensions
@@ -45,12 +44,12 @@ export class Center
     if @ocean
       return "OCEAN"
     if @water
-      if e < 0.1
+      if z < 0.1
         return 'MARSH'
-      if e > 0.8
+      if z > 0.8
         return 'ICE'
       return 'LAKE'
-    if e > 0.6
+    if z > 0.6
       if m > 0.5
         return 'SNOW'
       if m > 0.33
@@ -58,7 +57,7 @@ export class Center
       if m > 0.16
         return 'BARE'
       return 'SCORCHED'
-    if e > 0.4
+    if z > 0.4
       if m > 0.66
         return 'TAIGA'
       if m > 0.33

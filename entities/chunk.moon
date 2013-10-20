@@ -209,15 +209,15 @@ export class Chunk
     @drawBorders()
     for i, border in ipairs(@center.borders)
       if border.v0
-        size = border.v0.elevation / @center.elevation * 3
-        if border.v0.elevation > @center.elevation
+        size = border.v0.point.z / @center.point.z * 3
+        if border.v0.point.z > @center.point.z
           love.graphics.setColor(0,0,0,255)
         else
           love.graphics.setColor(200,200,200,255)
         love.graphics.circle('fill', border.v0.point.x, border.v0.point.y, size)
       if border.v1
-        size = border.v1.elevation / @center.elevation * 3
-        if border.v1.elevation > @center.elevation
+        size = border.v1.point.z / @center.point.z * 3
+        if border.v1.point.z > @center.point.z
           love.graphics.setColor(0,0,0,255)
         else
           love.graphics.setColor(200,200,200,255)
