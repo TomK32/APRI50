@@ -1,5 +1,7 @@
 -- Based on Light3D (part of Love3D)
 
+require 'entities/point'
+
 export class Sun
   index: 0
   max_x: 2000
