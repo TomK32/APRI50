@@ -147,7 +147,7 @@ export class MapView extends View
       @debugMousePointer()
 
     love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.print(game\timeInWords(), 10, 80)
+    love.graphics.print(game\timeInWords(), 10, @display.height - 20)
     if game.show_sun
       width = 300
       x, y = 420, 30
