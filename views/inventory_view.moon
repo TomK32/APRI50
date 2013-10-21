@@ -22,7 +22,6 @@ export class InventoryView extends View
     love.graphics.rectangle('fill', 0,0,self.display.width + @padding, self.display.height + @padding)
 
     love.graphics.push()
-    love.graphics.translate(@padding, @padding)
     for i = 1, @items
       if i == @inventory.active
         love.graphics.setColor(255, 200, 200, 255)
@@ -32,6 +31,7 @@ export class InventoryView extends View
         item = @inventory.items[i]
         if item.image
           love.graphics.push()
+          love.graphics.translate(@padding, @padding)
           if @item_size ~= item.image\getHeight() or @item_size ~= item.image\getWidth()
             love.graphics.scale(math.min(@item_size / item.image\getHeight(), @item_size / item.image\getWidth()))
           love.graphics.draw(item.image, 0, 0)

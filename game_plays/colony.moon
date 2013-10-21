@@ -30,6 +30,13 @@ GamePlay.Colony.SpaceShip = class SpaceShip extends Entity
     @position = position
 
 GamePlay.Colony.Colonist = class Colonist extends Entity
+  index: 0
+  names: {'Angelica', 'Miriam', 'Thomas'}
   new: =>
     @image = game\image('images/entities/colonist-angelica.png')
-    @name = 'Angelica'
+    @__class.index += 1
+    @id = @__class.index
+    @name = @__class.names[(@id % #@__class.names) + 1] .. @id
+
+  toString: =>
+    @name

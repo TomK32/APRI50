@@ -24,7 +24,7 @@ export class MapState extends State
     @game_play = GamePlay.Colony(@)
     @inventory_view = InventoryView(game.player.inventory)
     @actors_view = InventoryView(game.player.colonists, {30, 30, 200, 100})
-    @actors_view.display.y = @inventory_view.display.y + @inventory_view.display.height + 10
+    @actors_view.display.y = @inventory_view.display.y + @inventory_view.display.height + 20
     @resources_view = ResourcesView(game.player.resources)
     @light_dt = 0
 
@@ -82,7 +82,12 @@ export class MapState extends State
 
   keypressed: (key, unicode) =>
     if key\match("[0-9]")
-      game.player.inventory.active = tonumber(key)
+      if love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
+        game.player.colonists.active = tonumber(key)
+        game.player.inventory.active = nil
+      else
+        game.player.colonists.active = nil
+        game.player.inventory.active = tonumber(key)
     if key\match("m")
       if game.player.inventory.active
         game.player.inventory\replaceActive(game.player.inventory\activeItem()\mutate())
