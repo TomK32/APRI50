@@ -15,10 +15,16 @@ export class MapState extends State
     d: {x: 4,  y:  0}
 
   new: =>
-    @map = Map(2000, 1000, game.seed, 1000)
+    @scores = {}
+    @compute_scores = false
 
+    @map = Map(2000, 1000, game.seed, 800)
     @view = MapView(@map)
+
+    @game_play = GamePlay.Colony(@)
     @inventory_view = InventoryView(game.player.inventory)
+    @actors_view = InventoryView(game.player.colonists, {30, 30, 200, 100})
+    @actors_view.display.y = @inventory_view.display.y + @inventory_view.display.height + 10
     @resources_view = ResourcesView(game.player.resources)
     @light_dt = 0
 
@@ -26,11 +32,8 @@ export class MapState extends State
     -- and add at least one extension with
     --  * scoreForCenter(all_scores, center)
     --  * resetScore(map_state)
-    @compute_scores = false
-    @scores = {}
     @scores_view = ScoresView(@)
     --@game_play = GamePlay.Doomsday(@)
-    @game_play = GamePlay.Colony(@)
 
     for i=1, game.evolution_kits_to_start
       game.player.inventory\add(EvolutionKit.random(game.dna_length))
@@ -44,7 +47,10 @@ export class MapState extends State
 
   draw: =>
     @view\draw()
+
+    -- GUI
     @inventory_view\draw()
+    @actors_view\draw()
     @resources_view\draw()
     @scores_view\draw()
 
@@ -92,6 +98,7 @@ export class MapState extends State
         @view\zoom(1.2)
 
   mousepressed: (x, y, button) =>
+    -- FIXME First check what view we are in and wether it takes clicks
     item_number = @inventory_view\clickedItem(x, y)
     if item_number
       game.player.inventory.active = item_number

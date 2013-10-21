@@ -6,9 +6,10 @@ GamePlay.Colony = class Colony extends GamePlay
 
     @map_state.scores.biomass = {label: 'Biomass', score: 0}
     @map_state.compute_scores = true
-    @colonists = {}
+    game.player.colonists = Inventory()
     for i=1, 5
-      @addColonist(GamePlay.Colony.Colonist())
+      game.player.colonists\add(GamePlay.Colony.Colonist())
+    @map_state.scores.biomass = {label: 'Biomass', score: game.player.colonists.length}
 
     start_position = {x: @map_state.map.width / 2, y: @map_state.map.height / 2, z: 10}
     @map_state.map\addEntity(GamePlay.Colony.SpaceShip('images/entities/ship1.png', start_position))
@@ -16,10 +17,6 @@ GamePlay.Colony = class Colony extends GamePlay
     @dt = 0
     @burning_centers = {}
     @particle_systems = {}
-
-  addColonist: (colonist) =>
-    table.insert(@colonists, colonist)
-    @map_state\setScore('Colonists', #@colonists)
 
   registerExtensions: =>
     true
@@ -34,4 +31,5 @@ GamePlay.Colony.SpaceShip = class SpaceShip extends Entity
 
 GamePlay.Colony.Colonist = class Colonist extends Entity
   new: =>
-    @name = 'Angela'
+    @image = game\image('images/entities/colonist-angelica.png')
+    @name = 'Angelica'

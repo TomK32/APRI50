@@ -1,6 +1,7 @@
 
 export class InventoryView extends View
-  new: (inventory) =>
+  new: (inventory, color) =>
+    @color = color or {0, 200, 0, 100}
     @scale = 1
     super(self)
     @items = 10
@@ -17,10 +18,11 @@ export class InventoryView extends View
     return math.floor((x - @display.x) / @scale / (@item_size + @padding)) + 1
 
   drawContent: =>
-    love.graphics.setColor(0,200,0,100)
+    love.graphics.setColor(unpack(@color))
     love.graphics.rectangle('fill', 0,0,self.display.width + @padding, self.display.height + @padding)
 
     love.graphics.push()
+    love.graphics.translate(@padding, @padding)
     for i = 1, @items
       if i == @inventory.active
         love.graphics.setColor(255, 200, 200, 255)
@@ -29,7 +31,11 @@ export class InventoryView extends View
       if @inventory.items[i]
         item = @inventory.items[i]
         if item.image
-          love.graphics.draw(item.image, @padding, @padding)
+          love.graphics.push()
+          if @item_size ~= item.image\getHeight() or @item_size ~= item.image\getWidth()
+            love.graphics.scale(math.min(@item_size / item.image\getHeight(), @item_size / item.image\getWidth()))
+          love.graphics.draw(item.image, 0, 0)
+          love.graphics.pop()
       else
         love.graphics.setColor(255, 255, 255, 255)
         love.graphics.rectangle('line', @padding, @padding, @item_size+@padding, @item_size)
