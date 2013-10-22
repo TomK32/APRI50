@@ -85,7 +85,11 @@ export class MapState extends State
       return
     if key\match("[0-9]")
       if love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
+
         game.player.colonists.active = tonumber(key)
+        if game.player.colonists\activeItem()
+          position = game.player.colonists\activeItem().position
+          @.view.camera\lookAt(position.x, position.y)
         game.player.inventory.active = nil
       else
         game.player.colonists.active = nil
