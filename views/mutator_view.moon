@@ -6,6 +6,7 @@ export class MutatorView extends View
     @mutations = mutations
 
   drawContent: () =>
+    love.graphics.setFont(game.fonts.regular)
     @drawTree(@mutations, 20, 20)
 
   drawTree: (mutations, x, y) =>
@@ -19,7 +20,12 @@ export class MutatorView extends View
         scores[i] = name .. ': ' .. score
         i = i + 1
       scores = table.concat(scores, ', ')
-      love.graphics.print(mutation\toString(), x, y)
+      s = mutation\toString()
+      while s ~= ''
+        love.graphics.print(s\sub(0,120), x, y)
+        s = s\sub(120)
+        if s ~= ''
+          y += 10
       if mutation.mutations and #mutation.mutations > 0 then
         y = @drawTree(mutation.mutations, x + 20, y)
     return y
