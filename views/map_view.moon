@@ -27,7 +27,7 @@ export class MapView extends View
     View.setDisplay(@, display)
 
   coordsForXY: (x, y) =>
-    return math.floor(x / @camera.scale) - @display.x , math.floor(y / @camera.scale) - @display.y
+    return x + @camera.x - @display.width / 2, y + @camera.y - @display.height / 2
 
   move: (x, y) =>
     @camera\move(x, y)
