@@ -83,17 +83,10 @@ export class MapState extends State
   keypressed: (key, unicode) =>
     if (love.keyboard.isDown("lmeta") or love.keyboard.isDown('rmeta'))
       return
+    if @game_play\keypressed(key, unicode)
+      return
     if key\match("[0-9]")
-      if love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
-
-        game.player.colonists.active = tonumber(key)
-        if game.player.colonists\activeItem()
-          position = game.player.colonists\activeItem().position
-          @.view.camera\lookAt(position.x, position.y)
-        game.player.inventory.active = nil
-      else
-        game.player.colonists.active = nil
-        game.player.inventory.active = tonumber(key)
+      game.player.inventory.active = tonumber(key)
     if key == "m"
       if game.player.inventory.active
         game.player.inventory\replaceActive(game.player.inventory\activeItem()\mutate())

@@ -25,6 +25,15 @@ GamePlay.Colony = class Colony extends GamePlay
 
   update: (dt) =>
     true
+  keypressed: (key, unicode) =>
+    if key\match("[0-9]")
+      if love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
+        game.player.colonists.active = tonumber(key)
+        if game.player.colonists\activeItem()
+          position = game.player.colonists\activeItem().position
+          @map_state.view.camera\lookAt(position.x, position.y)
+          return true
+
 
 GamePlay.Colony.SpaceShip = class SpaceShip extends Entity
   new: (image, position) =>
