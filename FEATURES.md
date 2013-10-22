@@ -14,22 +14,25 @@
 
 ### Colonists
 
-* [active] Static landing craft (Base 1)
+* [0.3] Static landing craft (Base 1)
 * [active] Colonists with moving, controllable entities
 * [active] Plant EvoKit where colonist stands
-* Switch between colonists
+* [0.3] Switch between colonists (Shift-number)
 * Colonist Leader
 * [active] Harvest resources manually
 * [active] Build units like vehicles, machines, robots, harvester
 * [active] Buildings (habitat, utilities, workshop, garden)
+* explore map to see it all
 
 
 ## Map
 
-* scrollable, if terraforming is stretching out far enough
+* [0.3] Scrollable
 * [0.2] Change grid to graph by porting mapgen2
-* [active] Suns lightening the polygons
+* [0.3] Suns lightens the polygons
+* Improve sunshine 
 * Put notes, landmarks and drawings (all on a sign) on the map
+* generate new map chunks during exploration
 
 
 ## EvolutionKits
