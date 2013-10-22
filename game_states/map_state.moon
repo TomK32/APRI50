@@ -81,6 +81,8 @@ export class MapState extends State
     @view\drawContent()
 
   keypressed: (key, unicode) =>
+    if (love.keyboard.isDown("lmeta") or love.keyboard.isDown('rmeta'))
+      return
     if key\match("[0-9]")
       if love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
         game.player.colonists.active = tonumber(key)
@@ -88,19 +90,18 @@ export class MapState extends State
       else
         game.player.colonists.active = nil
         game.player.inventory.active = tonumber(key)
-    if key\match("m")
+    if key == "m"
       if game.player.inventory.active
         game.player.inventory\replaceActive(game.player.inventory\activeItem()\mutate())
-    if key\match("r")
+    if key == "r"
       if game.player.inventory.activeItem
         game.player.inventory\replaceActive(EvolutionKit.random(game.dna_length))
 
 
-    if not (love.keyboard.isDown("lmeta") or love.keyboard.isDown('rmeta'))
-      if key\match("q")
-        @view\zoom(1/1.2)
-      if key\match("e")
-        @view\zoom(1.2)
+    if key == "q"
+      @view\zoom(1/1.2)
+    if key == "e"
+      @view\zoom(1.2)
 
   mousepressed: (x, y, button) =>
     -- FIXME First check what view we are in and wether it takes clicks
