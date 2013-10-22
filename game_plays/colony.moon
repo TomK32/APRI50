@@ -9,7 +9,7 @@ GamePlay.Colony = class Colony extends GamePlay
     game.player.colonists = Inventory()
     start_position = Point(@map_state.map.width / 2, @map_state.map.height / 2, 30)
     for i=1, 5
-      colonist = GamePlay.Colony.Colonist(Point(start_position.x + i * 25, start_position.y - 30, 20))
+      colonist = GamePlay.Colony.Colonist(Point(start_position.x + i * game.icon_size, start_position.y - 30, 20))
       game.player.colonists\add(colonist)
       @map_state.map\addEntity(colonist)
     @map_state.scores.biomass = {label: 'Biomass', score: game.player.colonists.length}
@@ -46,6 +46,7 @@ GamePlay.Colony.Colonist = class Colonist extends Entity
   new: (position) =>
     @position = position
     @image = game\image('images/entities/colonist-angelica.png')
+    @scale = game.icon_size / @image.getWidth()
     @__class.index += 1
     @id = @__class.index
     @name = @__class.names[(@id % #@__class.names) + 1] .. @id

@@ -7,6 +7,8 @@ export class Entity
 
   draw: =>
     love.graphics.push()
+    if @scale
+      love.graphics.scale(@scale)
     if @particles
       love.graphics.draw(@particles, 0, 0)
     @\drawContent()
