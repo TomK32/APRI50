@@ -55,6 +55,8 @@ export class EvolutionKit
     table.insert(@extensions, extension)
 
   apply: (position) =>
+    if not @center
+      return
     @currentChunk = Chunk(@center, @)
     @targetChunk = Chunk(@center, @)
     -- Any extension might change the chunks is size and composition
