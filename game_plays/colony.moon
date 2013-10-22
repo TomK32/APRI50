@@ -7,11 +7,13 @@ GamePlay.Colony = class Colony extends GamePlay
     @map_state.scores.biomass = {label: 'Biomass', score: 0}
     @map_state.compute_scores = true
     game.player.colonists = Inventory()
+    start_position = Point(@map_state.map.width / 2, @map_state.map.height / 2, 30)
     for i=1, 5
-      game.player.colonists\add(GamePlay.Colony.Colonist())
+      colonist = GamePlay.Colony.Colonist(Point(start_position.x + i * 25, start_position.y - 30, 20))
+      game.player.colonists\add(colonist)
+      @map_state.map\addEntity(colonist)
     @map_state.scores.biomass = {label: 'Biomass', score: game.player.colonists.length}
 
-    start_position = {x: @map_state.map.width / 2, y: @map_state.map.height / 2, z: 10}
     @map_state.map\addEntity(GamePlay.Colony.SpaceShip('images/entities/ship1.png', start_position))
     @map_state.view.camera\lookAt(start_position.x, start_position.y)
     @dt = 0
@@ -32,7 +34,8 @@ GamePlay.Colony.SpaceShip = class SpaceShip extends Entity
 GamePlay.Colony.Colonist = class Colonist extends Entity
   index: 0
   names: {'Angelica', 'Miriam', 'Thomas'}
-  new: =>
+  new: (position) =>
+    @position = position
     @image = game\image('images/entities/colonist-angelica.png')
     @__class.index += 1
     @id = @__class.index
