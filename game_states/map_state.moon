@@ -85,7 +85,7 @@ export class MapState extends State
       return
     if @game_play\keypressed(key, unicode)
       return
-    if key\match("[0-9]")
+    if key\match("[0-9]") and (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift"))
       game.player.inventory.active = tonumber(key)
       if game.player.inventory\activeItem()
         game.player.inventory\activeItem().active = true

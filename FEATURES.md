@@ -12,7 +12,7 @@
 * Gamepad support
 
 
-### Colonists
+### GamePlay: Colonists
 
 * [0.3] Static landing craft (Base 1)
 * [0.3] Colonists with moving, controllable entities
@@ -21,17 +21,19 @@
 * [active] EvoKit storage at base
 * [active] Inventory for each colonist
 * [active] exchange inventory items with other inventory nearby (base and other colonists)
-* Colonist Leader
 * [active] Harvest resources manually
 * [active] Build units like vehicles, machines, robots, harvester
 * [active] Buildings (habitat, utilities, workshop, garden)
+* Colonist Leader
 * explore map to see it all
+* Athmospheric bubbles
+* Equipment
 
 
 ## Map
 
-* [0.3] Scrollable
 * [0.2] Change grid to graph by porting mapgen2
+* [0.3] Scrollable
 * [0.3] Suns lightens the polygons
 * Improve sunshine 
 * Put notes, landmarks and drawings (all on a sign) on the map

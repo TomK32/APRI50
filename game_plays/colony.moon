@@ -35,16 +35,16 @@ GamePlay.Colony = class Colony extends GamePlay
         @map_state\placeItem(colonist.position.x, colonist.position.y, item)
         return true
 
-    if key\match("[0-9]")
-      if love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
-        if game.player.colonists\activeItem()
-          game.player.colonists\activeItem().active = false
-        game.player.colonists.active = tonumber(key)
-        if game.player.colonists\activeItem()
-          game.player.colonists\activeItem().active = true
-          position = game.player.colonists\activeItem().position
-          @map_state.view.camera\lookAt(position.x, position.y)
-          return true
+    if key\match("[0-9]") and not (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift"))
+      if game.player.colonists\activeItem()
+        game.player.colonists\activeItem().active = false
+      game.player.colonists.active = tonumber(key)
+      if game.player.colonists\activeItem()
+        game.player.colonists\activeItem().active = true
+        position = game.player.colonists\activeItem().position
+        @map_state.view.camera\lookAt(position.x, position.y)
+        return true
+    return false
 
   mousepressed: (x, y, button) =>
     colonist = game.player.colonists\activeItem()
