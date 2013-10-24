@@ -10,6 +10,7 @@ export class Map
     @layer_indexes = {}
     @tiles = {}
     @updateAble = {} -- entities that need to be called during update
+    @controlAble = {} -- entities that can be controlled by the player
     @width = width
     @height = height
     @map_gen = MapGen(width, height, seed, number_of_points)
@@ -68,6 +69,8 @@ export class Map
     table.insert(@layers[entity.position.z], entity)
     if entity.update
       table.insert(@updateAble, entity)
+    if entity.keypressed
+      table.insert(@controlAble, entity)
 
   findClosestCenter: (x, y) =>
     point = Point(x, y)
@@ -86,4 +89,10 @@ export class Map
         entity\update(dt)
       if entity.deleted
         table.remove(@updateAble, i)
+
+  keypressed: (key, unicode) =>
+    for i, entity in ipairs(@controlAble)
+      if entity.active and entity\keypressed(key, unicode)
+        return true
+    return false
 

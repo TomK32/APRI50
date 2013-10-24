@@ -89,18 +89,24 @@ export class MapState extends State
       game.player.inventory.active = tonumber(key)
       if game.player.inventory\activeItem()
         game.player.inventory\activeItem().active = true
+        return true
     if key == "m"
-      if game.player.inventory.active
+      if game.player.inventory.activeItem()
         game.player.inventory\replaceActive(game.player.inventory\activeItem()\mutate())
+        return true
     if key == "r"
-      if game.player.inventory.activeItem
+      if game.player.inventory.activeItem()
         game.player.inventory\replaceActive(EvolutionKit.random(game.dna_length))
-
+        return true
 
     if key == "q"
       @view\zoom(1/1.2)
+      return true
     if key == "e"
       @view\zoom(1.2)
+      return true
+
+    @map\keypressed(key, unicode)
 
   mousepressed: (x, y, button) =>
     -- FIXME First check what view we are in and wether it takes clicks
