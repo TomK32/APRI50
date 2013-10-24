@@ -46,6 +46,16 @@ GamePlay.Colony = class Colony extends GamePlay
           @map_state.view.camera\lookAt(position.x, position.y)
           return true
 
+  mousepressed: (x, y, button) =>
+    colonist = game.player.colonists\activeItem()
+    if colonist
+      x, y = @map_state.view\coordsForXY(x, y)
+      point = @map_state.map\findClosestCenter(x, y).point
+      colonist\moveTo(point)
+      return true
+    return false
+
+
 GamePlay.Colony.SpaceShip = class SpaceShip extends Entity
   new: (image, position) =>
     @image = game\image(image)

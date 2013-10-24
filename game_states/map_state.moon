@@ -111,6 +111,8 @@ export class MapState extends State
   mousepressed: (x, y, button) =>
     -- FIXME First check what view we are in and wether it takes clicks
     item_number = @inventory_view\clickedItem(x, y)
+    if @game_play.mousepressed
+      @game_play\mousepressed(x, y, button)
     if item_number
       game.player.inventory.active = item_number
     else
