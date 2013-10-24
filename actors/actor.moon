@@ -10,5 +10,7 @@ export class Actor extends Entity
   
   moveTo: (point)=>
     distance = @position\distance(point)
-    tween(distance / @speed, @position, {x: point.x, y: point.y})
+    if @moving_tween
+      tween.stop(@moving_tween)
+    @moving_tween = tween(4 * distance / @speed * game.dt, @position, {x: point.x, y: point.y})
 
