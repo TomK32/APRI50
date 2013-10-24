@@ -1,9 +1,15 @@
 
 export class Entity
   new: (options) =>
+    @active = false
     if options
       for k, v in pairs(options) do
         self[k] = v
+
+  setDimensions: =>
+    if @image
+      @width = @image\getWidth()
+      @height = @image\getHeight()
 
   draw: =>
     love.graphics.push()
@@ -12,6 +18,18 @@ export class Entity
     if @particles
       love.graphics.draw(@particles, 0, 0)
     @\drawContent()
+    love.graphics.pop()
+
+  drawActive: (highlightColour) =>
+    if @image and not (@width or @height)
+      @setDimensions()
+    if not (@width or @height)
+      return
+    love.graphics.push()
+    love.graphics.setColor(highlightColour)
+    if @scale
+      love.graphics.scale(@scale)
+    love.graphics.rectangle('fill', 0, 0, @width, @height)
     love.graphics.pop()
 
   drawContent: =>

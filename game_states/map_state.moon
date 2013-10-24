@@ -87,6 +87,8 @@ export class MapState extends State
       return
     if key\match("[0-9]")
       game.player.inventory.active = tonumber(key)
+      if game.player.inventory\activeItem()
+        game.player.inventory\activeItem().active = true
     if key == "m"
       if game.player.inventory.active
         game.player.inventory\replaceActive(game.player.inventory\activeItem()\mutate())
