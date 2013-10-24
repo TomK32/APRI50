@@ -211,7 +211,9 @@ export class MapView extends View
   drawEntity: (entity, x, y) =>
     love.graphics.push()
     love.graphics.translate(entity.position.x, entity.position.y)
-    if entity.active
+    if entity.width and entity.height
+      love.graphics.translate(entity.width / -2, entity.height / -2)
+    if entity.active and entity.drawActive
       entity\drawActive({240, 240, 0, 200})
     if entity.draw or entity.drawable
       if entity.draw

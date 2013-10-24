@@ -15,9 +15,12 @@
 ### Colonists
 
 * [0.3] Static landing craft (Base 1)
-* [active] Colonists with moving, controllable entities
-* [active] Plant EvoKit where colonist stands
+* [0.3] Colonists with moving, controllable entities
+* [0.3] Plant EvoKit where colonist stands
 * [0.3] Switch between colonists (Shift-number)
+* [active] EvoKit storage at base
+* [active] Inventory for each colonist
+* [active] exchange inventory items with other inventory nearby (base and other colonists)
 * Colonist Leader
 * [active] Harvest resources manually
 * [active] Build units like vehicles, machines, robots, harvester

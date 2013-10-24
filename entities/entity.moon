@@ -5,6 +5,7 @@ export class Entity
     if options
       for k, v in pairs(options) do
         self[k] = v
+    @setDimensions()
 
   setDimensions: =>
     if @image
@@ -13,6 +14,7 @@ export class Entity
 
   draw: =>
     love.graphics.push()
+    love.graphics.setColor(255,255,255, 255)
     if @scale
       love.graphics.scale(@scale)
     if @particles
@@ -29,7 +31,7 @@ export class Entity
     love.graphics.setColor(highlightColour)
     if @scale
       love.graphics.scale(@scale)
-    love.graphics.rectangle('fill', 0, 0, @width, @height)
+    love.graphics.rectangle('line', 0, 0, @width, @height)
     love.graphics.pop()
 
   drawContent: =>

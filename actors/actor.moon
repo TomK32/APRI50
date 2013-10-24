@@ -1,6 +1,6 @@
 
 export class Actor extends Entity
-  new: =>
+  new: (options) =>
     @speed = 1
 
   move: (offset, dt) =>

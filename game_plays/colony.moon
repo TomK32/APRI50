@@ -28,6 +28,13 @@ GamePlay.Colony = class Colony extends GamePlay
     true
 
   keypressed: (key, unicode) =>
+    if key == ' '
+      item = game.player.inventory\activeItem()
+      colonist = game.player.colonists\activeItem()
+      if item and colonist
+        @map_state\placeItem(colonist.position.x, colonist.position.y, item)
+        return true
+
     if key\match("[0-9]")
       if love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
         if game.player.colonists\activeItem()
@@ -58,6 +65,7 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
     @speed = 10
     @position = position
     @image = game\image('images/entities/colonist-angelica.png')
+    @setDimensions()
     @scale = game.icon_size / @image\getWidth()
     @__class.index += 1
     @id = @__class.index
@@ -72,6 +80,4 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
     for key, direction in pairs(@__class.movements)
       if love.keyboard.isDown(key)
         @move(direction, dt * 10)
-
-  keypressed: (key, unicode) =>
 
