@@ -11,6 +11,7 @@ GamePlay.Colony = class Colony extends GamePlay
     start_position = Point(@map_state.map.width / 2, @map_state.map.height / 2, 30)
     for i=1, 5
       colonist = GamePlay.Colony.Colonist(Point(start_position.x + i * game.icon_size, start_position.y - 30, 20))
+      colonist.camera = @map_state.view.camera
       game.player.colonists\add(colonist)
       @map_state.map\addEntity(colonist)
     @map_state.scores.biomass = {label: 'Biomass', score: game.player.colonists.length}
@@ -39,10 +40,10 @@ GamePlay.Colony = class Colony extends GamePlay
       if game.player.colonists\activeItem()
         game.player.colonists\activeItem().active = false
       game.player.colonists.active = tonumber(key)
-      if game.player.colonists\activeItem()
-        game.player.colonists\activeItem().active = true
-        position = game.player.colonists\activeItem().position
-        @map_state.view.camera\lookAt(position.x, position.y)
+      colonist = game.player.colonists\activeItem()
+      if colonist
+        colonist.active = true
+        colonist.camera\lookAt(colonist.position.x, colonist.position.y)
         return true
     return false
 
@@ -83,6 +84,9 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
 
   toString: =>
     @name
+
+  afterMove: () =>
+    @camera\lookAt(@position.x, @position.y)
 
   update: (dt) =>
     if not @active
