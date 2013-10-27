@@ -9,3 +9,4 @@ views/*.lua
 build/*
 game_plays/*lua
 game_states/*lua
+spec/**/*_spec.lua
