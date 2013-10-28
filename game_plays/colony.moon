@@ -113,9 +113,9 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
     @id = @__class.index
     @name = @__class.names[(@id % #@__class.names) + 1] .. @id
     @inventory = Inventory()
-    for i=1, game.evolution_kits_to_start
-      @inventory\add(EvolutionKit.random(game.dna_length))
-    @inventory.active = false
+    -- just add one
+    @inventory\add(EvolutionKit.random(game.dna_length))
+    @inventory.active = 1
 
   toString: =>
     @name

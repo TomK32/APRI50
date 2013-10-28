@@ -31,7 +31,6 @@ export class MapState extends State
     --  * scoreForCenter(all_scores, center)
     --  * resetScore(map_state)
     @scores_view = ScoresView(@)
-    --@game_play = GamePlay.Doomsday(@)
 
     return @
 

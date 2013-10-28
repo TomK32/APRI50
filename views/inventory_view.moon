@@ -9,7 +9,6 @@ export class InventoryView extends View
     @item_size = game.icon_size
     @display = {x: 10, y: 10, width: @item_size * 10 + 30 * @padding, height: @item_size + @padding}
     @inventory = inventory
-    scale = game.tile_size
 
   mousepressed: (x, y) =>
     item_number = @clickedItem(x, y)

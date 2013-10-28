@@ -18,8 +18,8 @@
 * [0.3] Colonists with moving, controllable entities
 * [0.3] Plant EvoKit where colonist stands
 * [0.3] Switch between colonists (Shift-number)
-* [active] EvoKit storage at base
-* [active] Inventory for each colonist
+* [0.3] EvoKit storage at base
+* [0.3] Inventory for each colonist
 * [active] exchange inventory items with other inventory nearby (base and other colonists)
 * [active] Harvest resources manually
 * [active] Build units like vehicles, machines, robots, harvester
