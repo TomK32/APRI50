@@ -8,16 +8,27 @@ export class InventoryView extends View
     @padding = 2
     @item_size = game.icon_size
     @display = {x: 10, y: 10, width: @item_size * 10 + 30 * @padding, height: @item_size + @padding}
-    assert(inventory)
     @inventory = inventory
     scale = game.tile_size
 
+  mousepressed: (x, y) =>
+    item_number = @clickedItem(x, y)
+    if item_number
+      @inventory.active = item_number
+
   clickedItem: (x, y) =>
+    if not @inventory
+      return
     if not @\pointInRect(x, y)
       return nil
     return math.floor((x - @display.x) / @scale / (@item_size + @padding)) + 1
 
+  active: =>
+    return @inventory ~= nil
+
   drawContent: =>
+    if not @inventory
+      return
     love.graphics.setColor(unpack(@color))
     love.graphics.rectangle('fill', 0,0,self.display.width + @padding, self.display.height + @padding)
 
@@ -27,7 +38,7 @@ export class InventoryView extends View
         love.graphics.setColor(255, 200, 200, 255)
       else
         love.graphics.setColor(255, 255, 255, 255)
-      if @inventory.items[i]
+      if @inventory.items and @inventory.items[i]
         item = @inventory.items[i]
         if item.image
           love.graphics.push()

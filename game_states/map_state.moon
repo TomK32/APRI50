@@ -15,6 +15,7 @@ export class MapState extends State
     d: {x: 4,  y:  0}
 
   new: =>
+    super(@)
     @scores = {}
     @compute_scores = false
 
@@ -22,9 +23,6 @@ export class MapState extends State
     @view = MapView(@map)
 
     @game_play = GamePlay.Colony(@)
-    @inventory_view = InventoryView(game.player.inventory)
-    @actors_view = InventoryView(game.player.colonists, {30, 30, 200, 100})
-    @actors_view.display.y = @inventory_view.display.y + @inventory_view.display.height + 20
     @resources_view = ResourcesView(game.player.resources)
     @light_dt = 0
 
@@ -35,9 +33,6 @@ export class MapState extends State
     @scores_view = ScoresView(@)
     --@game_play = GamePlay.Doomsday(@)
 
-    for i=1, game.evolution_kits_to_start
-      game.player.inventory\add(EvolutionKit.random(game.dna_length))
-
     return @
 
   setScore: (name, score) =>
@@ -46,11 +41,9 @@ export class MapState extends State
     @scores[name] = {label: name, score: score}
 
   draw: =>
-    @view\draw()
+    super(@)
 
     -- GUI
-    @inventory_view\draw()
-    @actors_view\draw()
     @resources_view\draw()
     @scores_view\draw()
 
@@ -85,19 +78,6 @@ export class MapState extends State
       return
     if @game_play\keypressed(key, unicode)
       return
-    if key\match("[0-9]") and (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift"))
-      game.player.inventory.active = tonumber(key)
-      if game.player.inventory\activeItem()
-        game.player.inventory\activeItem().active = true
-        return true
-    if key == "m"
-      if game.player.inventory.activeItem()
-        game.player.inventory\replaceActive(game.player.inventory\activeItem()\mutate())
-        return true
-    if key == "r"
-      if game.player.inventory.activeItem()
-        game.player.inventory\replaceActive(EvolutionKit.random(game.dna_length))
-        return true
 
     if key == "q"
       @view\zoom(1/1.2)
@@ -109,23 +89,17 @@ export class MapState extends State
     @map\keypressed(key, unicode)
 
   mousepressed: (x, y, button) =>
-    -- FIXME First check what view we are in and wether it takes clicks
-    item_number = @inventory_view\clickedItem(x, y)
+    for i, view in ipairs(@sub_views)
+      if view\active() and view.mousepressed and view\mousepressed(x, y)
+        return true
+
     if @game_play.mousepressed
-      @game_play\mousepressed(x, y, button)
-    if item_number
-      game.player.inventory.active = item_number
-    else
-      item = game.player.inventory\activeItem()
-      if item
-        return
-        --x, y = @view\coordsForXY(x, y)
-        --@placeItem(x, y, item)
+      if @game_play\mousepressed(x, y, button)
+        return true
 
   placeItem: (x, y, item) =>
     center = @map\findClosestCenter(x, y)
     assert(center, 'TOOD: Flash display when no center')
     if item\place(@map, {x: center.point.x, y: center.point.y, z: 1}, center)
-      @map\addEntity(item)
-      game.player.inventory\remove(item)
+      return @map\addEntity(item)
 

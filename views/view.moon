@@ -18,6 +18,9 @@ export class View
     if @drawGUI
       @drawGUI()
 
+  active: =>
+    true
+
   update: (dt) =>
     true
 

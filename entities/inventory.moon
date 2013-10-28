@@ -3,7 +3,7 @@ export class Inventory
 
   new: =>
     @items = {}
-    @active = nil
+    @active = true
 
   add: (item, position) =>
     if not position
@@ -22,6 +22,12 @@ export class Inventory
         if it == item
           @items[i] = nil
           return item
+
+  activate: (position) =>
+    if @items[tonumber(position)]
+      @active = tonumber(position)
+      return @activeItem()
+    return false
 
   activeItem: =>
     if not @active
