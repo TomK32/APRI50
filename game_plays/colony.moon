@@ -42,29 +42,27 @@ GamePlay.Colony = class Colony extends GamePlay
 
   keypressed: (key, unicode) =>
     shift_pressed = (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift"))
-    if key == ' '
-      colonist = game.player.colonists\activeItem()
-      if colonist
-        item = colonist.inventory\activeItem()
-        if item
-          if @map_state\placeItem(colonist.position.x, colonist.position.y, item)
-            colonist.inventory\remove(item)
-          return true
+    colonist = game.player.colonists\activeItem()
+    item = nil
+    if colonist
+      item = colonist.inventory\activeItem()
 
-    if key\match("[0-9]") and shift_pressed
-      colonist = game.player.colonists\activeItem()
+    if key == ' ' and colonist and item
+      if @map_state\placeItem(colonist.position.x, colonist.position.y, item)
+        colonist.inventory\remove(item)
+      return true
+
+    if key\match("[0-9]") and shift_pressed and colonist
       if colonist.inventory.items[tonumber(key)]
         colonist.inventory.active = tonumber(key)
         colonist.inventory\activeItem().active = true
         return true
-    if key == "m"
-      if colonist.inventory\activeItem()
-        colonist.replaceActive(colonist.inventory\activeItem()\mutate())
-        return true
-    if key == "r"
-      if colonist.inventory\activeItem()
-        colonist.replaceActive(EvolutionKit.random(game.dna_length))
-        return true
+    if key == "m" and colonist and item
+      colonist.inventory\replaceActive(item\mutate())
+      return true
+    if key == "r" and colonist and item
+      colonist.inventory\replaceActive(EvolutionKit.random(game.dna_length))
+      return true
 
     if key\match("[0-9]") and not shift_pressed
       if game.player.colonists\activeItem()
