@@ -66,3 +66,13 @@
   * change with map. Water on the map => water music
 * when placing EvoKit and when it finishes
 
+
+## Mods
+
+* API
+* Server to deliver mods
+* Client lists and downloads mods from server
+* Sign mods so they can't be tampered with
+  * http://facepunch.com/showthread.php?t=887833
+  * https://en.wikipedia.org/wiki/RSA_(algorithm)
+
