@@ -1,4 +1,4 @@
-
+require 'entities/entity'
 export class Actor extends Entity
   new: (options) =>
     @speed = 1
