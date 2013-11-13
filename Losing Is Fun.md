@@ -1,5 +1,4 @@
-
-All you need to know about losing APIR50 - Colony
+All you need to know about losing APRI50 - Colony
 
 * Your colonist's oxygen backpack runs empty
 * Your colony's athmosphere generator breaks down
