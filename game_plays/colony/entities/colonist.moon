@@ -1,4 +1,4 @@
-
+require 'entities/oxygen_tank'
 require 'actors/actor'
 GamePlay.Colony.Colonist = class Colonist extends Actor
   index: 0
@@ -12,6 +12,8 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
   new: (position) =>
     super(@)
     @speed = 10
+    @dead = false
+    @health = 10 * game.dt
     @position = position
     @image = game\image('images/entities/colonist-angelica.png')
     @setDimensions()
@@ -22,6 +24,9 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
     @inventory = Inventory()
     -- just add one
     @inventory\add(EvolutionKit.random(game.dna_length))
+    @inventory\add(GamePlay.Colony.OxygenTank(20000))
+    @currentOxygenTank = nil
+
     @inventory.active = 1
 
   toString: =>
@@ -30,7 +35,27 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
   afterMove: () =>
     @camera\lookAt(@position.x, @position.y)
 
+  breath: (dt) =>
+    -- Let's find a filled up tank
+    if not @currentOxygenTank or @currentOxygenTank\empty()
+      @currentOxygenTank = nil
+      print 'i', @inventory
+      for i, item in ipairs(@inventory.items)
+        print item.__class
+        if item.__class.__name == 'OxygenTank' and not item\empty()
+          @currentOxygenTank = item
+    if @currentOxygenTank
+      @currentOxygenTank\consume(dt)
+    else
+      @health -= dt
+
   update: (dt) =>
+    @breath(dt)
+    if @dead
+      return
+    if @health < 0
+      @dead = true
+      return
     if not @active
       return
     dir = {x: 0, y: 0}

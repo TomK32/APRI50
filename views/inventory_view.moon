@@ -35,16 +35,19 @@ export class InventoryView extends View
     for i = 1, @items
       if i == @inventory.active
         love.graphics.setColor(255, 200, 200, 255)
-      else
-        love.graphics.setColor(255, 255, 255, 255)
+        love.graphics.rectangle('line', @padding, @padding, @item_size+@padding, @item_size)
+      love.graphics.setColor(255, 255, 255, 255)
       if @inventory.items and @inventory.items[i]
         item = @inventory.items[i]
-        if item.image
+        if item.image or item.quad
           love.graphics.push()
           love.graphics.translate(@padding, @padding)
-          if @item_size ~= item.image\getHeight() or @item_size ~= item.image\getWidth()
-            love.graphics.scale(math.min(@item_size / item.image\getHeight(), @item_size / item.image\getWidth()))
-          love.graphics.draw(item.image, 0, 0)
+          if item.quad
+            love.graphics.draw(item.image, item.quad, 0, 0)
+          elseif item.image
+            if @item_size ~= item.image\getHeight() or @item_size ~= item.image\getWidth()
+              love.graphics.scale(math.min(@item_size / item.image\getHeight(), @item_size / item.image\getWidth()))
+            love.graphics.draw(item.image, 0, 0)
           love.graphics.pop()
       else
         love.graphics.setColor(255, 255, 255, 255)
