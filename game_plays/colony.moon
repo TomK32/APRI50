@@ -79,14 +79,17 @@ GamePlay.Colony = class Colony extends GamePlay
     return false
 
   mousepressed: (x, y, button) =>
-    colonist = game.player.colonists\activeItem()
+    colonist = @currentActor()
     if colonist
-      x, y = @map_state.view\coordsForXY(x, y)
-      point = @map_state.map\findClosestCenter(x, y).point
-      colonist\moveTo(point)
+      colonist\moveTo(@findCenter(x, y).point)
       return true
     return false
 
+  findCenter: (x, y) =>
+    x, y = @map_state.view\coordsForXY(x, y)
+    return @map_state.map\findClosestCenter(x, y)
 
+  currentActor: =>
+    return game.player.colonists\activeItem()
 
 
