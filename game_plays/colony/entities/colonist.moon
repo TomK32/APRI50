@@ -15,7 +15,7 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
     @dead = false
     @health = 10 * game.dt
     @position = position
-    @image = game\image('images/entities/colonist-angelica.png')
+    @image = game\image('game_plays/colony/images/colonist-angelica.png')
     @setDimensions()
     @scale = game.icon_size / @image\getWidth()
     @__class.index += 1
@@ -55,6 +55,7 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
       return
     if @health < 0
       @dead = true
+      @image = game\image('game_plays/colony/images/colonist-angelica-dead.png')
       return
     if not @active
       return
