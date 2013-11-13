@@ -33,6 +33,9 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
   update: (dt) =>
     if not @active
       return
+    dir = {x: 0, y: 0}
     for key, direction in pairs(@__class.movements)
       if love.keyboard.isDown(key)
-        @move(direction, dt * 10)
+        dir.x += direction.x
+        dir.y += direction.y
+    @move(dir, dt * 10)
