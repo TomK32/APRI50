@@ -20,6 +20,9 @@
 * [0.3] Switch between colonists (Shift-number)
 * [0.3] EvoKit storage at base
 * [0.3] Inventory for each colonist
+* [0.3] OxygenTanks for each colonist
+* [active] Oxygen generator (works best on green tiles, do store plenty)
+* [active] Automatically recharge OxygenTank when close to a generator
 * [active] exchange inventory items with other inventory nearby (base and other colonists)
 * [active] Harvest resources manually
 * [active] Build units like vehicles, machines, robots, harvester

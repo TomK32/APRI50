@@ -39,10 +39,8 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
     -- Let's find a filled up tank
     if not @currentOxygenTank or @currentOxygenTank\empty()
       @currentOxygenTank = nil
-      print 'i', @inventory
-      for i, item in ipairs(@inventory.items)
-        print item.__class
-        if item.__class.__name == 'OxygenTank' and not item\empty()
+      for i, item in ipairs(@inventory\itemsByClass('OxygenTank'))
+        if not item\empty()
           @currentOxygenTank = item
     if @currentOxygenTank
       @currentOxygenTank\consume(dt)

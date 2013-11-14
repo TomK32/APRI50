@@ -11,14 +11,15 @@ export class GamePlay.Colony.OxygenTank
     @quad = @quads[1]
 
   empty: =>
-    return @oxygen < 0
+    return @oxygen <= 0
 
   toString: =>
-    math.floor(100 * @oxygen / @capacity) .. '% '
+    'Oxygen: ' .. math.floor(100 * @oxygen / @capacity) .. '% '
 
   consume: (delta) =>
     @oxygen -= delta
     if @oxygen < @capacity / 2
       @quad = @quads[2]
     if @oxygen < 0
+      @oxygen = 0
       @quad = @quads[3]

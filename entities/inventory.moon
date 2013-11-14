@@ -23,6 +23,10 @@ export class Inventory
           @items[i] = nil
           return item
 
+  itemsByClass: (klass) =>
+    r = {}
+    return _.select(@items, (item) -> item.__class.__name == klass)
+
   activate: (position) =>
     if @items[tonumber(position)]
       @active = tonumber(position)
