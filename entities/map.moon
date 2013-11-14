@@ -27,6 +27,23 @@ export class Map
   centers: =>
     return @map_gen.centers
 
+  pointToBucket: (point, bucket) =>
+    x = math.ceil(point.x / @bucket_size)
+    y = math.ceil(point.y / @bucket_size)
+    if x < 1
+      x = 1
+    if y < 1
+      y = 1
+    if not bucket[x]
+      bucket[x] = {}
+    if not bucket[x][y]
+      bucket[x][y] = {}
+
+    return bucket[x][y]
+
+  centersNearPoint: (x, y) =>
+    return @centersInRect(x - @bucket_size, y - @bucket_size, 2 * @bucket_size, 2 * @bucket_size)
+
   centersInRect: (x0, y0, w, h) =>
     x0 = math.ceil(x0 / @bucket_size)
     y0 = math.ceil(y0 / @bucket_size)
@@ -56,12 +73,11 @@ export class Map
         @center_buckets[x][y] = {}
 
     for i, center in ipairs(@map_gen.centers)
-      x = math.floor(center.point.x / @bucket_size) + 1
-      y = math.floor(center.point.y / @bucket_size) + 1
-      table.insert(@center_buckets[x][y], center)
+      table.insert(@pointToBucket(center.point, @center_buckets), center)
 
   addEntity: (entity) =>
     entity.map = self
+    entity.position.z = entity.position.z or 0
     if not @layers[entity.position.z] then
       @layers[entity.position.z] = {}
       table.insert(@layer_indexes, entity.position.z)
@@ -74,9 +90,12 @@ export class Map
 
   findClosestCenter: (x, y) =>
     point = Point(x, y)
-    closest_center = @centers()[1]
+    centers = @centersNearPoint(x, y)
+    closest_center = centers[1]
+    if not closest_center
+      return nil
     closest_distance = closest_center.point\distance(point)
-    for i, center in ipairs(@centers())
+    for i, center in ipairs(centers)
       distance = center.point\distance(point)
       if distance < closest_distance
         closest_center = center

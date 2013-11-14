@@ -69,9 +69,11 @@ export class MapView extends View
   scaledPoint: (point) =>
     return point.x * @camera.scale, point.y * @camera.scale
 
+  cameraWH: =>
+    @display.width / @camera.scale / 2, @display.height / @camera.scale / 2
+
   centersInRect: =>
-    w = @display.width / @camera.scale / 2
-    h = @display.height / @camera.scale / 2
+    w, h = @cameraWH()
     @map\centersInRect(@camera.x - w + 2 * @display.x, @camera.y - h + 2 * @display.y, w * 2, h * 2)
 
   update: (dt) =>
