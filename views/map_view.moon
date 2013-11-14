@@ -76,6 +76,10 @@ export class MapView extends View
     w, h = @cameraWH()
     @map\centersInRect(@camera.x - w + 2 * @display.x, @camera.y - h + 2 * @display.y, w * 2, h * 2)
 
+  entitiesInRect: =>
+    w, h = @cameraWH()
+    @map\entitiesInRect(@camera.x - w * 2 + 2 * @display.x, @camera.y - h * 2 + 2 * @display.y, w * 4, h * 4)
+
   update: (dt) =>
     @drawCanvas()
 
@@ -105,7 +109,7 @@ export class MapView extends View
 
     -- entities
     for l, layer in ipairs(@map.layer_indexes) do
-      entities = @map.layers[layer]
+      entities = @entitiesInRect()
       table.sort(entities, (a, b) -> return a.position.y > b.position.y)
       for i,entity in ipairs(entities) do
         @\drawEntity(entity)

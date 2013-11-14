@@ -20,5 +20,8 @@ export class Point
     b = @y - other.y
     return math.sqrt(a * a + b * b)
 
+  inRect: (x0, y0, x1, y1) =>
+    return @x > x0 and @x < x1 and @y > y0 and @y < y1
+
   length: =>
     return math.sqrt(@x * @x + @y * @y)

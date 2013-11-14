@@ -96,6 +96,18 @@ export class Map
     if entity.keypressed
       table.insert(@controlAble, entity)
 
+  entitiesInRect: (x0, y0, w, h) =>
+    x1, y1 = x0 + w, y0 + w
+    entities = {}
+    all = 1
+
+    for l, layer in pairs(@layers)
+      for i, entity in pairs(layer)
+        if entity.position\inRect(x0, y0, x1, y1)
+          entities[all] = entity
+          all += 1
+    return entities
+
   findClosestCenter: (x, y) =>
     point = Point(x, y)
     centers = @centersNearPoint(x, y)
