@@ -75,6 +75,14 @@ export class Map
     for i, center in ipairs(@map_gen.centers)
       table.insert(@pointToBucket(center.point, @center_buckets), center)
 
+  removeEntity: (entity) =>
+    for l, layer in pairs(@layers[entity.position.z])
+      for i, other in ipairs(layer)
+        if entity == other
+          table.remove(layer, i)
+          return true
+    return false
+
   addEntity: (entity) =>
     entity.map = self
     entity.position.z = entity.position.z or 0
