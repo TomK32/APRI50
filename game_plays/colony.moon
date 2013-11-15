@@ -30,8 +30,11 @@ GamePlay.Colony = class Colony extends GamePlay
     @inventory_view.display.x = (@map_state.view.display.width - @inventory_view.display.width) / 2
     @inventory_view.display.y = @map_state.view.display.height - @inventory_view.display.height - 20
     @map_state\addView(@inventory_view)
-    
-    @map_state\addView(@actors_view)
+
+    @trade_inventory_view = InventoryView(nil, {30, 200, 30, 100})
+    @trade_inventory_view.display.x = (@map_state.view.display.width - @trade_inventory_view.display.width) / 2
+    @trade_inventory_view.display.y = @map_state.view.display.height - 3 * @trade_inventory_view.display.height - 20
+    @map_state\addView(@trade_inventory_view)
 
     @dt = 0
     @burning_centers = {}
@@ -41,7 +44,14 @@ GamePlay.Colony = class Colony extends GamePlay
     true
 
   update: (dt) =>
-    true
+    colonist = @currentActor()
+    if colonist
+      entities = @map_state.map\entitiesNear(colonist.position.x, colonist.position.y, colonist.reach)
+      for i, entity in ipairs(entities)
+        if entity ~= colonist and entity.inventory
+          @trade_inventory_view.inventory = entity.inventory
+    else
+      @trade_inventory_view.inventory = nil
 
   keypressed: (key, unicode) =>
     shift_pressed = (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift"))

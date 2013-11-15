@@ -16,6 +16,7 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
     @health = 10 * game.dt
     @position = position
     @image = game\image('game_plays/colony/images/colonist-angelica.png')
+    @reach = @image\getWidth() / 2 -- how far the arms stretch
     @setDimensions()
     @scale = game.icon_size / @image\getWidth()
     @__class.index += 1

@@ -108,6 +108,9 @@ export class Map
           all += 1
     return entities
 
+  entitiesNear: (x, y, r) =>
+    return @entitiesInRect(x - r, y - r, r * 2, r * 2)
+
   findClosestCenter: (x, y) =>
     point = Point(x, y)
     centers = @centersNearPoint(x, y)
