@@ -23,15 +23,15 @@ GamePlay.Colony = class Colony extends GamePlay
     @map_state.map\addEntity(space_ship)
     @map_state.view.camera\lookAt(start_position.x, start_position.y)
 
-    @actors_view = InventoryView(game.player.colonists, {30, 30, 200, 100})
+    @actors_view = InventoryView(game.player.colonists, {30, 30, 200, 100}, '0-9')
     @map_state\addView(@actors_view)
 
-    @inventory_view = InventoryView(nil, {30, 200, 30, 100}, 'Shift + 1-9')
+    @inventory_view = InventoryView(nil, {30, 200, 30, 100}, 'Shift + 0-9')
     @inventory_view.display.x = (@map_state.view.display.width - @inventory_view.display.width) / 2
     @inventory_view.display.y = @map_state.view.display.height - @inventory_view.display.height - 20
     @map_state\addView(@inventory_view)
 
-    @trade_inventory_view = InventoryView(nil, {30, 100, 30, 100}, 'Alt + 1-9')
+    @trade_inventory_view = InventoryView(nil, {30, 100, 30, 100}, 'Alt + 0-9')
     @trade_inventory_view.display.x = (@map_state.view.display.width - @trade_inventory_view.display.width) / 2
     @trade_inventory_view.display.y = @map_state.view.display.height - 3 * @trade_inventory_view.display.height - 20
     @map_state\addView(@trade_inventory_view)

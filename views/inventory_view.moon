@@ -55,11 +55,11 @@ export class InventoryView extends View
         love.graphics.rectangle('line', @padding, @padding, @item_size+@padding, @item_size)
       love.graphics.translate(@item_size + 3 * @padding, 0)
     love.graphics.pop()
+    love.graphics.translate(@padding, @item_size + 2 * @padding)
     if @inventory\activeItem()
       love.graphics.setFont(game.fonts.small)
       description = @inventory\activeItem()\toString('no fuction. Press [m] to mutate, or [r] to randomize')
       if description
-        love.graphics.translate(@padding, @item_size + 2 * @padding)
         love.graphics.setColor(0, 0, 0 , 150)
         love.graphics.rectangle('fill', 0, 0, game.fonts.small\getWidth(description) + 2, 20)
         love.graphics.setColor(255, 255, 255, 255)
@@ -67,7 +67,8 @@ export class InventoryView extends View
     if @title
       love.graphics.setFont(game.fonts.small)
       love.graphics.setColor(0, 0, 0, 255)
-      love.graphics.print(@title, @display.width - game.fonts.lineHeight * 2, 0)
+      w = game.fonts.lineHeight * 4
+      love.graphics.printf(@title, @display.width - w, 0, w, 'right')
 
   drawTileOrEntity: (entity, x, y) =>
     love.graphics.push()
