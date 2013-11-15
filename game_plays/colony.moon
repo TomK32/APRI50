@@ -26,12 +26,12 @@ GamePlay.Colony = class Colony extends GamePlay
     @actors_view = InventoryView(game.player.colonists, {30, 30, 200, 100})
     @map_state\addView(@actors_view)
 
-    @inventory_view = InventoryView(nil, {30, 200, 30, 100})
+    @inventory_view = InventoryView(nil, {30, 200, 30, 100}, 'Shift + 1-9')
     @inventory_view.display.x = (@map_state.view.display.width - @inventory_view.display.width) / 2
     @inventory_view.display.y = @map_state.view.display.height - @inventory_view.display.height - 20
     @map_state\addView(@inventory_view)
 
-    @trade_inventory_view = InventoryView(nil, {30, 200, 30, 100})
+    @trade_inventory_view = InventoryView(nil, {30, 100, 30, 100}, 'Alt + 1-9')
     @trade_inventory_view.display.x = (@map_state.view.display.width - @trade_inventory_view.display.width) / 2
     @trade_inventory_view.display.y = @map_state.view.display.height - 3 * @trade_inventory_view.display.height - 20
     @map_state\addView(@trade_inventory_view)
@@ -55,6 +55,7 @@ GamePlay.Colony = class Colony extends GamePlay
 
   keypressed: (key, unicode) =>
     shift_pressed = (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift"))
+    alt_pressed = (love.keyboard.isDown("lalt") or love.keyboard.isDown("ralt"))
     colonist = game.player.colonists\activeItem()
     item = nil
     if colonist
@@ -65,11 +66,17 @@ GamePlay.Colony = class Colony extends GamePlay
         colonist.inventory\remove(item)
       return true
 
-    if key\match("[0-9]") and shift_pressed and colonist
-      if colonist.inventory.items[tonumber(key)]
-        colonist.inventory.active = tonumber(key)
-        colonist.inventory\activeItem().active = true
-        return true
+    if key\match("[0-9]") and colonist
+      if shift_pressed
+        if colonist.inventory.items[tonumber(key)]
+          colonist.inventory.active = tonumber(key)
+          colonist.inventory\activeItem().active = true
+          return true
+      elseif alt_pressed and @trade_inventory_view.inventory
+        if @trade_inventory_view.inventory.items[tonumber(key)]
+          @trade_inventory_view.inventory.active = tonumber(key)
+          @trade_inventory_view.inventory\activeItem().active = true
+          return true
     if key == "m" and colonist and item
       colonist.inventory\replaceActive(item\mutate())
       return true
@@ -77,7 +84,7 @@ GamePlay.Colony = class Colony extends GamePlay
       colonist.inventory\replaceActive(EvolutionKit.random(game.dna_length))
       return true
 
-    if key\match("[0-9]") and not shift_pressed
+    if key\match("[0-9]") and not shift_pressed and not alt_pressed
       if game.player.colonists\activeItem()
         game.player.colonists\activeItem().active = false
       colonist = game.player.colonists\activate(tonumber(key))

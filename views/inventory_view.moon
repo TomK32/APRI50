@@ -1,7 +1,8 @@
 
 export class InventoryView extends View
-  new: (inventory, color) =>
+  new: (inventory, color, title) =>
     @color = color or {0, 200, 0, 100}
+    @title = title
     @scale = 1
     super(self)
     @items = 10
@@ -63,6 +64,10 @@ export class InventoryView extends View
         love.graphics.rectangle('fill', 0, 0, game.fonts.small\getWidth(description) + 2, 20)
         love.graphics.setColor(255, 255, 255, 255)
         love.graphics.print(description, 2, 0)
+    if @title
+      love.graphics.setFont(game.fonts.small)
+      love.graphics.setColor(0, 0, 0, 255)
+      love.graphics.print(@title, @display.width - game.fonts.lineHeight * 2, 0)
 
   drawTileOrEntity: (entity, x, y) =>
     love.graphics.push()
