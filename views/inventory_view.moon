@@ -58,7 +58,7 @@ export class InventoryView extends View
     love.graphics.translate(@padding, @item_size + 2 * @padding)
     if @inventory\activeItem()
       love.graphics.setFont(game.fonts.small)
-      description = @inventory\activeItem()\toString('no fuction. Press [m] to mutate, or [r] to randomize')
+      description = @inventory\activeItem()\toString()
       if description
         love.graphics.setColor(0, 0, 0 , 150)
         love.graphics.rectangle('fill', 0, 0, game.fonts.small\getWidth(description) + 2, 20)

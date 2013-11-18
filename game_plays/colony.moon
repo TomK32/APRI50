@@ -1,6 +1,13 @@
 
 package.path = package.path .. ';./game_plays/colony/entities/?.lua'
 package.path = package.path .. ';./game_plays/colony/?.lua'
+
+_EvolutionKit = EvolutionKit
+export class EvolutionKit extends _EvolutionKit
+  toString: =>
+    -- just pass the fallback string
+    super('no fuction. Press [m] to mutate, or [r] to randomize')
+
 GamePlay.Colony = class Colony extends GamePlay
   new: (map_state) =>
     require 'colonist'
@@ -66,6 +73,7 @@ GamePlay.Colony = class Colony extends GamePlay
         colonist.inventory\remove(item)
       return true
 
+    -- select items on the two inventory views
     if key\match("[0-9]") and colonist
       if shift_pressed
         if colonist.inventory.items[tonumber(key)]
