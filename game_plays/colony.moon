@@ -6,7 +6,7 @@ _EvolutionKit = EvolutionKit
 export class EvolutionKit extends _EvolutionKit
   toString: =>
     -- just pass the fallback string
-    super('no fuction. Press [m] to mutate, or [r] to randomize')
+    super('no fuction. [m]utate or [r]andomize')
 
 GamePlay.Colony = class Colony extends GamePlay
   new: (map_state) =>
@@ -38,7 +38,7 @@ GamePlay.Colony = class Colony extends GamePlay
     @inventory_view.display.y = @map_state.view.display.height - @inventory_view.display.height - 20
     @map_state\addView(@inventory_view)
 
-    @trade_inventory_view = InventoryView(nil, {30, 100, 30, 100}, 'Alt + 0-9')
+    @trade_inventory_view = InventoryView(nil, {30, 100, 30, 100})
     @trade_inventory_view.display.x = (@map_state.view.display.width - @trade_inventory_view.display.width) / 2
     @trade_inventory_view.display.y = @map_state.view.display.height - 3 * @trade_inventory_view.display.height - 20
     @map_state\addView(@trade_inventory_view)
@@ -56,6 +56,7 @@ GamePlay.Colony = class Colony extends GamePlay
       entities = @map_state.map\entitiesNear(colonist.position.x, colonist.position.y, colonist.reach)
       for i, entity in ipairs(entities)
         if entity ~= colonist and entity.inventory
+          @trade_inventory_view.title = (entity.name or '') .. ' press Alt + 0-9'
           @trade_inventory_view.inventory = entity.inventory
     else
       @trade_inventory_view.inventory = nil

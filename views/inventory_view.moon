@@ -33,6 +33,11 @@ export class InventoryView extends View
     love.graphics.rectangle('fill', 0,0,self.display.width + @padding, self.display.height + @padding)
 
     love.graphics.push()
+    if @title
+      love.graphics.setFont(game.fonts.small)
+      love.graphics.setColor(0, 0, 0, 255)
+      w = game.fonts.lineHeight * 8
+      love.graphics.printf(@title, @display.width - w, -game.fonts.lineHeight * 0.7, w, 'right')
     for i = 1, @items
       if i == @inventory.active
         love.graphics.setColor(255, 200, 200, 255)
@@ -64,11 +69,6 @@ export class InventoryView extends View
         love.graphics.rectangle('fill', 0, 0, game.fonts.small\getWidth(description) + 2, 20)
         love.graphics.setColor(255, 255, 255, 255)
         love.graphics.print(description, 2, 0)
-    if @title
-      love.graphics.setFont(game.fonts.small)
-      love.graphics.setColor(0, 0, 0, 255)
-      w = game.fonts.lineHeight * 4
-      love.graphics.printf(@title, @display.width - w, 0, w, 'right')
 
   drawTileOrEntity: (entity, x, y) =>
     love.graphics.push()
