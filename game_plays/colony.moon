@@ -66,7 +66,9 @@ GamePlay.Colony = class Colony extends GamePlay
     alt_pressed = (love.keyboard.isDown("lalt") or love.keyboard.isDown("ralt"))
     colonist = game.player.colonists\activeItem()
     item = nil
-    if colonist
+    if colonist and colonist.keypressed
+      if colonist\keypressed(key, unicode)
+        return true
       item = colonist.inventory\activeItem()
 
     if key == ' ' and colonist and item

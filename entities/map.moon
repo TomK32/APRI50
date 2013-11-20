@@ -131,10 +131,3 @@ export class Map
         entity\update(dt)
       if entity.deleted
         table.remove(@updateAble, i)
-
-  keypressed: (key, unicode) =>
-    for i, entity in ipairs(@controlAble)
-      if entity.active and entity\keypressed(key, unicode)
-        return true
-    return false
-
