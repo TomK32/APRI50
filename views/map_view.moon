@@ -21,6 +21,9 @@ export class MapView extends View
       Sun(3, 0.3, {200, 120, 100}, {x: Sun.max_x * -0.6 , y: 0, z: 200}, 'Minmol')
       Sun(2.5, 0.7, {120, 100, 200}, {x: Sun.max_x * -0.3, y: @map.height, z: 200}, 'Hanol')
     }
+    @noiseShaderOffset = {math.random(10), 0}
+    @noiseLineShaderDt = 0.0
+    @noiseLineShaderDuration = 0.4
     @canvas = love.graphics.newCanvas(@map.width + 2 * @display.x, @map.height + 2 * @display.y)
 
   setDisplay: (display) =>
@@ -81,6 +84,10 @@ export class MapView extends View
     @map\entitiesInRect(@camera.x - w * 2 + 2 * @display.x, @camera.y - h * 2 + 2 * @display.y, w * 4, h * 4)
 
   update: (dt) =>
+    @noiseLineShaderDt -= love.timer.getDelta()
+    if @noiseLineShaderDt < -2 -- seconds
+      @noiseLineShaderDt = 1 + math.random() * @noiseLineShaderDuration -- seconds
+      @noiseShaderOffset = {math.random(10), 0}
     @drawCanvas()
 
   updateLight: (dt) =>
@@ -94,9 +101,16 @@ export class MapView extends View
   drawContent: =>
     if @canvas
       if game.use_shaders
+        game.shader.noise\send('offset', @noiseShaderOffset)
         love.graphics.setShader(game.shader.noise)
       love.graphics.setColor(255,255,255)
       love.graphics.draw(@canvas)
+      if game.use_shaders and @noiseLineShaderDt > 0
+        love.graphics.setShader(game.shader.noiseLine)
+        game.shader.noiseLine\send('offset', 100 - 50 * @noiseLineShaderDt)
+        game.shader.noiseLine\send('strength', @noiseLineShaderDt / @noiseLineShaderDuration)
+        love.graphics.setColor(255,255,255, 0)
+        love.graphics.rectangle('fill', 0, 0, @canvas\getWidth(), @canvas\getHeight())
       if game.use_shaders
         love.graphics.setShader()
 
@@ -107,13 +121,18 @@ export class MapView extends View
       love.graphics.pop()
     love.graphics.setColor(255, 255, 255, 255)
 
+    if game.use_shaders and @noiseLineShaderDt > 0
+      love.graphics.setShader(game.shader.noiseLine)
+      true
+
     -- entities
     for l, layer in ipairs(@map.layer_indexes) do
       entities = @entitiesInRect()
       table.sort(entities, (a, b) -> return a.position.y > b.position.y)
       for i,entity in ipairs(entities) do
         @\drawEntity(entity)
-
+    if game.use_shaders
+      love.graphics.setShader()
 
   drawCanvas: =>
     @move(0,0)
