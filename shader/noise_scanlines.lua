@@ -10,7 +10,7 @@ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
 {
   if(mod(screen_coords.y + 2 * sin(offset) - screen_coords.x / (50 + offset), 20) > 19) {
     vec4 noise = vec4(0.2, 0.2, 0.2, 1);
-    return Texel(texture, texture_coords) * tan(strength);
+    return noise * strength;
   } else {
     return Texel(texture, texture_coords) * color;
   }
