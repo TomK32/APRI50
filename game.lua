@@ -25,7 +25,8 @@ game = {
   dna_length = 12,
   evolution_kits_to_start = 7,
   shader = {
-    noise = require('shader/noise')
+    noise = require('shader/noise'),
+    noiseLine = require('shader/noise_scanlines')
   },
   matchers = {
     -- make sure they are unique and don't overlap too much.

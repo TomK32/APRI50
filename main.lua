@@ -16,7 +16,7 @@ require 'game_states/mutator'
 require 'game_states/map_state'
 --require 'views/credits_view'
 function love.load()
-  local modes = love.window.getModes()
+  local modes = love.window.getFullscreenModes()
   table.sort(modes, function(a, b) return a.width * a.height > b.width * b.height end)
   local preferred_mode = modes[1]
   for i, mode in ipairs(modes) do
