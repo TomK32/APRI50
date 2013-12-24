@@ -25,6 +25,9 @@ export class MapView extends View
     @noiseLineShaderDt = 0.0
     @noiseLineShaderDuration = 0.4
     @canvas = love.graphics.newCanvas(@map.width + 2 * @display.x, @map.height + 2 * @display.y)
+    game\shader('noise')
+    game\shader('noiseLine')
+    game\shader('pulse')
 
   setDisplay: (display) =>
     View.setDisplay(@, display)
@@ -101,8 +104,8 @@ export class MapView extends View
   drawContent: =>
     if @canvas
       if game.use_shaders
-        game.shader.noise\send('offset', @noiseShaderOffset)
-        love.graphics.setShader(game.shader.noise)
+        game.shaders.noise\send('offset', @noiseShaderOffset)
+        love.graphics.setShader(game.shaders.noise)
       love.graphics.setColor(255,255,255)
       love.graphics.draw(@canvas)
       if game.use_shaders
@@ -123,9 +126,9 @@ export class MapView extends View
       for i,entity in ipairs(entities) do
         @\drawEntity(entity)
     if game.use_shaders and @noiseLineShaderDt > 0
-      love.graphics.setShader(game.shader.noiseLine)
-      game.shader.noiseLine\send('offset', 100 - 50 * @noiseLineShaderDt)
-      game.shader.noiseLine\send('strength', @noiseLineShaderDt / @noiseLineShaderDuration)
+      love.graphics.setShader(game.shaders.noiseLine)
+      game.shaders.noiseLine\send('offset', 100 - 50 * @noiseLineShaderDt)
+      game.shaders.noiseLine\send('strength', @noiseLineShaderDt / @noiseLineShaderDuration)
       love.graphics.setColor(255,255,255, 0)
       love.graphics.rectangle('fill', 0, 0, @canvas\getWidth(), @canvas\getHeight())
     if game.use_shaders

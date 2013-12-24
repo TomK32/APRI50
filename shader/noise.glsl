@@ -1,4 +1,3 @@
-return love.graphics.newShader[[
 extern float factor = 0.2;
 extern float addPercent = 0.05;
 extern vec2 offset = vec2(0,0);
@@ -15,5 +14,3 @@ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
   vec4 noise = vec4(grey, grey, grey, 1);
   return (Texel(texture, texture_coords) * noise) * color;
 }
-]]
-

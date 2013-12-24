@@ -24,10 +24,7 @@ game = {
   url = 'http://ananasblau.com/apri50',
   dna_length = 12,
   evolution_kits_to_start = 7,
-  shader = {
-    noise = require('shader/noise'),
-    noiseLine = require('shader/noise_scanlines')
-  },
+  shaders = { },
   matchers = {
     -- make sure they are unique and don't overlap too much.
     markable   = splitDNA('A  C  G  T A'),
@@ -43,6 +40,13 @@ game = {
   images = {}
 }
 
+function game:shader(name)
+  if not self.shaders[name] then
+    print('Loading shader ' .. name)
+    self.shaders[name] = love.graphics.newShader('shader/' .. name .. '.glsl')
+  end
+  return self.shaders[name]
+end
 function game:image(path)
   if not self.images[path] then
     self.images[path] = love.graphics.newImage(path)
