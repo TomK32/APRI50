@@ -95,6 +95,8 @@ export class Chunk
 
     @
 
+  -- TODO: Change into a normals map and a shader
+  --       https://github.com/amitp/mapgen2/blob/master/mapgen2.as#L849-L879
   setSunlight: (suns, setting_suns) =>
     -- TODO: calc the time at when the sun does hit and for how long and
     -- use this to tween.

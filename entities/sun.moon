@@ -29,32 +29,34 @@ export class Sun
       return
     @shining = true
     sin_x = math.sin(@point.x / Sun.max_x * math.pi)
-    @point.z = math.asin(sin_x)
-    @lightMag = math.sqrt(@point.x * @point.x + @point.y * @point.y + @point.z * @point.z) * sin_x
+    @point.z = sin_x
+    @normPoint = Sun.normVector(@point)
     true
 
-  normMag: (norm) ->
-    if not Sun.norm_mags[norm]
-      Sun.norm_mags[norm] = math.sqrt(norm.x * norm.x + norm.y * norm.y + norm.z * norm.z)
-    return Sun.norm_mags[norm]
+  normVector: (vector) ->
+    magnitude = math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)
+    return {x: vector.x / magnitude, y: vector.y / magnitude, z: vector.z / magnitude}
+
+  normMag: (vector) ->
+    return math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)
 
   normABC: (pointA, pointB, pointC) ->
     k = {pointA, pointB, pointC}
     if not Sun.norms[k]
-      ab = {}
-      ab.x = pointA.x - pointB.x
-      ab.y = pointA.y - pointB.y
-      ab.z = pointA.z - pointB.z
+      ba = {}
+      ba.x = pointB.x - pointA.x
+      ba.y = pointB.y - pointA.y
+      ba.z = pointB.z - pointA.z
       
-      bc = {}
-      bc.x = pointB.x - pointC.x
-      bc.y = pointB.y - pointC.y
-      bc.z = pointB.z - pointC.z
+      ca = {}
+      ca.x = pointC.x - pointA.x
+      ca.y = pointC.y - pointA.y
+      ca.z = pointC.z - pointA.z
       
       norm = {}
-      norm.x = (ab.y * bc.z) - (ab.z * bc.y)
-      norm.y = -((ab.x * bc.z) - (ab.z * bc.x))
-      norm.z = (ab.x * bc.y) - (ab.y * bc.x)
+      norm.x = (ba.y * ca.z) - (ba.z * ca.y)
+      norm.y = -((ba.x * ca.z) - (ba.z * ca.x))
+      norm.z = (ba.x * ca.y) - (ba.y * ca.x)
       Sun.norms[k] = norm
     return Sun.norms[k]
 
@@ -63,16 +65,19 @@ export class Sun
     norm = Sun.normABC(pointA, pointB, pointC)
     normMag = Sun.normMag(norm)
     
-    dotProd = norm.x * @point.x + norm.y * @point.y + norm.z * @point.z
-
-    return((math.acos(dotProd / (normMag * @lightMag)) / math.pi) * @brightness)
+    dotProd = norm.x * @normPoint.x + norm.y * @normPoint.y + norm.z * @normPoint.z
+    dotProd = dotProd * @point.z
+    if 35 * dotProd < 1
+      return 0
+    else
+      return 0.5 - 1 / dotProd
 
   colorForTriangle: (pointA, pointB, pointC) =>
     factor = @getLightFactor(pointA, pointB, pointC)
     if factor > 0
-      --print @name, factor
       r = @r * factor
       b = @b * factor
       g = @g * factor
       return {r, b, g, 255}
+
 
