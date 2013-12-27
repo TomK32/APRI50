@@ -4,9 +4,10 @@ require 'entities/point'
 
 export class Sun
   index: 0
-  max_x: 2000
+  max_x: 1
   norm_mags: {}
   norms: {}
+  elevationScale: 1000000 -- we keep the elevation at 0..1 but for the sunshine we need to scale up
 
   new: (speed, brightness, color, point, name) =>
     @speed, @brightness, @color, @point, @name = speed, brightness, color, point, name
@@ -34,43 +35,39 @@ export class Sun
     true
 
   normVector: (vector) ->
-    magnitude = math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)
+    magnitude = Sun.normMag(vector)
     return {x: vector.x / magnitude, y: vector.y / magnitude, z: vector.z / magnitude}
 
   normMag: (vector) ->
     return math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z)
 
-  normABC: (pointA, pointB, pointC) ->
-    k = {pointA, pointB, pointC}
-    if not Sun.norms[k]
-      ba = {}
-      ba.x = pointB.x - pointA.x
-      ba.y = pointB.y - pointA.y
-      ba.z = pointB.z - pointA.z
-      
-      ca = {}
-      ca.x = pointC.x - pointA.x
-      ca.y = pointC.y - pointA.y
-      ca.z = pointC.z - pointA.z
-      
-      norm = {}
-      norm.x = (ba.y * ca.z) - (ba.z * ca.y)
-      norm.y = -((ba.x * ca.z) - (ba.z * ca.x))
-      norm.z = (ba.x * ca.y) - (ba.y * ca.x)
-      Sun.norms[k] = norm
-    return Sun.norms[k]
+  cross: (a, b) ->
+    return {x: a.y * b.z - a.z * b.y, y: a.z * b.x - a.x * b.z, z: a.x * b.y - a.y * b.x}
+
+  dotProduct: (a, b) ->
+    return a.x * b.x + a.y * b.y + a.z * b.z
 
   getLightFactor: (pointA, pointB, pointC) =>
-
-    norm = Sun.normABC(pointA, pointB, pointC)
-    normMag = Sun.normMag(norm)
+    ba = {}
+    ba.x = pointB.x - pointA.x
+    ba.y = pointB.y - pointA.y
+    ba.z = (pointB.z - pointA.z) * Sun.elevationScale
     
-    dotProd = norm.x * @normPoint.x + norm.y * @normPoint.y + norm.z * @normPoint.z
-    dotProd = dotProd * @point.z
-    if 35 * dotProd < 1
-      return 0
+    ca = {}
+    ca.x = pointC.x - pointA.x
+    ca.y = pointC.y - pointA.y
+    ca.z = (pointC.z - pointA.z) * Sun.elevationScale
+
+    cross = Sun.cross(ba, ca)
+    if cross.z < 0
+      cross = {x: -cross.x, y: -cross.y, z: -cross.z}
+    norm = Sun.normVector(cross)
+
+    light = @brightness * Sun.dotProduct(norm, @normPoint) * math.sqrt(@point.z)
+    if light > 0
+      return light
     else
-      return 0.5 - 1 / dotProd
+      return 0
 
   colorForTriangle: (pointA, pointB, pointC) =>
     factor = @getLightFactor(pointA, pointB, pointC)
