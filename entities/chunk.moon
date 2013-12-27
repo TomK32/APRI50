@@ -193,17 +193,22 @@ export class Chunk
     string = @width .. 'x' .. @height .. "\n"
     return string
 
+  randomizeColor: (color) =>
+    if not @randomColorFactor
+      @randomColorFactor = 1.05 - math.random() / 10
+    return {color[1] * @randomColorFactor, color[2] * @randomColorFactor, color[3] * @randomColorFactor, color[4]}
+
   setColors: (colors) =>
     @center.biome = @center\getBiome()
     for i, extension in pairs @@extensions
       if extension.BIOME_COLORS and extension.BIOME_COLORS[@center.biome]
-        @colors = extension.BIOME_COLORS[@center.biome]
+        @colors = @randomizeColor(extension.BIOME_COLORS[@center.biome])
         return @colors
 
     if colors ~= nil
       @colors = colors
     else
-      @colors = Chunk.BIOME_COLORS[@center.biome]
+      @colors = @randomizeColor(Chunk.BIOME_COLORS[@center.biome])
     return @colors
 
   drawDebug: =>
