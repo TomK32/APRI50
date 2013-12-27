@@ -187,6 +187,9 @@ export class MapView extends View
           love.graphics.setColor(255,255,255,255)
           love.graphics.print(sun.name, x + sun.point.x * factor + 10, y - 3)
 
+    if game.debug
+      love.graphics.print("FPS: "..love.timer.getFPS(), 10, @display.height - 40)
+
   getMousePosition: =>
     x, y = love.mouse.getPosition()
     return x + @camera.x - @display.width / 2, y + @camera.y - @display.height / 2
