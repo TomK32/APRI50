@@ -60,7 +60,6 @@ class PM_PRNG
     @seed = (@seed * 16807) % @prime
     return @seed
 	
-
 export class MapGen
   -- TODO: accept a table in the constructor
   -- FIXME: Allow width and height for oblong shapes
@@ -73,8 +72,6 @@ export class MapGen
     @height = height
 
     @map_random = PM_PRNG(seed)
-    _type = _type or 'Radial'
-    @island_shape = MapGen.IslandShape['make' .. _type]()
 
     @reset()
     @go()
@@ -85,6 +82,9 @@ export class MapGen
     @centers = {}
     @corners = {}
     @edges = {}
+
+  noise: (x, y) =>
+    math.floor(love.math.noise(x / @width, y / @height) * 10) / 10
 
   go: (first, last) =>
 
@@ -98,12 +98,10 @@ export class MapGen
     time('Reset', @reset)
     time('Placing random points', @generateRandomPoints)
     time('Improve points', @improvePoints)
-    time('Build graph', @buildGraph)
     time('Improve corners', @improveCorners)
+    time('Build graph', @buildGraph)
 
-    -- NOTE: The original had these four in one timer
-    time('Assign corner elevations', @assignCornerElevations)
-    --time('Assign ocean coast and land', @assignOceanCoastAndLand)
+    time('Assign corner Elevations', @assignCornerElevations)
     time('Assign polygon Elevations', @assignPolygonElevations)
     time('Calculate downslopes', @calculateDownslopes)
     --time('Determine watersheds', @calculateWatersheds)
@@ -124,6 +122,7 @@ export class MapGen
 
     for i=1, @num_points
       @points[i] = Point(@map_random\nextDoubleRange(x, w), @map_random\nextDoubleRange(y, h))
+      @points[i].z = @noise(@points[i].x, @points[i].y)
     @
 
   -- Improve the random set of points with Lloyd Relaxation.
@@ -194,17 +193,6 @@ export class MapGen
     -- Move the corners to the new locations.
     for i, point in pairs(new_corners)
       @corners[i].point = point
-
-  -- Create an array of corners that are on land only, for use by
-  -- algorithms that work only on land.  We return an array instead
-  -- of a vector because the redistribution algorithms want to sort
-  -- this array using Array.sortOn.
-  landCorners: =>
-    locations = {}
-    for i, corner in ipairs(@corners)
-      if not corner.ocean and not corner.coast
-        table.insert(locations, corner)
-    return locations
 
   -- Create a graph structure from the Voronoi edge list. The
   -- methods in the Voronoi object are somewhat inconvenient for
@@ -347,39 +335,9 @@ export class MapGen
     -- to avoid Lua table length madness we count manually
     queue_count = 0
     for i, corner in ipairs(@corners)
-      corner.point.z = @map_random\nextDoubleRange(0, 1)
+      corner.point.z = @noise(corner.point.x, corner.point.y)
 
-  -- Change the overall distribution of moisture to be evenly distributed.
-  redistributeMoisture: (locations) =>
-    table.sort(locations, (a, b) -> a.moisture < b.moisture)
-    locations_length = #locations
-    for i, point in ipairs(locations)
-      point.moisture = i / locations_length
 
-  -- Determine polygon and corner types: ocean, coast, land.
-  assignOceanCoastAndLand: =>
-    -- Compute polygon attributes 'ocean' and 'water' based on the
-    -- corner attributes. Count the water corners per
-    -- polygon. Oceans are all polygons connected to the edge of the
-    -- map. In the first pass, mark the edges of the map as ocean;
-    -- in the second pass, mark any water-containing polygon
-    -- connected an ocean as ocean.
-    queue = {}
-    -- to avoid Lua table length madness we count manually
-    queue_count = 0
-
-    for i, point in ipairs(@centers)
-      num_water = 0
-      for j, corner in ipairs(point.corners)
-        if corner.border
-          point.border = true
-          queue_count += 1
-          queue[queue_count] = point
-
-        if corner.water
-          num_water += 1
-
-   
   -- Polygon elevations are the average of the elevations of their corners.
   assignPolygonElevations: =>
     for i, center in ipairs(@centers)
@@ -491,60 +449,4 @@ export class MapGen
     for i, edge in ipairs(corner.protrudes)
       if edge.v0 == other_corner or edge.v1 == other_corner
         return edge
-
-  -- Determine whether a given point should be on the island or in the water.
-  inside: (point) =>
-    return @island_shape(Point(2 * (point.x / @width - 0.5), 2 * (point.y / @width - 0.5)))
-
-  IslandShape:
-    -- This class has factory functions for generating islands of
-    -- different shapes. The factory returns a function that takes a
-    -- normalized point (x and y are -1 to +1) and returns true if the
-    -- point should be on the island, and false if it should be water
-    -- (lake or ocean).
-
-    -- The radial island radius is based on overlapping sine waves
-    makeRadial: (seed) =>
-      ISLAND_FACTOR = 1.07  -- 1.0 means no small islands; 2.0 leads to a lot
-      random = PM_PRNG(seed)
-      bumps = random\nextIntRange(1, 6)
-      startAngle = random\nextDoubleRange(0, 2 * math.pi)
-      dipAngle = random\nextDoubleRange(0, 2 * math.pi)
-      dipWidth = random\nextDoubleRange(0.2, 0.7)
-
-      inside = (q) =>
-        angle = math.atan2(q.y, q.x)
-        length = 0.5 * (math.max(math.abs(q.x), math.abs(q.y)) + q\length())
-
-        r1 = 0.5 + 0.40*math.sin(startAngle + bumps*angle + math.cos((bumps+3)*angle))
-        r2 = 0.7 - 0.20*math.sin(startAngle + bumps*angle - math.sin((bumps+2)*angle))
-        if math.abs(angle - dipAngle) < dipWidth or math.abs(angle - dipAngle + 2 * math.pi) < dipWidth or math.abs(angle - dipAngle - 2 * math.pi) < dipWidth
-          r1, r2 = 0.2, 0.2
-        return (length < r1 or (length > r1 * ISLAND_FACTOR and length < r2))
-
-      return inside
-
-    -- The Perlin-based island combines perlin noise with the radius
-    makeSimplex: (seed) ->
-      -- FIXME: Use proper perline noise
-      perlin = BitmapData(256, 256)
-      perlin.perlinNoise(64, 64, 8, seed, false, true)
-
-      return (q) ->
-        -- NOTE: original had & 0xff
-        c = (255 - perlin.getPixel(math.floor((q.x+1)*128), int((q.y+1)*128))) / 255.0
-        return c > (0.3+0.3*q.length*q.length)
-
-    -- The square shape fills the entire space with land
-    makeSquare: (seed) ->
-      return (q) ->
-        return true
-
-    -- The blob island is shaped like Amit's blob logo
-    makeBlob: (seed) ->
-      return (q) ->
-        eye1 = Point(q.x-0.2, q.y/2+0.2).length < 0.05
-        eye2 = Point(q.x+0.2, q.y/2+0.2).length < 0.05
-        body = q.length < 0.8 - 0.18*math.sin(5*math.atan2(q.y, q.x))
-        return body and not eye1 and not eye2
 
