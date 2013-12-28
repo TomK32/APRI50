@@ -47,9 +47,14 @@ export class MapState extends State
     @scores_view\draw()
 
   update: (dt) =>
+    if @focus and @focus.update
+      @focus\update(dt)
+    if @focus_changed
+      @focus_changed = false
+      return
+    if @focus.modal
+      return true
     @map\update(dt)
-    if @game_play
-      @game_play\update(dt)
     if game.show_sun and @light_dt > 8 * dt
       @view\updateLight(dt)
       @light_dt = 0
@@ -75,7 +80,7 @@ export class MapState extends State
   keypressed: (key, unicode) =>
     if (love.keyboard.isDown("lmeta") or love.keyboard.isDown('rmeta'))
       return
-    if @game_play\keypressed(key, unicode)
+    if @focus and @focus.keypressed and @focus\keypressed(key, unicode)
       return
 
     if key == "q"
@@ -85,15 +90,13 @@ export class MapState extends State
       @view\zoom(1.2)
       return true
 
-    @map\keypressed(key, unicode)
-
   mousepressed: (x, y, button) =>
     for i, view in ipairs(@sub_views)
       if view\active() and view.mousepressed and view\mousepressed(x, y)
         return true
 
-    if @game_play.mousepressed
-      if @game_play\mousepressed(x, y, button)
+    if @focus and @focus.mousepressed
+      if @focus\mousepressed(x, y, button)
         return true
 
   placeItem: (x, y, item) =>

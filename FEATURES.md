@@ -38,9 +38,9 @@
 * [0.2] Change grid to graph by porting mapgen2
 * [0.3] Scrollable
 * [0.3] Suns lightens the polygons
-* Improve sunshine 
+* [0.4] Improved sunshine
 * Put notes, landmarks and drawings (all on a sign) on the map
-* generate new map chunks during exploration
+* Generate new map chunks during exploration
 
 
 ## EvolutionKits

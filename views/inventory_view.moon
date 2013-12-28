@@ -44,17 +44,7 @@ export class InventoryView extends View
         love.graphics.rectangle('line', @padding, @padding, @item_size+@padding, @item_size)
       love.graphics.setColor(255, 255, 255, 255)
       if @inventory.items and @inventory.items[i]
-        item = @inventory.items[i]
-        if item.image or item.quad
-          love.graphics.push()
-          love.graphics.translate(@padding, @padding)
-          if item.quad
-            love.graphics.draw(item.image, item.quad, 0, 0)
-          elseif item.image
-            if @item_size ~= item.image\getHeight() or @item_size ~= item.image\getWidth()
-              love.graphics.scale(math.min(@item_size / item.image\getHeight(), @item_size / item.image\getWidth()))
-            love.graphics.draw(item.image, 0, 0)
-          love.graphics.pop()
+        @drawItem(@inventory.items[i])
       else
         love.graphics.setColor(255, 255, 255, 255)
         love.graphics.rectangle('line', @padding, @padding, @item_size+@padding, @item_size)
@@ -70,14 +60,15 @@ export class InventoryView extends View
         love.graphics.setColor(255, 255, 255, 255)
         love.graphics.print(description, 2, 0)
 
-  drawTileOrEntity: (entity, x, y) =>
-    love.graphics.push()
-    if entity.draw
-      game.renderer\translate(entity.position.x, entity.position.y)
-      entity\draw()
-    elseif entity.color
-      game.renderer\rectangle('fill', entity.color, x or entity.position.x, y or entity.position.y)
-    else
-      print("No method draw on entity " .. entity)
-    love.graphics.pop()
+  drawItem: (item, i) =>
+    if item.image or item.quad
+      love.graphics.push()
+      love.graphics.translate(@padding, @padding)
+      if item.quad
+        love.graphics.draw(item.image, item.quad, 0, 0)
+      elseif item.image
+        if @item_size ~= item.image\getHeight() or @item_size ~= item.image\getWidth()
+          love.graphics.scale(@item_size / item.image\getHeight())
+        love.graphics.draw(item.image, 0, 0)
+      love.graphics.pop()
 

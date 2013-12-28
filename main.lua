@@ -2,6 +2,7 @@
 -- (C) 2013 Thomas R. Koll
 
 package.path = package.path .. ';./lib/?.lua'
+package.path = package.path .. ';./views/?.lua'
 require 'strict'
 require 'lib/helpers'
 require 'lib/middleclass'

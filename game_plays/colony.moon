@@ -2,6 +2,7 @@
 package.path = package.path .. ';./game_plays/colony/entities/?.lua'
 package.path = package.path .. ';./game_plays/colony/?.lua'
 
+require 'game_states/inventory_exchange_state'
 _EvolutionKit = EvolutionKit
 export class EvolutionKit extends _EvolutionKit
   toString: =>
@@ -12,6 +13,7 @@ GamePlay.Colony = class Colony extends GamePlay
   new: (map_state) =>
     require 'colonist'
     require 'space_ship'
+    require 'inventory_exchange_view'
 
     super(map_state)
 
@@ -38,11 +40,6 @@ GamePlay.Colony = class Colony extends GamePlay
     @inventory_view.display.y = @map_state.view.display.height - @inventory_view.display.height - 20
     @map_state\addView(@inventory_view)
 
-    @trade_inventory_view = InventoryView(nil, {30, 100, 30, 100})
-    @trade_inventory_view.display.x = (@map_state.view.display.width - @trade_inventory_view.display.width) / 2
-    @trade_inventory_view.display.y = @map_state.view.display.height - 3 * @trade_inventory_view.display.height - 20
-    @map_state\addView(@trade_inventory_view)
-
     @dt = 0
     @burning_centers = {}
     @particle_systems = {}
@@ -52,24 +49,22 @@ GamePlay.Colony = class Colony extends GamePlay
 
   update: (dt) =>
     colonist = @currentActor()
-    if colonist
-      entities = @map_state.map\entitiesNear(colonist.position.x, colonist.position.y, colonist.reach)
-      for i, entity in ipairs(entities)
-        if entity ~= colonist and entity.inventory
-          @trade_inventory_view.title = (entity.name or '') .. ' press Alt + 0-9'
-          @trade_inventory_view.inventory = entity.inventory
-    else
-      @trade_inventory_view.inventory = nil
 
   keypressed: (key, unicode) =>
     shift_pressed = (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift"))
     alt_pressed = (love.keyboard.isDown("lalt") or love.keyboard.isDown("ralt"))
+
     colonist = game.player.colonists\activeItem()
     item = nil
     if colonist and colonist.keypressed
       if colonist\keypressed(key, unicode)
         return true
       item = colonist.inventory\activeItem()
+
+    if key == 't' and colonist
+      entities = @map_state.map\entitiesNear(colonist.position.x, colonist.position.y, colonist.reach)
+      @inventory_exchange_state = InventoryExchangeState(colonist.inventory, _.pluck(entities, 'inventory'), => game.setState(@map_state))
+      game.setState(@inventory_exchange_state)
 
     if key == ' ' and colonist and item
       if @map_state\placeItem(colonist.position.x, colonist.position.y, item)
@@ -79,21 +74,19 @@ GamePlay.Colony = class Colony extends GamePlay
     -- select items on the two inventory views
     if key\match("[0-9]") and colonist
       if shift_pressed
-        if colonist.inventory.items[tonumber(key)]
-          colonist.inventory.active = tonumber(key)
-          colonist.inventory\activeItem().active = true
-          return true
+        if not colonist.inventory\activate(tonumber(key))
+          colonist.inventory.active = nil
       elseif alt_pressed and @trade_inventory_view.inventory
-        if @trade_inventory_view.inventory.items[tonumber(key)]
-          @trade_inventory_view.inventory.active = tonumber(key)
-          @trade_inventory_view.inventory\activeItem().active = true
-          return true
-    if key == "m" and colonist and item
-      colonist.inventory\replaceActive(item\mutate())
-      return true
-    if key == "r" and colonist and item
-      colonist.inventory\replaceActive(EvolutionKit.random(game.dna_length))
-      return true
+        if not @trade_inventory_view.inventory\activate(tonumber(key))
+          @trade_inventory_view.inventory.active = nil
+
+    if colonist and item and item.__class.__name == 'EvolutionKit'
+      if key == "m"
+        colonist.inventory\replaceActive(item\mutate())
+        return true
+      if key == "r"
+        colonist.inventory\replaceActive(EvolutionKit.random(game.dna_length))
+        return true
 
     if key\match("[0-9]") and not shift_pressed and not alt_pressed
       if game.player.colonists\activeItem()

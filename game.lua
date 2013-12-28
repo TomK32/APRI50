@@ -75,6 +75,10 @@ function game:setMode(mode)
   end
 end
 
+function game.setState(state)
+  game.current_state = state
+end
+
 function game:startMenu()
   love.mouse.setVisible(true)
   game.current_state = StartMenu()
