@@ -5,8 +5,10 @@ export class InventoryExchangeView extends InventoryView
     @padding = 2
     @modal = true -- freezing the other views
     @icon_size = game.icon_size * 2
-    @display = {
-      align: {x: 'center', y: 'center'},
-      width: @icon_size * 10 + 30 * @padding, height: @icon_size + @padding
-    }
-    @setDisplay(@display)
+    @rows = 10
+    @columns = 5
+    @item_description = 'hover'
+    @setDisplayWithColumns()
+    @
+
+
