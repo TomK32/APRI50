@@ -23,6 +23,8 @@ export class MapState extends State
     @view = MapView(@map)
 
     @game_play = GamePlay.Colony(@)
+    @focus = @game_play
+
     @resources_view = ResourcesView(game.player.resources)
     @light_dt = 0
 

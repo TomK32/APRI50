@@ -76,6 +76,7 @@ function game:setMode(mode)
 end
 
 function game.setState(state)
+  assert(state, 'game state missing')
   game.current_state = state
 end
 

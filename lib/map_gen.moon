@@ -353,7 +353,6 @@ export class MapGen
     for i, corner in ipairs(@corners)
       r = corner
       for j, adjacent in ipairs(corner.adjacent)
-        --print adjacent.point, r.point
         if adjacent.point.z < r.point.z
           r = adjacent
       corner.downslope = r

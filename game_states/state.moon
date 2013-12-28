@@ -31,7 +31,3 @@ export class State
   setFocus: (new_focus) =>
     table.insert(@last_focus, @focus)
     @focus = new_focus
-
-  resetFocus: =>
-    @focus = _.pop(@last_focus)
-    @focus_changed = true

@@ -1,12 +1,11 @@
 export class InventoryExchangeState extends State
-  new: (inventory, others, quit_callback) =>
+  new: (inventory, others, last_state) =>
     @view = InventoryExchangeView(inventory, others)
     super(@, game, 'InventoryExchangeView', @view)
     @inventory, @others = inventory, others
-    @quit = quit_callback
+    @last_state = last_state
 
   keypressed: (key, unicode) =>
-    if key == 'escape'
-      print(key)
-      @quit()
+    if key == 'escape' or key == 'q'
+      game.setState(@last_state)
  

@@ -63,7 +63,7 @@ GamePlay.Colony = class Colony extends GamePlay
 
     if key == 't' and colonist
       entities = @map_state.map\entitiesNear(colonist.position.x, colonist.position.y, colonist.reach)
-      @inventory_exchange_state = InventoryExchangeState(colonist.inventory, _.pluck(entities, 'inventory'), => game.setState(@map_state))
+      @inventory_exchange_state = InventoryExchangeState(colonist.inventory, _.pluck(entities, 'inventory'), @map_state)
       game.setState(@inventory_exchange_state)
 
     if key == ' ' and colonist and item
