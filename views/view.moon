@@ -40,6 +40,8 @@ export class View
     if display.width == 0 then
       display.width = game.graphics.mode.width
     if display.align then
+      @display.width = display.width or @display.width
+      @display.height = display.height or @display.height
       if display.align.x == 'center' then
         display.x = game.graphics.mode.width / 2 - display.width / 2
       elseif display.align.x == 'right' then

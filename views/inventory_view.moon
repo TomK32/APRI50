@@ -27,7 +27,7 @@ export class InventoryView extends View
     return @inventory ~= nil
 
   drawContent: =>
-    if not @inventory
+    if not @inventory or not @inventory.items
       return
     love.graphics.setColor(unpack(@color))
     love.graphics.rectangle('fill', 0,0,self.display.width + @padding, self.display.height + @padding)

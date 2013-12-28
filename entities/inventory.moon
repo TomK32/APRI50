@@ -22,6 +22,7 @@ export class Inventory
         if it == item
           @items[i] = nil
           return item
+    return false
 
   itemsByClass: (klass) =>
     r = {}
@@ -46,4 +47,7 @@ export class Inventory
   removeActive: =>
     @\remove(nil, @active)
     @active = nil
+
+  toString: =>
+    return 'Inventory'
 

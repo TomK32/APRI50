@@ -14,11 +14,8 @@ export class Flora
       return
 
     @targetChunk.center\increment('flora', score)
-    Flora.createImage(@)
     if @targetChunk.center.hardening < 0.3
       @targetChunk.center\increment('hardening', 0.1)
-
-    -- TODO: Corners
 
   createImage: =>
     table.insert(@entities, {drawable: game\image('images/entities/flora1.png')})
