@@ -27,7 +27,6 @@ export class MapView extends View
     @canvas = love.graphics.newCanvas(@map.width + 2 * @display.x, @map.height + 2 * @display.y)
     game\shader('noise')
     game\shader('noiseLine')
-    game\shader('pulse')
 
   setDisplay: (display) =>
     View.setDisplay(@, display)

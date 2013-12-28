@@ -56,10 +56,11 @@ GamePlay.Colony = class Colony extends GamePlay
 
     colonist = game.player.colonists\activeItem()
     item = nil
-    if colonist and colonist.keypressed
-      if colonist\keypressed(key, unicode)
-        return true
+    if colonist
       item = colonist.inventory\activeItem()
+      if colonist.keypressed
+        if colonist\keypressed(key, unicode)
+          return true
 
     if key == 't' and colonist
       entities = @map_state.map\entitiesNear(colonist.position.x, colonist.position.y, colonist.reach)

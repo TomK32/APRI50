@@ -104,6 +104,6 @@ export class MapState extends State
   placeItem: (x, y, item) =>
     center = @map\findClosestCenter(x, y)
     assert(center, 'TOOD: Flash display when no center')
-    if item\place(@map, {x: center.point.x, y: center.point.y, z: 1}, center)
+    if item\place(@map, Point(center.point.x, center.point.y, 1), center)
       return @map\addEntity(item)
 

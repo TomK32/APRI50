@@ -6,8 +6,8 @@ export class GamePlay.Colony.OxygenTank
     size = @image\getWidth() / 3
     @quad = nil
     @quads = {}
-    for i = 1, 3 do
-      @quads[i] = love.graphics.newQuad((i-1) * size, 0, size, size, size*3, size)
+    for i = 1, 3
+      @quads[i] = love.graphics.newQuad((i - 1) * size, 0, size, size, size*3, size)
     @quad = @quads[1]
 
   empty: =>
