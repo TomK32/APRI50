@@ -14,9 +14,11 @@ export class InventoryView extends View
     @setDisplayWithColumns()
 
   setDisplayWithColumns: =>
+    @setDisplay(@display)
+    @rows = math.min(@rows, @display.height / math.floor((@icon_size + 3 * @padding)))
     @setDisplay({
       width: (@icon_size + 3 * @padding) * @columns,
-      height: (@icon_size + @padding) * @rows
+      height: (@icon_size + 3 * @padding) * @rows
     })
 
   mousepressed: (x, y) =>
