@@ -11,7 +11,13 @@ export class InventoryExchangeView extends View
   drawContent: =>
     love.graphics.setColor(game.colors.text)
     love.graphics.print(@inventory\toString(), 5, 5)
-    love.graphics.print(@inventory\toString(), InventoryExchangeView.inventory_width, 5)
+    x = InventoryExchangeView.inventory_width
+    if @left_inventory
+      love.graphics.print(@left_inventory\toString(), x, 5)
+    x = (InventoryExchangeView.inventory_width) * 2
+    for i, inventory in ipairs(@others)
+      love.graphics.print(inventory\toString(), x - i * @inventory_margin, 5)
+      x -= 10
 
   -- right side
 InventoryExchangeView.InventoryView = class extends InventoryView

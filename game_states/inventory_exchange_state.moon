@@ -5,12 +5,13 @@ export class InventoryExchangeState extends State
     @inventory, @others = inventory, others
     @last_state = last_state
 
+    @view = InventoryExchangeView(inventory, others)
+
     @character_view = InventoryExchangeView.CharacterView(inventory, {255,55,55,100}, inventory.name)
     @addView(@character_view)
 
     @setLeftInventory(others[1])
 
-    @view = InventoryExchangeView(inventory, others)
 
     @
 
@@ -20,6 +21,9 @@ export class InventoryExchangeState extends State
 
   setLeftInventory: (inventory) =>
     @left_inventory = inventory
+    @view.left_inventory = inventory
+    if not inventory
+      return false
 
     @left_inventory_view = InventoryExchangeView.InventoryView(inventory, {55,255,55,100}, inventory.name)
     @addView(@left_inventory_view)
