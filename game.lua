@@ -24,6 +24,7 @@ game = {
   url = 'http://ananasblau.com/apri50',
   dna_length = 12,
   evolution_kits_to_start = 7,
+  colors = require('colors'),
   shaders = { },
   matchers = {
     -- make sure they are unique and don't overlap too much.
