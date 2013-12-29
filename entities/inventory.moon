@@ -1,9 +1,10 @@
 
 export class Inventory
 
-  new: =>
+  new: (owner, name) =>
     @items = {}
     @active = true
+    @owner, @name = owner, name
 
   add: (item, position) =>
     if not position
@@ -49,5 +50,5 @@ export class Inventory
     @active = nil
 
   toString: =>
-    return 'Inventory'
+    return @name or 'Inventory'
 
