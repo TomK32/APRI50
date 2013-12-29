@@ -89,7 +89,6 @@ export class MapView extends View
     @noiseLineShaderDt -= love.timer.getDelta()
     if @noiseLineShaderDt < -2 -- seconds
       @noiseLineShaderDt = 1 + math.random() * @noiseLineShaderDuration -- seconds
-      @noiseShaderOffset = {math.random(10), 0}
     @drawCanvas()
 
   updateLight: (dt) =>
@@ -117,6 +116,12 @@ export class MapView extends View
       love.graphics.pop()
     love.graphics.setColor(255, 255, 255, 255)
 
+    if game.map_debug > 0
+      -- center and corners do have absolute positions so they stay
+      -- outside the translate
+      centers = @centersInRect()
+      for i, center in ipairs centers
+        @debugCenter(center)
 
     -- entities
     for l, layer in ipairs(@map.layer_indexes) do
@@ -150,11 +155,6 @@ export class MapView extends View
 
       center.chunk\draw()
       love.graphics.pop()
-
-      if game.map_debug > 0
-        -- center and corners do have absolute positions so they stay
-        -- outside the translate
-        @debugCenter(center)
 
     for i, center in ipairs centers
       if #center.chunk.particle_systems > 0
