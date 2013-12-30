@@ -22,7 +22,7 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
     @__class.index += 1
     @id = @__class.index
     @name = @__class.names[(@id % #@__class.names) + 1] .. @id
-    @inventory = Inventory(@, @name)
+    @inventory = Inventory(@, @name, @inventoryChanged)
     -- just add one
     @inventory\add(EvolutionKit.random(game.dna_length))
     @inventory\add(GamePlay.Colony.OxygenTank(20000))
@@ -32,6 +32,9 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
 
   toString: =>
     @name
+
+  inventoryChanged: (inventory) =>
+    @currentOxygenTank = nil
 
   afterMove: () =>
     @camera\lookAt(@position.x, @position.y)

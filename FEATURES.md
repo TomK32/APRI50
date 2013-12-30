@@ -23,7 +23,7 @@
 * [0.3] OxygenTanks for each colonist
 * [active] Oxygen generator (works best on green tiles, do store plenty)
 * [active] Automatically recharge OxygenTank when close to a generator
-* [active] exchange inventory items with other inventory nearby (base and other colonists)
+* [0.3] exchange inventory items with other inventory nearby (base and other colonists)
 * [active] Harvest resources manually
 * [active] Build units like vehicles, machines, robots, harvester
 * [active] Buildings (habitat, utilities, workshop, garden)
@@ -38,7 +38,7 @@
 * [0.2] Change grid to graph by porting mapgen2
 * [0.3] Scrollable
 * [0.3] Suns lightens the polygons
-* [0.4] Improved sunshine
+* [0.3] Improved sunshine
 * Put notes, landmarks and drawings (all on a sign) on the map
 * Generate new map chunks during exploration
 
