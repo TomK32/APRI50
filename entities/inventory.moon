@@ -40,7 +40,10 @@ export class Inventory
 
   itemsByClass: (klass) =>
     r = {}
-    return _.select(@items, (item) -> item.__class.__name == klass)
+    for i, item in pairs @items
+      if item.__class and item.__class.__name == klass
+        table.insert(r, item)
+    return r
 
   activate: (position) =>
     if @items[tonumber(position)]
