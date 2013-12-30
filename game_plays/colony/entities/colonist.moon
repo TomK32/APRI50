@@ -48,17 +48,19 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
           @current_oxygen_tank = item
     if @current_oxygen_tank
       @current_oxygen_tank\consume(dt)
+      return true
     else
       @health -= dt
+      return false
 
   update: (dt) =>
-    @breath(dt)
     if @dead
       return
+    if not @breath(dt)
+      @die('of insufficent oxygen')
+      return
     if @health < 0
-      game.log("Colonist " .. @name .. " died at x:" .. @position.x .. " y: " .. @position.y)
-      @dead = true
-      @image = game\image('game_plays/colony/images/colonist-angelica-dead.png')
+      @die('of insufficent health')
       return
     if not @active
       return
@@ -68,3 +70,8 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
         dir.x += direction.x
         dir.y += direction.y
     @move(dir, dt * 10)
+
+  die: (reason) =>
+    game.log("Colonist %s died %s at x: %s, y: %s"\format(@name, reason, @position.x, @position.y))
+    @dead = true
+    @image = game\image('game_plays/colony/images/colonist-angelica-dead.png')
