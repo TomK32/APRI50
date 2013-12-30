@@ -3,7 +3,6 @@ export class InventoryView extends View
   new: (inventory, color, title) =>
     @color = color or {0, 200, 0, 100}
     @title = title
-    @scale = 1
     super(@)
     @padding = 2
     @rows = 1
@@ -22,16 +21,21 @@ export class InventoryView extends View
     })
 
   mousepressed: (x, y) =>
-    item_number = @clickedItem(x, y)
+    item_number = @clickedItemNumber(x, y)
     if item_number
       @inventory.active = item_number
 
-  clickedItem: (x, y) =>
+  clickedItemNumber: (x, y) =>
     if not @inventory
-      return
+      return nil
     if not @\pointInRect(x, y)
       return nil
-    return math.floor((x - @display.x) / @scale / (@icon_size + @padding)) + 1
+    x -= (@display.x + @padding)
+    y -= (@display.y + @padding)
+    return math.ceil(x / (@icon_size + 3 * @padding)) + math.floor(y / (@icon_size + @padding * 3)) * @columns
+
+  clickedItem: (x, y) =>
+    return @inventory.items[@clickedItemNumber(x, y)]
 
   active: =>
     return @inventory ~= nil
@@ -60,7 +64,10 @@ export class InventoryView extends View
           love.graphics.rectangle('line', @padding, @padding, @icon_size+@padding, @icon_size)
         love.graphics.setColor(255, 255, 255, 255)
         if @inventory.items and @inventory.items[item_counter]
+          love.graphics.push()
+          love.graphics.translate(@padding, @padding)
           @drawItem(@inventory.items[item_counter])
+          love.graphics.pop()
         else
           love.graphics.setColor(255, 255, 255, 255)
           love.graphics.rectangle('line', @padding, @padding, @icon_size+@padding, @icon_size)
@@ -80,14 +87,11 @@ export class InventoryView extends View
         love.graphics.setColor(255, 255, 255, 255)
         love.graphics.print(description, 2, 0)
 
-  drawItem: (item, i) =>
+  drawItem: (item) =>
     if item.image or item.quad
-      love.graphics.push()
-      love.graphics.translate(@padding, @padding)
       if @icon_size ~= item.image\getHeight() or @icon_size ~= item.image\getWidth()
         love.graphics.scale(@icon_size / item.image\getHeight())
       if item.quad
         love.graphics.draw(item.image, item.quad, 0, 0)
       elseif item.image
         love.graphics.draw(item.image, 0, 0)
-      love.graphics.pop()

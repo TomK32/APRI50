@@ -19,6 +19,8 @@ export class State
     for i, view in ipairs(@sub_views)
       if view\active()
         view\draw()
+    if @view.drawAfterSubViews
+      @view\drawAfterSubViews()
 
   keypressed: (key, code) =>
     if @view and @view.gui then

@@ -73,6 +73,12 @@ function love.mousepressed(x,y,button)
   end
 end
 
+function love.mousereleased(x,y,button)
+  if game.current_state.mousereleased then
+    game.current_state:mousereleased(x,y,button)
+  end
+end
+
 function love.update(dt)
   dt = game.dt -- we ignore the real dt and use our 0.5
   tween.update(dt)

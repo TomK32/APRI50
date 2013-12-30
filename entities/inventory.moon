@@ -18,12 +18,15 @@ export class Inventory
       item = @items[position]
       @items[position] = nil
       return item
-    else
-      for i, it in ipairs(@items)
-        if it == item
-          @items[i] = nil
-          return item
+    elseif @position(item)
+      @items[@position(item)] = nil
+      return item
     return false
+
+  position: (item) =>
+    for i, it in pairs(@items)
+      if it == item
+        return i
 
   itemsByClass: (klass) =>
     r = {}
