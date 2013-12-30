@@ -26,7 +26,7 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
     -- just add one
     @inventory\add(EvolutionKit.random(game.dna_length))
     @inventory\add(GamePlay.Colony.OxygenTank(20000))
-    @currentOxygenTank = nil
+    @current_oxygen_tank = nil
 
     @inventory.active = 1
 
@@ -34,20 +34,20 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
     @name
 
   inventoryChanged: (inventory) =>
-    @currentOxygenTank = nil
+    @current_oxygen_tank = nil
 
   afterMove: () =>
     @camera\lookAt(@position.x, @position.y)
 
   breath: (dt) =>
     -- Let's find a filled up tank
-    if not @currentOxygenTank or @currentOxygenTank\empty()
-      @currentOxygenTank = nil
+    if not @current_oxygen_tank or @current_oxygen_tank\empty()
+      @current_oxygen_tank = nil
       for i, item in ipairs(@inventory\itemsByClass('OxygenTank'))
         if not item\empty()
-          @currentOxygenTank = item
-    if @currentOxygenTank
-      @currentOxygenTank\consume(dt)
+          @current_oxygen_tank = item
+    if @current_oxygen_tank
+      @current_oxygen_tank\consume(dt)
     else
       @health -= dt
 
