@@ -101,6 +101,13 @@ function game:showCredits()
   game.current_state = State(self, 'Credits', CreditsView())
 end
 
+function game.log(message)
+  if not game.log_file then
+    game.log_file = love.filesystem.newFile('apri50.log', 'a')
+  end
+  game.log_file:write('[' .. game:timeInWords() .. '] ' .. message .. "\r\n")
+end
+
 function game:timeInWords()
   self.time_string = ''
   local t = self.time
@@ -110,6 +117,6 @@ function game:timeInWords()
   end
   local hours = (math.floor(t / game.time_hours)) % 24
   local minutes = (math.floor(t / game.time_minutes) * 15) % 60
-  self.time_string = self.time_string .. ' ' .. hours .. ': ' .. minutes
+  self.time_string = self.time_string .. ' ' .. hours .. ':' .. minutes .. 'hrs'
   return self.time_string
 end

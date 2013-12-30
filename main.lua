@@ -88,6 +88,10 @@ function love.update(dt)
 end
 
 function love.quit()
+  if game.log_file then
+    game.log('Quitting game')
+    game.log_file:close()
+  end
   makeScreenshot()
 end
 

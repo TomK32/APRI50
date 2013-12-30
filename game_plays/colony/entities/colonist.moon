@@ -56,6 +56,7 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
     if @dead
       return
     if @health < 0
+      game.log("Colonist " .. @name .. " died at x:" .. @position.x .. " y: " .. @position.y)
       @dead = true
       @image = game\image('game_plays/colony/images/colonist-angelica-dead.png')
       return

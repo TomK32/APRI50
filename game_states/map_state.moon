@@ -20,6 +20,7 @@ export class MapState extends State
     @compute_scores = false
 
     @map = Map(2000, 1000, game.seed, 800)
+    game.log('Started game with seed ' .. game.seed)
     @view = MapView(@map)
 
     @game_play = GamePlay.Colony(@)
