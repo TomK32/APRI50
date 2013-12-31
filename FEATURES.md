@@ -4,11 +4,11 @@
 * [0.2] Player.resources (metal, energy, water, biomass)
 * [0.2] Placing evokit costs resources (1 each)
 * Harvest to replentish resources
-* Loose condition when out of resources
+* Loose condition when out of resources and actors (colonists)
 * Continuous terraforming?
 * [postponed] Stefan's Doomsday mode! Destroy all teh urfs!
-* Separate save-games for map and expedition team, allow playing with
-  two expeditions on one map.
+* Separate save-games for map and expedition team (plus the colonyship),
+  allowing to play with two expeditions on a shared map.
 * Gamepad support
 
 
@@ -25,12 +25,14 @@
 * [active] Automatically recharge OxygenTank when close to a generator
 * [0.3] exchange inventory items with other inventory nearby (base and other colonists)
 * [active] Harvest resources manually
-* [active] Build units like vehicles, machines, robots, harvester
+* [active] Construct units like vehicles, machines, robots, harvester
 * [active] Buildings (habitat, utilities, workshop, garden)
 * Colonist Leader
 * explore map to see it all
 * Athmospheric bubbles
 * Equipment
+* Job lists
+* Exhaustion and rest
 
 
 ## Map

@@ -4,7 +4,7 @@
 ## APRI50 project sheet
 
 * **Start of experiment:** Earth Standard Year 2049.
-* **Location:* HD 10700e in solar system Tau Ceti b [1]
+* *Location:* HD 10700e in solar system Tau Ceti b [1]
 * *Size of planet:* 500% Earth Standard Planet
 * *Distance from earth:* 11.905 lightyears
 * *Expected duration of terraforming:* 27 years
