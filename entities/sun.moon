@@ -72,9 +72,9 @@ export class Sun
   colorForTriangle: (pointA, pointB, pointC) =>
     factor = @getLightFactor(pointA, pointB, pointC)
     if factor > 0
-      r = @r * factor
-      b = @b * factor
-      g = @g * factor
-      return {r, b, g, 255}
+      r = math.floor(@r * factor)
+      g = math.floor(@g * factor)
+      b = math.floor(@b * factor)
+      return {r, g, b, 255}
 
 
