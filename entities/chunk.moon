@@ -106,7 +106,6 @@ export class Chunk
       for i, sun in ipairs(suns)
         light = sun\colorForTriangle(unpack(polygon.points))
         if light
-          light[4] = 40
           table.insert(polygon.light, light)
 
   addParticleSystem: (system) =>
