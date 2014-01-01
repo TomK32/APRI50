@@ -128,13 +128,11 @@ export class Chunk
   fill: =>
     @setColors()
     love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.setStencil(@drawStencil, @)
-    @colors[4] = 255
     love.graphics.setColor(unpack(@colors))
-    love.graphics.rectangle('fill', 0, 0, @width, @height)
+    @drawShape()
+    @colors[4] = 255
     if game.show_sun
       @applySunlight()
-    love.graphics.setStencil()
     true
 
   applySunlight: =>
@@ -166,8 +164,8 @@ export class Chunk
         table.remove(@particle_systems, i)
       love.graphics.draw(system)
 
-  drawStencil: () =>
-    for i, polygon in ipairs @polygons
+  drawShape: () =>
+    for i, polygon in pairs @polygons
       love.graphics.polygon('fill', unpack(polygon))
 
   drawBorders: =>
@@ -230,8 +228,6 @@ export class Chunk
           love.graphics.setColor(200,200,200,255)
         love.graphics.circle('fill', border.v1.point.x, border.v1.point.y, size)
 
-
   draw: () =>
     @fill()
-    --love.graphics.draw(@canvas, 0, 0)
 
