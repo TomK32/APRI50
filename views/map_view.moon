@@ -26,7 +26,6 @@ export class MapView extends View
     @noiseLineShaderDuration = 0.4
     @canvas = love.graphics.newCanvas(@map.width + 2 * @display.x, @map.height + 2 * @display.y)
     game\shader('noise')
-    game\shader('noiseLine')
 
   setDisplay: (display) =>
     View.setDisplay(@, display)
@@ -86,9 +85,6 @@ export class MapView extends View
     @map\entitiesInRect(@camera.x - w * 2 + 2 * @display.x, @camera.y - h * 2 + 2 * @display.y, w * 4, h * 4)
 
   update: (dt) =>
-    @noiseLineShaderDt -= love.timer.getDelta()
-    if @noiseLineShaderDt < -2 -- seconds
-      @noiseLineShaderDt = 1 + math.random() * @noiseLineShaderDuration -- seconds
     @drawCanvas()
 
   updateLight: (dt) =>
@@ -129,12 +125,6 @@ export class MapView extends View
       table.sort(entities, (a, b) -> return a.position.y > b.position.y)
       for i,entity in ipairs(entities) do
         @\drawEntity(entity)
-    if game.use_shaders and @noiseLineShaderDt > 0
-      love.graphics.setShader(game.shaders.noiseLine)
-      game.shaders.noiseLine\send('offset', 100 - 50 * @noiseLineShaderDt)
-      game.shaders.noiseLine\send('strength', @noiseLineShaderDt / @noiseLineShaderDuration)
-      love.graphics.setColor(255,255,255, 0)
-      love.graphics.rectangle('fill', 0, 0, @canvas\getWidth(), @canvas\getHeight())
     if game.use_shaders
       love.graphics.setShader()
 
