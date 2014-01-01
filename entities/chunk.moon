@@ -76,7 +76,10 @@ export class Chunk
       x = center.point.x - x0
       y = center.point.y - y0
       if border.v0 and border.v1
-        table.insert(@polygons, {x, y, border.v0.point.x - x0, border.v0.point.y - y0, border.v1.point.x - x0, border.v1.point.y - y0})
+        table.insert(@polygons, {light: {},
+          shape: {x, y, border.v0.point.x - x0, border.v0.point.y - y0, border.v1.point.x - x0, border.v1.point.y - y0},
+          points: {border.v0.point, border.v1.point, center.point}
+        })
         border.midpoint = Point.interpolate(border.v0.point, border.v1.point)
 
     @width = math.ceil(x1 - x0)
@@ -98,75 +101,34 @@ export class Chunk
   -- TODO: Change into a normals map and a shader
   --       https://github.com/amitp/mapgen2/blob/master/mapgen2.as#L849-L879
   setSunlight: (suns, setting_suns) =>
-    -- TODO: calc the time at when the sun does hit and for how long and
-    -- use this to tween.
-    if setting_suns
-      for i, sun in ipairs setting_suns
-        -- Tween them down
-        @sunlight[sun.id] = {}
-    for i, sun in ipairs(suns)
-      if not @sunlight[sun.id]
-        @sunlight[sun.id] = {}
-      -- TODO: Find borders that are exposed to the sun, i.e. closest,
-      -- and if they are lower than the center(!) it is sunny
-      border_count = 0
-      for j, border in ipairs(@center.borders)
-        -- TODO: Tween
-        if border.v0 and border.v1 and border.midpoint
-          light = {
-            sun\colorForTriangle(border.midpoint, border.v0.point, @center.point),
-            sun\colorForTriangle(border.midpoint, border.v1.point, @center.point) }
-          if light
-            @sunlight[sun.id][j] = light
-    @center.sunlight = @sunlight
-
-    return @sunlight
+    for j, polygon in ipairs(@polygons)
+      polygon.light = {}
+      for i, sun in ipairs(suns)
+        light = sun\colorForTriangle(unpack(polygon.points))
+        if light
+          light[4] = 40
+          table.insert(polygon.light, light)
 
   addParticleSystem: (system) =>
     table.insert(@particle_systems, system)
 
   fill: =>
     @setColors()
-    love.graphics.setColor(255, 255, 255, 255)
     love.graphics.setColor(unpack(@colors))
     @drawShape()
     @colors[4] = 255
-    if game.show_sun
-      @applySunlight()
     true
-
-  applySunlight: =>
-    love.graphics.push()
-    love.graphics.setBlendMode('additive')
-    for i, border in ipairs(@center.borders)
-      for sun_id, borders in pairs(@sunlight or {})
-        if border.v0 and border.v1 and borders[i]
-          xm, ym = border.midpoint.x - @position.x, border.midpoint.y - @position.y
-          x0, y0 = border.v0.point.x - @position.x, border.v0.point.y - @position.y
-          x1, y1 = border.v1.point.x - @position.x, border.v1.point.y - @position.y
-          xc, yc = @center.point.x - @position.x, @center.point.y - @position.y
-          if borders[i][1]
-            r, g, b = unpack(borders[i][1])
-            love.graphics.setColor(r, b, g, 40)
-            love.graphics.polygon('fill', xc, yc, x0, y0, xm, ym)
-          if borders[i][2]
-            r, g, b = unpack(borders[i][2])
-            love.graphics.setColor(r, b, g, 40)
-            love.graphics.polygon('fill', xc, yc, x1, y1, xm, ym)
-
-    love.graphics.setBlendMode('alpha')
-
-    love.graphics.pop()
-
-  drawParticles: =>
-    for i, system in ipairs @particle_systems
-      if not system\isActive()
-        table.remove(@particle_systems, i)
-      love.graphics.draw(system)
 
   drawShape: () =>
     for i, polygon in pairs @polygons
-      love.graphics.polygon('fill', unpack(polygon))
+      love.graphics.setColor(unpack(@colors))
+      love.graphics.polygon('fill', unpack(polygon.shape))
+      if game.show_sun and polygon.light
+        love.graphics.setBlendMode('additive')
+        for j, color in pairs polygon.light
+          love.graphics.setColor(unpack(color))
+          love.graphics.polygon('fill', unpack(polygon.shape))
+        love.graphics.setBlendMode('alpha')
 
   drawBorders: =>
     for i, border in pairs @center.borders
@@ -177,6 +139,12 @@ export class Chunk
         x1, y1 = border.v1.point.x, border.v1.point.y
         love.graphics.line(x0, y0, x1, y1)
         love.graphics.pop()
+
+  drawParticles: =>
+    for i, system in ipairs @particle_systems
+      if not system\isActive()
+        table.remove(@particle_systems, i)
+      love.graphics.draw(system)
 
   iterate: (callback) =>
     for i, corner in ipairs(@center.corners)
