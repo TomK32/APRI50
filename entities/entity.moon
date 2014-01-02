@@ -21,6 +21,11 @@ export class Entity
       love.graphics.draw(@particles, 0, 0)
     @\drawContent()
     love.graphics.pop()
+    love.graphics.push()
+    if game.debug
+      love.graphics.setColor(255,255,255,255)
+      love.graphics.print(@position\toString(), 0, 0)
+    love.graphics.pop()
 
   drawActive: (highlightColour) =>
     if @image and not (@width or @height)
@@ -62,7 +67,15 @@ export class Entity
     return @animation_data[@state].image
 
   includesPoint: (point) =>
-    if @position.x <= point.x and @position.y <= point.y and @position.x + @position.width >= point.x and @position.y + @position.height >= point.y
+    if @position.x <= point.x and @position.y <= point.y and @position.x + @width >= point.x and @position.y + @height >= point.y
       return true
     return false
+
+  inRect: (x0, y0, x1, y1) =>
+    if @position\inRect(x0, y0, x1, y1)
+      return true
+    if @includesPoint({x: x0, y: y0}) or @includesPoint({x: x0, y: y1})
+      return true
+    if @includesPoint({x: x1, y: y0}) or @includesPoint({x: x1, y: y1})
+      return true
 

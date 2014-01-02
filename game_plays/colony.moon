@@ -25,7 +25,7 @@ GamePlay.Colony = class Colony extends GamePlay
       @map_state.map\addEntity(colonist)
     @map_state.scores.biomass = {label: 'Biomass', score: game.player.colonists.length}
 
-    space_ship = GamePlay.Colony.SpaceShip('images/entities/ship1.png', start_position)
+    space_ship = GamePlay.Colony.SpaceShip({position: start_position, name: 'Colony Ship APRI50'})
     @map_state.map\addEntity(space_ship)
     @map_state.view.camera\lookAt(start_position.x, start_position.y)
 

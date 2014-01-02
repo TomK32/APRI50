@@ -103,7 +103,7 @@ export class Map
 
     for l, layer in pairs(@layers)
       for i, entity in pairs(layer)
-        if entity.position\inRect(x0, y0, x1, y1)
+        if entity\inRect(x0, y0, x1, y1)
           entities[all] = entity
           all += 1
     return entities
