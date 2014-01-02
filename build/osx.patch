@@ -1,7 +1,7 @@
---- build/Kollum.app/Contents/Info.plist 2012-04-02 22:35:23.000000000 +0200
-+++ Info.plist	2012-12-01 23:52:41.000000000 +0100
+--- APRI50-0.3.86.app/Contents/Info.plist.orig	2014-01-02 11:45:36.000000000 +0100
++++ APRI50-0.3.86.app/Contents/Info.plist	2014-01-02 11:49:59.000000000 +0100
 @@ -6,49 +6,20 @@
- 	<string>11D50b</string>
+ 	<string>13B42</string>
  	<key>CFBundleDevelopmentRegion</key>
  	<string>English</string>
 -	<key>CFBundleDocumentTypes</key>
@@ -10,7 +10,7 @@
 -			<key>CFBundleTypeIconFile</key>
 -			<string>LoveDocument.icns</string>
 -			<key>CFBundleTypeName</key>
--			<string>LÖVE Project</string>
+-			<string>LÖVE Project</string>
 -			<key>CFBundleTypeRole</key>
 -			<string>Viewer</string>
 -			<key>LSHandlerRank</key>
@@ -36,32 +36,29 @@
  	<key>CFBundleExecutable</key>
  	<string>love</string>
  	<key>CFBundleIconFile</key>
--	<string>Love.icns</string>
-+	<string>Love.icns</string>
+ 	<string>Love.icns</string>
  	<key>CFBundleIdentifier</key>
 -	<string>org.love2d.love</string>
 +	<string>com.ananasblau.apri50</string>
  	<key>CFBundleInfoDictionaryVersion</key>
  	<string>6.0</string>
  	<key>CFBundleName</key>
--	<string>LÖVE</string>
+-	<string>LÖVE</string>
 +	<string>APRI50</string>
  	<key>CFBundlePackageType</key>
  	<string>APPL</string>
  	<key>CFBundleShortVersionString</key>
--	<string>0.8.0</string>
+-	<string>0.9.0</string>
 +	<string>VERSION</string>
  	<key>CFBundleSignature</key>
  	<string>LoVe</string>
  	<key>DTCompiler</key>
-@@ -66,38 +37,10 @@
- 	<key>DTXcodeBuild</key>
- 	<string>4E2002</string>
+@@ -68,36 +39,8 @@
+ 	<key>LSApplicationCategoryType</key>
+ 	<string>public.app-category.games</string>
  	<key>NSHumanReadableCopyright</key>
--	<string>© 2006-2012 LÖVE Development Team</string>
-+	<string>© 2012 Thomas R. Koll</string>
- 	<key>NSMainNibFile</key>
- 	<string>SDLMain</string>
+-	<string>© 2006-2013 LÖVE Development Team</string>
++	<string>© 2013-2014 Ananasblau Games</string>
  	<key>NSPrincipalClass</key>
  	<string>NSApplication</string>
 -	<key>UTExportedTypeDeclarations</key>
@@ -72,7 +69,7 @@
 -				<string>com.pkware.zip-archive</string>
 -			</array>
 -			<key>UTTypeDescription</key>
--			<string>LÖVE Project</string>
+-			<string>LÖVE Project</string>
 -			<key>UTTypeIconFile</key>
 -			<string>LoveDocument.icns</string>
 -			<key>UTTypeIdentifier</key>

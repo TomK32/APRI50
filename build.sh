@@ -12,12 +12,12 @@ REVISION=`git log ${GAME_VERSION}..HEAD --oneline | wc -l | sed -e 's/ //g'`
 GAME_VERSION=${GAME_VERSION}.${REVISION}
 
 FILENAME="$NAME-$GAME_VERSION"
-VERSION=0.8.0
+VERSION=0.9.0
 BUILD="`pwd`/build"
 mkdir -p "${BUILD}"
 
 # download love files
-for ARCH in "win-x86" "macosx-ub"
+for ARCH in "win32" "macosx-x64"
 do
   if [ ! -f "$BUILD/love-${VERSION}-${ARCH}.zip" ];
   then
@@ -47,7 +47,7 @@ GAME="$BUILD/$FILENAME.love"
 echo "Building $FILENAME"
 
 # For windows, just append our love file and zip it
-A="$BUILD/love-$VERSION-win-x86"
+A="$BUILD/love-$VERSION-win32"
 if [ -f "$BUILD/$A" ]; then rm "$BUILD/$A"; fi
 unzip -q -d "$BUILD" "$A.zip"
 cat "$GAME" >> "$A/love.exe"
@@ -70,7 +70,7 @@ cd "$R_PWD"
 # and zip it up again
 echo "$BUILD/${FILENAME}.app.zip"
 if [ -d  "$BUILD/love.app" ]; then rm -R "$BUILD/love.app"; fi
-unzip -q -d "$BUILD" "$BUILD/love-$VERSION-macosx-ub.zip"
+unzip -q -d "$BUILD" "$BUILD/love-$VERSION-macosx-x64.zip"
 mv "$BUILD/love.app" "$BUILD/${FILENAME}.app"
 cp "$BUILD/$FILENAME.love" "$BUILD/$FILENAME.app/Contents/Resources/"
 # cp "build/APRI50.icns" "$BUILD/$FILENAME.app/Contents/Resources"

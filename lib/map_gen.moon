@@ -7,11 +7,10 @@
 --  * Edge, Center and Corner have indexes. get rid of them?
 --  * BitmapData
 
-export _ = require('underscore')
+export _ = require('lib.underscore')
 
-require 'entities/point'
-require 'SimplexNoise'
-Voronoi = require 'voronoi'
+require 'entities.point'
+Voronoi = require 'lib.voronoi'
 
 -- TODO incomplete
 class Edge

@@ -1,21 +1,19 @@
 --
 -- (C) 2013 Thomas R. Koll
 
-package.path = package.path .. ';./lib/?.lua'
-package.path = package.path .. ';./views/?.lua'
-require 'strict'
-require 'lib/helpers'
-require 'lib/middleclass'
-require 'lib/LuaBit'
-require 'lib/SimplexNoise'
+require 'lib.strict'
+require 'lib.underscore'
+require 'lib.helpers'
+require 'lib.middleclass'
+require 'lib.LuaBit'
 
-tween = require 'lib/tween'
+tween = require 'lib.tween'
 require 'game'
-require 'views/view'
-require 'game_states/state'
-require 'game_states/mutator'
-require 'game_states/map_state'
---require 'views/credits_view'
+require 'views.view'
+require 'game_states.state'
+require 'game_states.mutator'
+require 'game_states.map_state'
+--require 'views.credits_view'
 function love.load()
   local modes = love.window.getFullscreenModes()
   table.sort(modes, function(a, b) return a.width * a.height > b.width * b.height end)

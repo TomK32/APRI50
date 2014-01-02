@@ -1,8 +1,5 @@
 
-package.path = package.path .. ';./game_plays/colony/entities/?.lua'
-package.path = package.path .. ';./game_plays/colony/?.lua'
-
-require 'game_states/inventory_exchange_state'
+require 'game_states.inventory_exchange_state'
 _EvolutionKit = EvolutionKit
 export class EvolutionKit extends _EvolutionKit
   toString: =>
@@ -11,9 +8,9 @@ export class EvolutionKit extends _EvolutionKit
 
 GamePlay.Colony = class Colony extends GamePlay
   new: (map_state) =>
-    require 'colonist'
-    require 'space_ship'
-    require 'inventory_exchange_view'
+    require 'game_plays.colony.entities.colonist'
+    require 'game_plays.colony.entities.space_ship'
+    require 'views.inventory_exchange_view'
 
     super(map_state)
 

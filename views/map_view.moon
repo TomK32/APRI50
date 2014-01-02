@@ -1,5 +1,5 @@
-Camera = require "hump.camera"
-require "entities/sun"
+Camera = require "lib.hump.camera"
+require "entities.sun"
 
 export class MapView extends View
   new: (map) =>
