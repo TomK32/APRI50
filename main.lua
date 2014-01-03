@@ -19,7 +19,7 @@ function love.load()
   table.sort(modes, function(a, b) return a.width * a.height > b.width * b.height end)
   local preferred_mode = modes[1]
   for i, mode in ipairs(modes) do
-    if math.abs(9/16 - mode.height / mode.width) < 0.1 and (mode.height >= 768 or mode.width >= 1366) then
+    if math.abs(9/16 - mode.height / mode.width) < 0.1 and (mode.height >= 720 or mode.width >= 1280) then
       preferred_mode = mode
     end
   end

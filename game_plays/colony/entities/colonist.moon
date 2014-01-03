@@ -2,7 +2,7 @@ require 'game_plays.colony.entities.oxygen_tank'
 require 'actors.actor'
 GamePlay.Colony.Colonist = class Colonist extends Actor
   index: 0
-  names: {'Angelica', 'Miriam', 'Thomas', 'Rene', 'Kritzi'}
+  names: {'Angelica', 'Miriam', 'Thomas', 'Rene', 'Kritzi', 'Jebediah'}
   movements:
     up: { x: 0, y: -1 }
     down: { x: 0, y: 1 }
