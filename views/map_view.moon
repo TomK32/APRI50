@@ -74,15 +74,21 @@ export class MapView extends View
     return point.x * @camera.scale, point.y * @camera.scale
 
   cameraWH: =>
-    @display.width / @camera.scale / 2, @display.height / @camera.scale / 2
+    @display.width / @camera.scale, @display.height / @camera.scale
 
   centersInRect: =>
     w, h = @cameraWH()
-    @map\centersInRect(@camera.x - w + 2 * @display.x, @camera.y - h + 2 * @display.y, w * 2, h * 2)
+    x, y = @camera.x - w/2 + 2 * @display.x, @camera.y - h/2 + 2 * @display.y
+    if @last_centers_in_rect and _.is_equal(@last_centers_in_rect_bucket, @map\rectToBucket(x, y, w, h))
+      return @last_centers_in_rect
+
+    @last_centers_in_rect_bucket = @map\rectToBucket(x, y, w, h)
+    @last_centers_in_rect = @map\centersInRect(x, y, w, h)
+    return @last_centers_in_rect
 
   entitiesInRect: =>
     w, h = @cameraWH()
-    @map\entitiesInRect(@camera.x - w * 2 + 2 * @display.x, @camera.y - h * 2 + 2 * @display.y, w * 4, h * 4)
+    @map\entitiesInRect(@camera.x - w + 2 * @display.x, @camera.y - h + 2 * @display.y, w * 4, h * 4)
 
   update: (dt) =>
     @drawCanvas()

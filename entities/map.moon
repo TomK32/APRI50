@@ -44,11 +44,15 @@ export class Map
   centersNearPoint: (x, y) =>
     return @centersInRect(x - @bucket_size, y - @bucket_size, 2 * @bucket_size, 2 * @bucket_size)
 
-  centersInRect: (x0, y0, w, h) =>
+  rectToBucket: (x0, y0, w, h) =>
     x0 = math.ceil(x0 / @bucket_size)
     y0 = math.ceil(y0 / @bucket_size)
     w = math.ceil(w / @bucket_size)
     h = math.ceil(h / @bucket_size)
+    return {x0, y0, w, h}
+
+  centersInRect: (x0, y0, w, h) =>
+    x0, y0, w, h = unpack@rectToBucket(x0, y0, w, h)
     if @last and @last == {x0, y0, w, h}
       return @last_centers_in_rect
     @last = {x0, y0, w, h}
