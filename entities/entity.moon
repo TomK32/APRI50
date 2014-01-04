@@ -41,7 +41,10 @@ export class Entity
 
   drawContent: =>
     if @image
-      love.graphics.draw(@image, 0, 0)
+      if @quad
+        love.graphics.draw(@image, @quad, 0, 0)
+      else
+        love.graphics.draw(@image, 0, 0)
     if @\animation()
       @\animation()\draw(@\image(), 0, 0)
 

@@ -9,6 +9,7 @@ export class EvolutionKit extends _EvolutionKit
 GamePlay.Colony = class Colony extends GamePlay
   new: (map_state) =>
     require 'game_plays.colony.entities.colonist'
+    require 'game_plays.colony.entities.oxygen_generator'
     require 'game_plays.colony.entities.space_ship'
     require 'views.inventory_exchange_view'
 
@@ -67,7 +68,7 @@ GamePlay.Colony = class Colony extends GamePlay
       @inventory_exchange_state = InventoryExchangeState(colonist.inventory, _.pluck(entities, 'inventory'), @map_state)
       game.setState(@inventory_exchange_state)
 
-    if key == ' ' and colonist and item
+    if key == ' ' and colonist and item and (not item.placeable or item\placeable())
       if @map_state\placeItem(colonist.position.x, colonist.position.y, item)
         colonist.inventory\remove(item)
       return true

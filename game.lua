@@ -55,6 +55,16 @@ function game:image(path)
   return self.images[path]
 end
 
+function game:imageWithQuads(image, number_of_quads)
+  local image = game:image(image)
+  local quads = {}
+  local size = image:getWidth() / 3
+  for i = 1, number_of_quads do
+    quads[i] = love.graphics.newQuad((i - 1) * size, 0, size, size, size*3, size)
+  end
+  return image, quads
+end
+
 function game:createFonts(offset)
   local font_file = 'fonts/Comfortaa-Regular.ttf'
   self.fonts = {
