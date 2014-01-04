@@ -104,7 +104,9 @@ GamePlay.Colony = class Colony extends GamePlay
   mousepressed: (x, y, button) =>
     colonist = @currentActor()
     if colonist
-      colonist\moveTo(@findCenter(x, y).point)
+      center = @findCenter(x, y)
+      if center
+        colonist\moveTo(center.point)
       return true
     return false
 
