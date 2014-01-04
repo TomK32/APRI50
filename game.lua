@@ -1,6 +1,7 @@
 
 require 'entities/map'
 require 'entities/player'
+anim8 = require 'lib/anim8'
 
 game = {
   title = 'APRI50',
@@ -68,6 +69,19 @@ function game:imageWithQuads(image, number_of_quads)
     quads[i] = love.graphics.newQuad((i - 1) * size, 0, size, size, size*3, size)
   end
   return image, quads
+end
+
+function game.createAnimation(image_path, grid_options, animation_options)
+  local image = game:image(image_path)
+  local grid = anim8.newGrid(grid_options[1], grid_options[2], image:getWidth(), image:getHeight())
+  local animation = anim8.newAnimation(grid(unpack(animation_options[2])), animation_options[3])
+  return {
+    draw = function(self, x, y)
+      self.animation:draw(self.image, x or 0, y or 0)
+    end,
+    image = image,
+    animation = animation
+  }
 end
 
 function game:createFonts(offset)
