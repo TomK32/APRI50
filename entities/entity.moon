@@ -56,7 +56,9 @@ export class Entity
       @animation.animation\update(dt)
 
   includesPoint: (point) =>
-    return @position.x <= point.x and @position.y <= point.y and @position.x + @width >= point.x and @position.y + @height >= point.y
+    if @position.x <= point.x and @position.y <= point.y
+      if @width and @height and @position.x + @width >= point.x and @position.y + @height >= point.y
+        return true
 
   inRect: (x0, y0, x1, y1) =>
     if @position\inRect(x0, y0, x1, y1)
