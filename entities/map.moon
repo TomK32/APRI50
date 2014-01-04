@@ -89,7 +89,7 @@ export class Map
 
   addEntity: (entity) =>
     entity.map = self
-    entity.position.z = entity.position.z or 0
+    entity.position.z = entity.position.z or entity.layer or 0
     if not @layers[entity.position.z] then
       @layers[entity.position.z] = {}
       table.insert(@layer_indexes, entity.position.z)
@@ -100,17 +100,20 @@ export class Map
     if entity.keypressed
       table.insert(@controlAble, entity)
 
-  entitiesInRect: (x0, y0, w, h) =>
+  entitiesInRect: (x0, y0, w, h, layers) =>
     x1, y1 = x0 + w, y0 + w
     entities = {}
     all = 1
 
-    for l, layer in pairs(@layers)
+    for l, layer in pairs(layers or @layers)
       for i, entity in pairs(layer)
-        if entity\inRect(x0, y0, x1, y1)
+        if entity.inRect and entity\inRect(x0, y0, x1, y1)
           entities[all] = entity
           all += 1
     return entities
+
+  entitiesInRectOnLayer: (x0, y0, w, h, layer) =>
+    return @entitiesInRect(x0, y0, w, h, {@layers[layer]})
 
   entitiesNear: (x, y, r) =>
     return @entitiesInRect(x - r, y - r, r * 2, r * 2)

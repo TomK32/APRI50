@@ -26,6 +26,11 @@ game = {
   evolution_kits_to_start = 7,
   colors = require('colors'),
   shaders = { },
+  layers = {
+    machines = 40,
+    buildings = 20,
+    player = 50
+  },
   matchers = {
     -- make sure they are unique and don't overlap too much.
     markable   = splitDNA('A  C  G  T A'),

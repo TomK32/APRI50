@@ -11,6 +11,7 @@ require 'entities/center'
 require 'entities/corner'
 
 export class EvolutionKit
+  placeable: true
 
   @genes = {'A', 'C', 'G', 'T'}
 

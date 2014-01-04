@@ -86,7 +86,11 @@ export class MapView extends View
     @last_centers_in_rect = @map\centersInRect(x, y, w, h)
     return @last_centers_in_rect
 
-  entitiesInRect: =>
+  entitiesInRectOnLayer: (layer) =>
+    w, h = @cameraWH()
+    @map\entitiesInRectOnLayer(@camera.x - w + 2 * @display.x, @camera.y - h + 2 * @display.y, w * 4, h * 4, layer)
+
+  entitiesInRect: () =>
     w, h = @cameraWH()
     @map\entitiesInRect(@camera.x - w + 2 * @display.x, @camera.y - h + 2 * @display.y, w * 4, h * 4)
 
@@ -128,7 +132,6 @@ export class MapView extends View
     -- entities
     for l, layer in ipairs(@map.layer_indexes) do
       entities = @entitiesInRect()
-      table.sort(entities, (a, b) -> return a.position.y > b.position.y)
       for i,entity in ipairs(entities) do
         @\drawEntity(entity)
     if game.use_shaders

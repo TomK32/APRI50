@@ -21,5 +21,6 @@ class GamePlay.Colony.OxygenTank extends Entity
 
   consume: (delta) =>
     @oxygen -= delta
+    @setQuad()
     if @oxygen < 0
       @oxygen = 0

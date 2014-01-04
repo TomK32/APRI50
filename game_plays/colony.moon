@@ -18,9 +18,9 @@ GamePlay.Colony = class Colony extends GamePlay
     @map_state.scores.biomass = {label: 'Biomass', score: 0}
     @map_state.compute_scores = true
     game.player.colonists = Inventory()
-    start_position = Point(@map_state.map.width / 2, @map_state.map.height / 2, 30)
+    start_position = Point(@map_state.map.width / 2, @map_state.map.height / 2, game.layers.buildings)
     for i=1, 5
-      colonist = GamePlay.Colony.Colonist(Point(start_position.x + i * game.icon_size, start_position.y - 30, 20))
+      colonist = GamePlay.Colony.Colonist(Point(start_position.x + i * game.icon_size, start_position.y - 30, game.layers.player))
       colonist.camera = @map_state.view.camera
       game.player.colonists\add(colonist)
       @map_state.map\addEntity(colonist)
@@ -68,10 +68,10 @@ GamePlay.Colony = class Colony extends GamePlay
       @inventory_exchange_state = InventoryExchangeState(colonist.inventory, _.pluck(entities, 'inventory'), @map_state)
       game.setState(@inventory_exchange_state)
 
-    if key == ' ' and colonist and item and (not item.placeable or item\placeable())
+    if key == ' ' and colonist and item and item.placeable ~= nil and (item.placeable == true or item\placeable())
       if @map_state\placeItem(colonist.position.x, colonist.position.y, item)
         colonist.inventory\remove(item)
-      return true
+        return true
 
     -- select items on the two inventory views
     if key\match("[0-9]") and colonist

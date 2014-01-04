@@ -6,6 +6,7 @@ class GamePlay.Colony.OxygenGenerator extends GamePlay.Colony.OxygenTank
     @image, @quads = game\imageWithQuads('game_plays/colony/images/oxygen_generator.png', 3)
     @setQuad()
     @active = false -- only runs when placed on map
+    @layer = game.layers.machines
 
   placeable: =>
     true

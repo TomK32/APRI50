@@ -104,13 +104,16 @@ export class MapState extends State
 
   placeItem: (x, y, item) =>
     center = @map\findClosestCenter(x, y)
-    assert(center, 'TOOD: Flash display when no center')
-    point = Point(center.point.x, center.point.y, 1)
-    if item.place
-      if item\place(@map, point, center)
-        return @map\addEntity(item)
+    if not center
+      game.log("Couldn't find center " .. x .. "/" .. y " when placing item " .. item\toString())
+      return
+    point = Point(center.point.x, center.point.y)
+    if item.place and item\place(@map, point, center)
+      @map\addEntity(item)
+      return true
     else
       item.position = point
-      return @map\addEntity(item)
+      @map\addEntity(item)
+      return true
     return false
 
