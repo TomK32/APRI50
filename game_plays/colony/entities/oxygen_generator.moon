@@ -1,3 +1,6 @@
+-- TODO
+--   * works better on green tiles
+
 class GamePlay.Colony.OxygenGenerator extends GamePlay.Colony.OxygenTank
   new: (rate, capacity) =>
     @capacity = capacity
@@ -8,6 +11,9 @@ class GamePlay.Colony.OxygenGenerator extends GamePlay.Colony.OxygenTank
     @active = false -- only runs when placed on map
     @layer = game.layers.machines
     @animation  = game.createAnimation('game_plays/colony/images/oxygen_generator_animation.png', {@image\getWidth()/3, @image\getHeight()}, {'loop', {"1-3", 1}, 1.4})
+    @inventory = Inventory(@, 'OxygenGenerator')
+    for i=1, 5
+      @inventory\add(GamePlay.Colony.OxygenTank(nil, 0))
 
   placeable: =>
     true
