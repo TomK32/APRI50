@@ -5,4 +5,4 @@ GamePlay.Colony.SpaceShip = class SpaceShip extends Entity
     @inventory = Inventory(@, @name)
     for i=1, game.evolution_kits_to_start
       @inventory\add(EvolutionKit.random(game.dna_length))
-    @inventory\add(GamePlay.Colony.OxygenGenerator(1, 1009))
+    @inventory\add(GamePlay.Colony.OxygenGenerator(1, 1000))

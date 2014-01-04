@@ -2,9 +2,9 @@
 --   * works better on green tiles
 
 class GamePlay.Colony.OxygenGenerator extends GamePlay.Colony.OxygenTank
-  new: (rate, capacity) =>
+  new: (rate, capacity, oxygen) =>
     @capacity = capacity
-    @oxygen = 0
+    @oxygen = oxygen or 0
     @rate = rate -- per tick
     @image, @quads = game\imageWithQuads('game_plays/colony/images/oxygen_generator.png', 3)
     @setQuad()
