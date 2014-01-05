@@ -36,6 +36,9 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
   inventoryChanged: (inventory) =>
     @current_oxygen_tank = nil
 
+  selectable: =>
+    return not @dead
+
   afterMove: () =>
     @camera\lookAt(@position.x, @position.y)
 
@@ -74,4 +77,5 @@ GamePlay.Colony.Colonist = class Colonist extends Actor
   die: (reason) =>
     game.log("Colonist %s died %s at x: %s, y: %s"\format(@name, reason, @position.x, @position.y))
     @dead = true
+    @active = false
     @image = game\image('game_plays/colony/images/colonist-angelica-dead.png')

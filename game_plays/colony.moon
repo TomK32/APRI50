@@ -53,6 +53,9 @@ GamePlay.Colony = class Colony extends GamePlay
     alt_pressed = (love.keyboard.isDown("lalt") or love.keyboard.isDown("ralt"))
 
     colonist = game.player.colonists\activeItem()
+    if colonist and not colonist\selectable()
+      colonist = nil
+      game.player.colonists.active = nil
     item = nil
     if colonist
       item = colonist.inventory\activeItem()
@@ -92,9 +95,9 @@ GamePlay.Colony = class Colony extends GamePlay
 
     if key\match("[0-9]") and not shift_pressed and not alt_pressed
       if game.player.colonists\activeItem()
-        game.player.colonists\activeItem().active = false
+        game.player.colonists\activeItem().selected = false
       colonist = game.player.colonists\activate(tonumber(key))
-      if colonist
+      if colonist and colonist\selectable()
         colonist.active = true
         @inventory_view.inventory = colonist.inventory
         colonist.camera\lookAt(colonist.position.x, colonist.position.y)
