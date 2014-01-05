@@ -30,7 +30,7 @@ local mouse    = require(BASE .. 'mouse')
 local keyboard = require(BASE .. 'keyboard')
 
 -- the widget
--- {text = text, pos = {x, y}, size={w, h}, widgetHit=widgetHit, draw=draw}
+-- {text = text, pos = {x, y}, size={w, h}, widgetHit=widgetHit, draw=draw, state=state}
 return function(w)
 	assert(type(w) == "table" and w.text, "Invalid argument")
 
@@ -67,9 +67,15 @@ return function(w)
 	-- order you call the widget functions.
 	keyboard.makeCyclable(id)
 
+  -- if one button has been highlighted with using state, then the
+  -- keyboard focus should be changed to this one
+  if w.state == 'hot' then
+    keyboard.setFocus(id)
+  end
+
 	-- core.registerDraw(id, drawfunction, drawfunction-arguments...)
 	-- shows widget when core.draw() is called.
-	core.registerDraw(id, w.draw or core.style.Button,
+	core.registerDraw(id, w.draw or core.style.Button, w.state,
 		w.text, pos[1],pos[2], size[1],size[2])
 
 	return mouse.releasedOn(id) or keyboard.pressedOn(id, 'return')
