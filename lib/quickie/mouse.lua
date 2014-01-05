@@ -27,9 +27,10 @@ THE SOFTWARE.
 local _M -- holds the module. needed to make widgetHit overridable
 
 local x,y = 0,0
-local down = false
+local down, downLast = false, false
 local hot, active = nil, nil
 local NO_WIDGET = {}
+local function _NOP_() end
 
 local function widgetHit(mouse, pos, size)
 	return mouse[1] >= pos[1] and mouse[1] <= pos[1] + size[1] and
@@ -40,6 +41,7 @@ local function setHot(id)    hot = id end
 local function setActive(id) active = id end
 local function isHot(id)     return id == hot end
 local function isActive(id)  return id == active end
+local function getHot()      return hot end
 
 local function updateWidget(id, pos, size, hit)
 	hit = hit or _M.widgetHit
@@ -53,13 +55,17 @@ local function updateWidget(id, pos, size, hit)
 end
 
 local function releasedOn(id)
-	return not down and isHot(id) and isActive(id)
+	return not down and isHot(id) and isActive(id) and downLast
 end
 
 local function beginFrame()
 	hot = nil
 	x,y = love.mouse.getPosition()
-	down = love.mouse.isDown('l')
+	downLast = down
+	down = false
+	for _,btn in ipairs{'l', 'm', 'r'} do
+		down = down or (love.mouse.isDown(btn) and btn)
+	end
 end
 
 local function endFrame()
@@ -71,20 +77,21 @@ local function endFrame()
 end
 
 local function disable()
-	--_M.beginFrame = nothing
-	--_M.endFrame   = nothing
-	--_M.isHot      = isHot,
-	--_M.isActive   = isActive,
-	_M.updateWidget = function() end
+	_M.beginFrame   = _NOP_
+	_M.endFrame     = _NOP_
+	_M.updateWidget = _NOP_
 end
 
 local function enable()
+	_M.beginFrame   = beginFrame
+	_M.endFrame     = endFrame
 	_M.updateWidget = updateWidget
 end
 
 _M = {
 	widgetHit    = widgetHit,
 	setHot       = setHot,
+	getHot       = getHot,
 	setActive    = setActive,
 	isHot        = isHot,
 	isActive     = isActive,

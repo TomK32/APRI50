@@ -48,24 +48,18 @@ local function strictOr(...)
 	return ret
 end
 
--- allow packed nil
-local function save_pack(...)
-	return {n = select('#', ...), ...}
-end
-
-local function save_unpack(t, i)
-	i = i or 1
-	if i >= t.n then return t[i] end
-	return t[i], save_unpack(t, i+1)
-end
-
 --
 -- Widget ID
 --
-local maxid = 0
+local maxid, uids = 0, {}
+setmetatable(uids, {__index = function(t, i)
+	t[i] = {}
+	return t[i]
+end})
+
 local function generateID()
 	maxid = maxid + 1
-	return maxid
+	return uids[maxid]
 end
 
 --
@@ -82,11 +76,11 @@ local function registerDraw(id, f, ...)
 	if mouse.isHot(id) or keyboard.hasFocus(id) then
 		state = mouse.isActive(id) and 'active' or 'hot'
 	end
-	local rest = save_pack(...)
+	local rest = {n = select('#', ...), ...}
 	draw_items.n = draw_items.n + 1
 	draw_items[draw_items.n] = function()
 		if font then love.graphics.setFont(font) end
-		f(state, save_unpack(rest))
+		f(state, unpack(rest, 1, rest.n))
 	end
 end
 
@@ -105,7 +99,8 @@ local function draw()
 	for i = 1,draw_items.n do draw_items[i]() end
 
 	-- restore graphics state
-	love.graphics.setLine(lw, ls)
+	love.graphics.setLineWidth(lw)
+	love.graphics.setLineStyle(ls)
 	if f then love.graphics.setFont(f) end
 	love.graphics.setColor(c)
 
@@ -129,6 +124,4 @@ return {
 
 	strictAnd    = strictAnd,
 	strictOr     = strictOr,
-	save_pack    = save_pack,
-	save_unpack  = save_unpack,
 }
