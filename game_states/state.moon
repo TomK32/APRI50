@@ -29,6 +29,14 @@ export class State
   addView: (view) =>
     view.game_state = @
     table.insert(@sub_views, view)
+    return @
+
+  removeView: (view) =>
+    for i, other_view in ipairs(@sub_views)
+      if view == other_view
+        table.remove(@sub_views, i)
+        return true
+    return false
 
   setFocus: (new_focus) =>
     table.insert(@last_focus, @focus)

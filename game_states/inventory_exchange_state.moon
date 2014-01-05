@@ -65,6 +65,8 @@ export class InventoryExchangeState extends State
     @left_inventory = inventory
     if not inventory
       return false
+    if @left_inventory_view
+      @removeView(@left_inventory_view)
     @left_inventory.active = nil
 
     @left_inventory_view = InventoryExchangeView.InventoryView(inventory, {55,255,55,100}, inventory.name)

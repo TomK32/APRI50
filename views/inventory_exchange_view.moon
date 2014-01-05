@@ -15,15 +15,19 @@ export class InventoryExchangeView extends View
     love.graphics.setColor(game.colors.text)
     love.graphics.print(@inventory\toString(), 5, 5)
 
-    x = InventoryExchangeView.inventory_width
-    if @state.left_inventory
-      love.graphics.print(@state.left_inventory\toString(), x, 5)
+    love.graphics.push()
+    gui.core.draw()
+    love.graphics.pop()
 
-    -- list all the inventories nearby
-    x = (InventoryExchangeView.inventory_width) * 2
+  update: =>
+    gui.group.push({grow: 'right', pos: {@display.width / 2, 5} })
+
     for i, inventory in ipairs(@others)
-      love.graphics.print(inventory\toString(), x - i * @inventory_margin, 5)
-      x -= 10
+      button_state = nil
+      if inventory == @state.left_inventory
+        button_state = 'hot'
+      if gui.Button({text: inventory\toString()\sub(0, 12), state: button_state})
+        @state\setLeftInventory(inventory)
 
   drawAfterSubViews: =>
     -- draw the dragged item
@@ -42,9 +46,9 @@ InventoryExchangeView.InventoryView = class extends InventoryView
     @display.y = InventoryExchangeView.inventory_y
     @display.width = InventoryExchangeView.inventory_width
     @display.height = game.graphics.mode.height - InventoryExchangeView.inventory_y - InventoryExchangeView.inventory_margin
-    @icon_size = game.icon_size * 2
-    @rows = 10
-    @columns = 5
+    @icon_size = game.icon_size * 1.5
+    @rows = 5
+    @columns = 10
     @item_description = 'hover'
     @setDisplayWithColumns()
 
@@ -58,8 +62,8 @@ InventoryExchangeView.CharacterView = class extends InventoryView
     @display.y = InventoryExchangeView.inventory_y
     @display.width = InventoryExchangeView.inventory_width
     @display.height = game.graphics.mode.height - InventoryExchangeView.inventory_y - InventoryExchangeView.inventory_margin
-    @icon_size = game.icon_size * 2
+    @icon_size = game.icon_size * 1.5
     @item_description = 'hover'
-    @rows = 10
-    @columns = 5
+    @rows = 5
+    @columns = 10
     @setDisplayWithColumns()

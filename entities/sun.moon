@@ -34,6 +34,7 @@ export class Sun
     @normPoint = Sun.normVector(@point)
     true
 
+  -- move into a Vector3D
   normVector: (vector) ->
     magnitude = Sun.normMag(vector)
     return {x: vector.x / magnitude, y: vector.y / magnitude, z: vector.z / magnitude}
