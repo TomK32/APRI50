@@ -1,8 +1,8 @@
 
 ## Gameplay
 
-* [0.2] Player.resources (metal, energy, water, biomass)
-* [0.2] Placing evokit costs resources (1 each)
+* [0.3] Player.resources (metal, energy, water, biomass)
+* [0.3] Placing evokit costs resources (1 each)
 * Harvest to replentish resources
 * Loose condition when out of resources and actors (colonists)
 * Continuous terraforming?
@@ -14,16 +14,16 @@
 
 ### GamePlay: Colonists
 
-* [0.3] Static landing craft (Base 1)
-* [0.3] Colonists with moving, controllable entities
-* [0.3] Plant EvoKit where colonist stands
-* [0.3] Switch between colonists (Shift-number)
-* [0.3] EvoKit storage at base
-* [0.3] Inventory for each colonist
-* [0.3] OxygenTanks for each colonist
-* [active] Oxygen generator
+* [0.4] Static landing craft (Base 1)
+* [0.4] Colonists with moving, controllable entities
+* [0.4] Plant EvoKit where colonist stands
+* [0.4] Switch between colonists (0-9)
+* [0.4] EvoKit storage at base
+* [0.4] Inventory for each colonist
+* [0.4] OxygenTanks for each colonist
+* [0.4] Oxygen generator
 * [active] Automatically recharge OxygenTank when close to a generator
-* [0.3] exchange inventory items with other inventory nearby (base and other colonists)
+* [0.4] exchange inventory items with other inventory nearby (base and other colonists)
 * [active] Harvest resources manually
 * [active] Construct units like vehicles, machines, robots, harvester
 * [active] Buildings (habitat, utilities, workshop, garden)
@@ -37,13 +37,15 @@
 
 ## Map
 
-* [0.2] Change grid to graph by porting mapgen2
-* [0.3] Scrollable
-* [0.3] Suns lightens the polygons
-* [0.3] Improved sunshine
+* [0.3] Change grid to graph by porting mapgen2
+* [0.4] Scrollable
+* [0.4] Suns lightens the polygons
+* [0.4] Improved sunshine
 * Put notes, landmarks and drawings (all on a sign) on the map
 * Generate new map chunks during exploration
 * Collision detection and callbacks
+* Select entities by clicking on them (either to move or in case of
+  static ones show the inventory exchange)
 
 
 ## EvolutionKits
@@ -51,7 +53,7 @@
 * Water source for moisture, rivers, and lakes
 * Re-apply evo kit for higher level. e.g from grass to plants to trees or flowers
 * Consuming: How got is it at absorbing the ground
-* [0.2] place entities
+* [0.3] place entities
 * Hardening:
   * [DONE] Rock, harder to transform
   * More precious when harvesting the tile
