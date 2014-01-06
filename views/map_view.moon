@@ -96,6 +96,8 @@ export class MapView extends View
 
   update: (dt) =>
     @drawCanvas()
+    for i, center in ipairs(@centersInRect())
+      center\update(dt)
 
   updateLight: (dt) =>
     for i, sun in pairs @suns

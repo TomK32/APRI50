@@ -1,8 +1,12 @@
 
+-- This is the logic representation, the Chunk is doing all things visual
 export class Center
-  @extensions: {}
-  new: (point) =>
-    @point = point
+  @extensions: {
+    WaterSource: require 'extensions/water_source'
+  }
+
+  new: (map, point) =>
+    @map, @point = map, point
     @index = 0
 
     @moisture = point.moisture or 0 -- 0..1
@@ -14,6 +18,11 @@ export class Center
     @corners = {} -- Corner
     @border = false
     @biome = nil -- string
+    @extensions = {}
+    for i, extension_class in pairs(@@extensions)
+      extension = extension_class\apply(@)
+      if extension
+        table.insert(@extensions, extension)
     @
 
   -- for all those 0..1 values
@@ -22,6 +31,10 @@ export class Center
       @[key] = 0
     @[key] = math.max(0.0, math.min(1.0, @[key] + value))
     @biome = @getBiome()
+
+  update: (dt) =>
+    for i, extension in pairs(@extensions)
+      extension\update(dt)
 
   addParticleSystem: (system) =>
     @chunk\addParticleSystem(system)

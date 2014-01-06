@@ -1,4 +1,5 @@
 -- A piece of landscape surrounding a Center
+-- This is for visual representation only
 export class Chunk
   @extensions: {}
   @sun_angle = math.pi / 2

@@ -13,7 +13,7 @@ export class Map
     @controlAble = {} -- entities that can be controlled by the player
     @width = width
     @height = height
-    @map_gen = MapGen(width, height, seed, number_of_points)
+    @map_gen = MapGen(@, width, height, seed, number_of_points)
     @bucket_size = 32
     @createCenterBuckets()
     @

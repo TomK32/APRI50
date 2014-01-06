@@ -41,11 +41,11 @@
 * [0.4] Scrollable
 * [0.4] Suns lightens the polygons
 * [0.4] Improved sunshine
+* [active] Water sources
 * Put notes, landmarks and drawings (all on a sign) on the map
 * Generate new map chunks during exploration
 * Collision detection and callbacks
-* Select entities by clicking on them (either to move or in case of
-  static ones show the inventory exchange)
+* Select entities by clicking on them (either to move or in case of static ones show the inventory exchange)
 
 
 ## EvolutionKits

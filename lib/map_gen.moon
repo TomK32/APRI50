@@ -62,7 +62,8 @@ class PM_PRNG
 export class MapGen
   -- TODO: accept a table in the constructor
   -- FIXME: Allow width and height for oblong shapes
-  new: (width, height, seed, number_of_points, _type) =>
+  new: (map, width, height, seed, number_of_points, _type) =>
+    @map = map
     @num_points = number_of_points
     @lake_treshold = 0.3 -- 0...1
     @num_lloyd_iterations = 0
@@ -219,7 +220,7 @@ export class MapGen
     -- NOTE: This `centers = {}` is not in the original
     @centers = {}
     for i, point in ipairs(@points)
-      center = Center(point)
+      center = Center(@map, point)
       center.index = center_count
 
       @centers[i] = center
