@@ -3,7 +3,7 @@ require 'entities.entity'
 class GamePlay.Colony.OxygenTank extends Entity
   new: (capacity, oxygen) =>
     @capacity = capacity or 1000
-    @oxygen = oxygen or 0
+    @oxygen = oxygen or @capacity
     @image, @quads = game\imageWithQuads('game_plays/colony/images/oxygen_tank.png', 3)
     @setQuad()
 
