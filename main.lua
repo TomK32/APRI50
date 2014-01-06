@@ -4,7 +4,6 @@
 require 'lib.strict'
 require 'lib.underscore'
 require 'lib.helpers'
-require 'lib.middleclass'
 require 'lib.LuaBit'
 
 tween = require 'lib.tween'
