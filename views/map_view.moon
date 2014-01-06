@@ -218,9 +218,12 @@ export class MapView extends View
     love.graphics.setColor(50,50,50,200)
     love.graphics.rectangle('fill', -5, -5, @debug_mouse_window.width + 10, @debug_mouse_window.height + 10)
     love.graphics.setColor(255,255,255,200)
-    love.graphics.print( 'Position: ' .. f.point.x .. ', ' .. f.point.y .. ', ' .. f.point.z, 10, 5)
+    love.graphics.print( f.point.x .. ', ' .. f.point.y .. ', ' .. f.point.z, 10, 5)
     @debug_mouse_window = {height: lh, width: 0}
     i = 1
+    for m, matter in pairs(f.matter)
+      love.graphics.print( matter\tostring(), 10, i * lh)
+      i += 1
     for k, v in pairs(f)
       if v == true
         v = 'true'
@@ -229,10 +232,10 @@ export class MapView extends View
       if type(v) == 'string' or type(v) == 'number'
         if type(v) == 'number'
           v = string.format('%.2f', v)
-        @debug_mouse_window.height += lh
         @debug_mouse_window.width = math.max(#k + #v, @debug_mouse_window.width)
         love.graphics.print( k .. ': ' .. v, 10, i * lh)
         i += 1
+    @debug_mouse_window.height += (i - 1) * lh
     @debug_mouse_window.width *= lh / 2
     love.graphics.pop()
 

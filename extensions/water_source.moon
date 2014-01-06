@@ -1,3 +1,4 @@
+require 'matter/liquid'
 class WaterSource
   noiseSeed: game.seed + 10
   @apply: (center) =>
@@ -12,4 +13,5 @@ class WaterSource
     @strength = strength
 
   update: (dt) =>
-    @center.moisture = math.max(1.0, @center.moisture + dt * @strength
+    @center.moisture = math.max(1.0, @center.moisture + dt * @strength)
+    @center\addMatter(Liquid('Water', dt * @strength))

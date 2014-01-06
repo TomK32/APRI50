@@ -9,6 +9,7 @@ export class Center
     @map, @point = map, point
     @index = 0
 
+    @matter = { } -- all sorts of things, rocks, water, compost
     @moisture = point.moisture or 0 -- 0..1
     @flora = 0
     @hardening = 0
@@ -33,8 +34,32 @@ export class Center
     @biome = @getBiome()
 
   update: (dt) =>
+    @moisture *= 1 - dt
     for i, extension in pairs(@extensions)
       extension\update(dt)
+
+  findMatter: (matter) =>
+    for i, m in pairs(@matter)
+      if m.name == matter.name
+        return m, i
+    return nil
+
+  addMatter: (matter) =>
+    m, i = @findMatter(matter, true)
+    if m
+      m\merge(matter)
+    else
+      table.insert(@matter, matter)
+
+  removeMatter: (matter, amount) =>
+    m, i = findMatter(matter)
+    if not m
+      return
+    if not m\removeAmount(amount)
+      return false
+    else if m.amount == 0
+      table.remove(@matter, i)
+
 
   addParticleSystem: (system) =>
     @chunk\addParticleSystem(system)
