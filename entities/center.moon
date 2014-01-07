@@ -128,7 +128,7 @@ export class Center
   setMatterForChunk: =>
     -- TODO Find which one is the most dominant
     for i, matter in pairs(@matter)
-      @matter_for_chunk = {matter.__class.__name, matter.sort, @isLake()}
+      @matter_for_chunk = {matter, @isLake()}
     return @
 
   getMatter: =>

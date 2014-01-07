@@ -46,7 +46,7 @@ export class Chunk
 
   @MATTER_COLORS:
     Liquid:
-      Water: {0, 0, 200}
+      Water: {0, 0, 200, 255}
 
   new: (center, evolution_kit) =>
     -- evolution_kit can be nil
@@ -141,6 +141,7 @@ export class Chunk
         love.graphics.setColor(255,255,255,100)
         x0, y0 = border.v0.point.x, border.v0.point.y
         x1, y1 = border.v1.point.x, border.v1.point.y
+        love.graphics.setLineWidth(1)
         love.graphics.line(x0, y0, x1, y1)
         love.graphics.pop()
 
@@ -169,9 +170,9 @@ export class Chunk
     return {color[1] * @randomColorFactor, color[2] * @randomColorFactor, color[3] * @randomColorFactor, color[4]}
 
   setColors: (colors) =>
-    matter, sort, is_filling = @center\getMatter()
-    if is_filling and matter and sort
-      @colors = @@MATTER_COLORS[matter][sort]
+    matter,is_filling = @center\getMatter()
+    if matter and is_filling
+      @colors = @@MATTER_COLORS[matter.__class.__name][matter.sort]
       return @colors
     else
       @center.biome = @center\getBiome()
@@ -208,3 +209,25 @@ export class Chunk
   draw: () =>
     @fill()
 
+  relativePoint: (other) =>
+    return {x: other.x - @position.x, y: other.y - @position.y}
+
+  drawMatter: =>
+    matter, is_filling = @center\getMatter()
+    -- with filling is taken care of in setColor
+    if matter and not is_filling
+      if matter\drawStyle() == 'downslopeLine' and @center.downslope
+        love.graphics.push()
+        love.graphics.setLineWidth(3)
+        --love.graphics.setColor(@@MATTER_COLORS[matter.__class.__name][matter.sort])
+        love.graphics.setColor(0,0,255,255)
+        c = @relativePoint(@center.point)
+        n = nil
+        if not @center\isLake() and @center.downslope\isLake()
+          n = @relativePoint(@center.downslope.point\interpolate(@center.point))
+        else
+          n = @relativePoint(@center.downslope.point)
+        love.graphics.line(c.x, c.y, n.x, n.y)
+        love.graphics.pop()
+
+      return @colors

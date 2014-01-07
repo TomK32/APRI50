@@ -132,6 +132,19 @@ export class MapView extends View
       for i, center in ipairs centers
         @debugCenter(center)
 
+    centers = @centersInRect()
+    -- matter and particles go on top
+    for i, center in ipairs centers
+      love.graphics.push()
+      x = center.chunk.position.x
+      y = center.chunk.position.y
+      love.graphics.translate(x, y)
+      center.chunk\drawMatter()
+      center.chunk\drawParticles()
+      love.graphics.pop()
+    love.graphics.setCanvas()
+
+
     -- entities
     for l, layer in ipairs(@map.layer_indexes) do
       entities = @entitiesInRect()
@@ -157,16 +170,6 @@ export class MapView extends View
 
       center.chunk\draw()
       love.graphics.pop()
-
-    for i, center in ipairs centers
-      if #center.chunk.particle_systems > 0
-        love.graphics.push()
-        x = center.chunk.position.x
-        y = center.chunk.position.y
-        love.graphics.translate(x, y)
-        center.chunk\drawParticles()
-        love.graphics.pop()
-    love.graphics.setCanvas()
 
   drawGUI: =>
     if game.debug
