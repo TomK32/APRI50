@@ -1,4 +1,6 @@
 
+Features are only implemented once they have a version number
+
 ## Gameplay
 
 * [0.3] Player.resources (metal, energy, water, biomass)
@@ -27,8 +29,8 @@
 * [active] Harvest resources manually
 * [active] Construct units like vehicles, machines, robots, harvester
 * [active] Buildings (habitat, utilities, workshop, garden)
-* Colonist Leader
-* explore map to see it all
+* [Colonist Leader
+* Explore map to see it all (Fog of War)
 * Athmospheric bubbles
 * Equipment
 * Job lists
@@ -47,7 +49,9 @@
 * Generate new map chunks during exploration
 * Collision detection and callbacks
 * Select entities by clicking on them (either to move or in case of static ones show the inventory exchange)
-
+* Temperature
+* Clouds
+* Rain (water, acid, snow)
 
 ## EvolutionKits
 

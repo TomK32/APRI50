@@ -17,6 +17,7 @@ export class Center
     @neighbors = {} -- Center
     @borders = {} -- Edge
     @corners = {} -- Corner
+    @downslope = nil -- neighbouring center that is most downhill, or self
     @border = false
     @biome = nil -- string
     @extensions = {}
@@ -34,13 +35,15 @@ export class Center
     @biome = @getBiome()
 
   update: (dt) =>
-    @moisture *= 1 - dt
     for i, extension in pairs(@extensions)
       extension\update(dt)
+    for i, matter in pairs(@matter)
+      if matter.update
+        matter\update(dt)
 
   findMatter: (matter) =>
     for i, m in pairs(@matter)
-      if m.name == matter.name
+      if m.sort == matter.sort
         return m, i
     return nil
 
@@ -49,6 +52,7 @@ export class Center
     if m
       m\merge(matter)
     else
+      matter.center = @
       table.insert(@matter, matter)
 
   removeMatter: (matter, amount) =>

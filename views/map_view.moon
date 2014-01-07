@@ -96,6 +96,7 @@ export class MapView extends View
 
   update: (dt) =>
     @drawCanvas()
+    -- TODO possibly run this less often for a better performance
     for i, center in ipairs(@centersInRect())
       center\update(dt)
 

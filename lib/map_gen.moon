@@ -17,7 +17,6 @@ class Edge
   new: (a, b, c) =>
     -- the equation of the edge: ax + by = c
     @a, @b, @c = a, b, c
-    @river = 0
     @left_site, @right_site = nil, nil
     @left_vertex, @right_vertex = nil, nil
     @
@@ -347,6 +346,12 @@ export class MapGen
         if adjacent.point.z < r.point.z
           r = adjacent
       corner.downslope = r
+    for i, center in ipairs(@centers)
+      r = center
+      for j, neighbor in ipairs(center.neighbors)
+        if neighbor.point.z < r.point.z
+          r = neighbor
+      center.downslope = r
 
   -- Calculate the watershed of every land point. The watershed is
   -- the last downstream land point in the downslope graph.

@@ -1,6 +1,7 @@
 export class Matter
-  new: =>
-    @amount = 0
+  new: (sort, amount) =>
+    @center = nil
+    @sort, @amount = sort, amount
 
   merge: (matter) =>
     @amount += matter.amount
