@@ -10,6 +10,7 @@ export class Center
     @index = 0
 
     @matter = { } -- all sorts of things, rocks, water, compost
+    @matter_for_chunk = {}
     @moisture = point.moisture or 0 -- 0..1
     @flora = 0
     @hardening = 0
@@ -54,6 +55,7 @@ export class Center
     else
       matter.center = @
       table.insert(@matter, matter)
+      @setMatterForChunk()
 
   removeMatter: (matter, amount) =>
     m, i = findMatter(matter)
@@ -63,6 +65,7 @@ export class Center
       return false
     else if m.amount == 0
       table.remove(@matter, i)
+      @setMatterForChunk()
 
 
   addParticleSystem: (system) =>
@@ -118,4 +121,16 @@ export class Center
         return 'GRASSLAND'
       else
         return 'SUBTROPICAL_DESERT'
+
+  isLake: =>
+    return @downslope == @
+
+  setMatterForChunk: =>
+    -- TODO Find which one is the most dominant
+    for i, matter in pairs(@matter)
+      @matter_for_chunk = {matter.__class.__name, matter.sort, @isLake()}
+    return @
+
+  getMatter: =>
+    return unpack(@matter_for_chunk)
 

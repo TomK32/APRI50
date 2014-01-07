@@ -44,6 +44,10 @@ export class Chunk
     TROPICAL_RAIN_FOREST: {0x33, 0x77, 0x55}
     TROPICAL_SEASONAL_FOREST: {0x55, 0x99, 0x44}
 
+  @MATTER_COLORS:
+    Liquid:
+      Water: {0, 0, 200}
+
   new: (center, evolution_kit) =>
     -- evolution_kit can be nil
     @canvas = nil
@@ -165,17 +169,22 @@ export class Chunk
     return {color[1] * @randomColorFactor, color[2] * @randomColorFactor, color[3] * @randomColorFactor, color[4]}
 
   setColors: (colors) =>
-    @center.biome = @center\getBiome()
-    for i, extension in pairs @@extensions
-      if extension.BIOME_COLORS and extension.BIOME_COLORS[@center.biome]
-        @colors = @randomizeColor(extension.BIOME_COLORS[@center.biome])
-        return @colors
-
-    if colors ~= nil
-      @colors = colors
+    matter, sort, is_filling = @center\getMatter()
+    if is_filling and matter and sort
+      @colors = @@MATTER_COLORS[matter][sort]
+      return @colors
     else
-      @colors = @randomizeColor(Chunk.BIOME_COLORS[@center.biome])
-    return @colors
+      @center.biome = @center\getBiome()
+      for i, extension in pairs @@extensions
+        if extension.BIOME_COLORS and extension.BIOME_COLORS[@center.biome]
+          @colors = @randomizeColor(extension.BIOME_COLORS[@center.biome])
+          return @colors
+
+      if colors ~= nil
+        @colors = colors
+      else
+        @colors = @randomizeColor(Chunk.BIOME_COLORS[@center.biome])
+      return @colors
 
   drawDebug: =>
     love.graphics.setColor(250,250,0, 255)
