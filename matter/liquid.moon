@@ -4,11 +4,12 @@ export class Liquid extends Matter
   update: (dt) =>
     -- TODO check for frozen
     -- TODO check for capacity of center
-   if @center.downslope ~= @center
+   if @center\isLake()
+     @center.downslope.moisture += dt
+     for i, neighbor in pairs(@center.neighbors)
+       neighbor.moisture += dt
+   else
      -- liquid flowing downhill
-     if @center\isLake()
-       @center.downslope.moisture += dt
-     --@center.moisture -= dt
      drainingAmount = @amount * dt * (@center.point.z / @center.downslope.point.z)
      @center.downslope\addMatter(Liquid(@sort, drainingAmount))
      @removeAmount(drainingAmount)

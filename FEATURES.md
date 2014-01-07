@@ -44,7 +44,9 @@ Features are only implemented once they have a version number
 * [0.4] Suns lightens the polygons
 * [0.4] Improved sunshine
 * [0.4] Matter (used for liquids, minerals, compost)
-* [active] Water sources
+* [0.4] Water sources
+* [0.4] Streams (following downslope)
+* [0.4] Lakes (also moisturing neighbors)
 * Put notes, landmarks and drawings (all on a sign) on the map
 * Generate new map chunks during exploration
 * Collision detection and callbacks
