@@ -107,7 +107,6 @@ export class MapGen
     --time('Determine watersheds', @calculateWatersheds)
 
     -- NOTE: The original had these six in one timer
-    --time('Distribute moisture', @distributeMoisture)
 
   voronoi: (force) =>
     if force or not @_voronoi
@@ -322,14 +321,6 @@ export class MapGen
     table.insert(@corner_map[bucket], corner)
     return corner
 
-  -- Determine elevations and water at Voronoi corners. By
-  -- construction, we have no local minima. This is important for
-  -- the downslope vectors later, which are used in the river
-  -- construction algorithm. Also by construction, inlets/bays
-  -- push low elevation areas inland, which means many rivers end
-  -- up flowing out through them. Also by construction, lakes
-  -- often end up on river paths because they don't raise the
-  -- elevation as much as other terrain does.
   assignCornerElevations: =>
     queue = {}
     -- to avoid Lua table length madness we count manually
@@ -386,56 +377,6 @@ export class MapGen
     -- How long is each watershed?
     for i, corner in ipairs(@corners)
       corner.watershed_size = 1 + (corner.watershed_size or 0)
-
-  -- Calculate moisture. Freshwater sources spread moisture: rivers
-  -- and lakes (not oceans). Saltwater sources have moisture but do
-  -- not spread it (we set it at the end, after propagation).
-  assignCornerMoisture: =>
-    queue = {}
-    -- to avoid Lua table length madness we count manually
-    queue_count = 0
-
-    for i, corner in ipairs(@corners)
-      if (corner.water or corner.river > 0) and not corner.ocean
-        corner.moisture = 1.0
-        if corner.river > 0
-          corner.moisture = math.min(3.0, (0.2 * corner.river))
-        queue_count += 1
-        queue[queue_count] = corner
-      else
-        corner.moisture = 0.0
-
-    first_point = 1
-    while queue_count > first_point
-      point = queue[first_point]
-      queue[first_point] = nil
-      first_point += 1
-      for i, adjacent in ipairs(point.adjacent)
-        new_moisture = point.moisture * 0.8
-        if new_moisture > adjacent.moisture
-          adjacent.moisture = new_moisture
-          queue_count += 1
-          queue[queue_count] = adjacent
-
-  -- Polygon moisture are the average of the elevations of their corners.
-  assignPolygonMoisture: =>
-    for i, center in ipairs(@centers)
-      sum = 0
-      corners_length = 0
-      for j, corner in ipairs(center.corners)
-        sum += corner.moisture or 0
-        corners_length += 1
-      center.moisture = sum / corners_length
-
-  -- Determine moisture at corners, starting at rivers
-  -- and lakes, but not oceans. Then redistribute
-  -- moisture to cover the entire range evenly from 0.0
-  -- to 1.0. Then assign polygon moisture as the average
-  -- of the corner moisture.
-  distributeMoisture: =>
-    @assignCornerMoisture()
-    @redistributeMoisture(@corners)
-    @assignPolygonMoisture()
 
   -- Look up a Voronoi Edge object given two adjacent Voronoi
   -- polygons, or two adjacent Voronoi corners
