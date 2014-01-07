@@ -10,7 +10,8 @@
 * *Expected duration of terraforming:* 27 years
 * *Chance for successful terrarforming:* 21.7% (priority class 5)
 * *Date of next crew to be sent:* -
-* Sub-lightspeed missions previous/planned:* -/-
+* *Sub-lightspeed missions previous/planned:* -/-
+* *Recovered logfiles:* http://forums.tigsource.com/index.php?topic=32425.0
 
 ## The game
 
@@ -20,11 +21,18 @@ You are playing *Angelica Smith*, highly trained scientist with a few
 biomechanic modifications, who was sent here as part of humanity's
 search for _new planets to colonize_. 
 
-After your arrival in orbit in a tiny hyperspace capsule you have
+After your arrival in orbit in a hyperspace ship you have
 successfully landed on the planet. In a barren landscape shaped by
 regular and unhealty rainfall you need to _establish a base and start exploring_.
 
 *What will you find and will your mission be a success?*
+
+
+## Game play
+
+The game focuses around a crashed space ship and colonists. These are
+controlled by the player and will conduct the terraforming, engineering
+and other thing necessary to turn the planet into a successful colony.
 
 
 ## Controls
@@ -47,20 +55,6 @@ To move the map you can use WASD and to zoom in/out use q/e.
 
 To speed up or slow down the game press `i` and `j`.
 
-## Game play
-
-There are several variations of the game play in planning, the game
-should even allow you to create mods to have your own gameplay including
-custom entities, extensions and more.
-
-The first game play started was a Doomsday mod where meteroids are
-hitting the map burning everything.
-
-The second, more serious gameplay mod includes colonists which will give
-the player a more direct immersion in the game. The colonists and
-not a nameless mouse pointer will be the ones who place evolution kits
-on the map. You can also switch between the colonists, and move around
-with them.
 
 ## References (other games you should play!)
 
