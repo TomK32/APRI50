@@ -76,13 +76,9 @@ GamePlay.Colony = class Colony extends GamePlay
         return true
 
     -- select items on the two inventory views
-    if key\match("[0-9]") and colonist
-      if shift_pressed
-        if not colonist.inventory\activate(tonumber(key))
-          colonist.inventory.active = nil
-      elseif alt_pressed and @trade_inventory_view.inventory
-        if not @trade_inventory_view.inventory\activate(tonumber(key))
-          @trade_inventory_view.inventory.active = nil
+    if shift_pressed and colonist and key\match("[0-9]")
+      if not colonist.inventory\activate(tonumber(key))
+        colonist.inventory.active = nil
 
     if colonist and item and item.__class.__name == 'EvolutionKit'
       if key == "m"
@@ -93,6 +89,9 @@ GamePlay.Colony = class Colony extends GamePlay
         return true
 
     if key\match("[0-9]") and not shift_pressed and not alt_pressed
+      if colonist
+        colonist.active = false
+        @inventory_view.inventory = nil
       if game.player.colonists\activeItem()
         game.player.colonists\activeItem().selected = false
       colonist = game.player.colonists\activate(tonumber(key))
