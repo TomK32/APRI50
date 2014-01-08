@@ -147,7 +147,6 @@ export class MapView extends View
       center.chunk\drawMatter()
       center.chunk\drawParticles()
       love.graphics.pop()
-    love.graphics.setCanvas()
 
 
     -- entities
@@ -175,6 +174,7 @@ export class MapView extends View
 
       center.chunk\draw()
       love.graphics.pop()
+    love.graphics.setCanvas()
 
   drawGUI: =>
     if game.debug
