@@ -1,6 +1,9 @@
 require 'matter/matter'
 
 export class Liquid extends Matter
+  @SORTS:
+    Water: { color: {0, 0, 200, 255} }
+
   update: (dt) =>
     -- TODO check for frozen
     -- TODO check for capacity of center
@@ -16,7 +19,7 @@ export class Liquid extends Matter
 
   drawStyle: =>
     -- TODO Return a class here
-    return 'downslopeLine'
+    return 'downslopeLine', @@SORTS[@sort].color
 
-  tostring: =>
-    return @sort .. ' (' .. @__class.__name .. '): ' .. math.floor(@amount * 10) / 10
+  isFilling: =>
+    return @center\isLake()

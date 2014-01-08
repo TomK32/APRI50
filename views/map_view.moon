@@ -226,7 +226,7 @@ export class MapView extends View
     @debug_mouse_window = {height: lh, width: 0}
     i = 1
     for m, matter in pairs(f.matter)
-      love.graphics.print( matter\tostring(), 10, i * lh)
+      love.graphics.print( matter\toString(), 10, i * lh)
       i += 1
     for k, v in pairs(f)
       if v == true

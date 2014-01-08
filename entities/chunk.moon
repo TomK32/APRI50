@@ -44,10 +44,6 @@ export class Chunk
     TROPICAL_RAIN_FOREST: {0x33, 0x77, 0x55}
     TROPICAL_SEASONAL_FOREST: {0x55, 0x99, 0x44}
 
-  @MATTER_COLORS:
-    Liquid:
-      Water: {0, 0, 200, 255}
-
   new: (center, evolution_kit) =>
     -- evolution_kit can be nil
     @canvas = nil
@@ -170,9 +166,11 @@ export class Chunk
     return {color[1] * @randomColorFactor, color[2] * @randomColorFactor, color[3] * @randomColorFactor, color[4]}
 
   setColors: (colors) =>
-    matter,is_filling = @center\getMatter()
-    if matter and is_filling
-      @colors = @@MATTER_COLORS[matter.__class.__name][matter.sort]
+    matter = @center\getFillingMatter()
+    if matter
+      style, color = matter\drawStyle()
+      if color
+        @colors = color
       return @colors
     else
       @center.biome = @center\getBiome()
@@ -213,21 +211,24 @@ export class Chunk
     return {x: other.x - @position.x, y: other.y - @position.y}
 
   drawMatter: =>
-    matter, is_filling = @center\getMatter()
-    -- with filling is taken care of in setColor
-    if matter and not is_filling
-      if matter\drawStyle() == 'downslopeLine' and @center.downslope
-        love.graphics.push()
-        love.graphics.setLineWidth(3)
-        --love.graphics.setColor(@@MATTER_COLORS[matter.__class.__name][matter.sort])
-        love.graphics.setColor(0,0,255,255)
-        c = @relativePoint(@center.point)
-        n = nil
-        if not @center\isLake() and @center.downslope\isLake()
-          n = @relativePoint(@center.downslope.point\interpolate(@center.point))
-        else
-          n = @relativePoint(@center.downslope.point)
-        love.graphics.line(c.x, c.y, n.x, n.y)
-        love.graphics.pop()
-
-      return @colors
+    for i, matter in pairs(@center.matter)
+      -- with filling is taken care of in setColor
+      if matter and not matter\isFilling()
+        style, drawable = matter\drawStyle()
+        if type(drawable) == 'userdata'
+          -- scaling
+          love.graphics.setColor(game.colors.white)
+          love.graphics.draw(drawable, 0, 0)
+        if style == 'downslopeLine' and @center.downslope
+          love.graphics.push()
+          love.graphics.setLineWidth(3)
+          --love.graphics.setColor(@@MATTER_COLORS[matter.__class.__name][matter.sort])
+          love.graphics.setColor(0,0,255,255)
+          c = @relativePoint(@center.point)
+          n = nil
+          if not @center\isLake() and @center.downslope\isLake()
+            n = @relativePoint(@center.downslope.point\interpolate(@center.point))
+          else
+            n = @relativePoint(@center.downslope.point)
+          love.graphics.line(c.x, c.y, n.x, n.y)
+          love.graphics.pop()

@@ -10,3 +10,10 @@ export class Matter
     if amount > @amount
       return false
     @amount -= amount
+
+  -- fills the whole chunk
+  isFilling: =>
+    false
+
+  toString: =>
+    return @sort .. ' (' .. @__class.__name .. '): ' .. math.floor(@amount * 10) / 10

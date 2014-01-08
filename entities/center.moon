@@ -3,6 +3,7 @@
 export class Center
   @extensions: {
     WaterSource: require 'extensions/water_source'
+    MineralsDeposit: require 'extensions/minerals_deposit'
   }
 
   new: (map, point) =>
@@ -11,6 +12,7 @@ export class Center
 
     @matter = { } -- all sorts of things, rocks, water, compost
     @matter_for_chunk = {}
+    @filling_matter_for_chunk
     @moisture = point.moisture or 0 -- 0..1
     @flora = 0
     @hardening = 0
@@ -127,10 +129,16 @@ export class Center
 
   setMatterForChunk: =>
     -- TODO Find which one is the most dominant
+    @matter_for_chunk = {}
     for i, matter in pairs(@matter)
-      @matter_for_chunk = {matter, @isLake()}
+      table.insert(@matter_for_chunk, {matter, matter\isFilling()})
+      if matter\isFilling()
+        @filling_matter_for_chunk = matter
     return @
 
+  getFillingMatter: =>
+    @filling_matter_for_chunk
+
   getMatter: =>
-    return unpack(@matter_for_chunk)
+    return unpack(@matter_for_chunks)
 
