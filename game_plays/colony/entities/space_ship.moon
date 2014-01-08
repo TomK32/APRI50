@@ -1,4 +1,4 @@
-GamePlay.Colony.SpaceShip = class SpaceShip extends Entity
+return class SpaceShip extends Entity
   new: (options) =>
     @image = game\image('images/entities/ship1.png')
     super(options)

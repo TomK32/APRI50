@@ -1,6 +1,6 @@
-require 'game_plays.colony.entities.oxygen_tank'
 require 'actors.actor'
-GamePlay.Colony.Colonist = class Colonist extends Actor
+
+return class Colonist extends Actor
   index: 0
   names: {'Angelica', 'Miriam', 'Thomas', 'Rene', 'Kritzi', 'Jebediah'}
   movements:

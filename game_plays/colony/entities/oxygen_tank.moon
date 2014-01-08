@@ -1,6 +1,6 @@
 require 'entities.entity'
 
-class GamePlay.Colony.OxygenTank extends Entity
+return class OxygenTank extends Entity
   new: (capacity, oxygen) =>
     @capacity = capacity or 1000
     @oxygen = oxygen or @capacity

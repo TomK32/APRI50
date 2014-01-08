@@ -1,4 +1,3 @@
-
 require 'game_states.inventory_exchange_state'
 _EvolutionKit = EvolutionKit
 export class EvolutionKit extends _EvolutionKit
@@ -7,12 +6,12 @@ export class EvolutionKit extends _EvolutionKit
     super('no fuction. [m]utate or [r]andomize')
 
 GamePlay.Colony = class Colony extends GamePlay
-  new: (map_state) =>
-    require 'game_plays.colony.entities.colonist'
-    require 'game_plays.colony.entities.oxygen_generator'
-    require 'game_plays.colony.entities.space_ship'
-    require 'views.inventory_exchange_view'
+  Colonist: require 'game_plays.colony.entities.colonist'
+  OxygenGenerator: require 'game_plays.colony.entities.oxygen_generator'
+  OxygenTank: require 'game_plays.colony.entities.oxygen_tank'
+  SpaceShip: require 'game_plays.colony.entities.space_ship'
 
+  new: (map_state) =>
     super(map_state)
 
     @map_state.scores.biomass = {label: 'Biomass', score: 0}

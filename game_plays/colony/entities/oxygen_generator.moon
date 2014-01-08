@@ -1,7 +1,7 @@
 -- TODO
---   * works better on green tiles
+--   * works better on tiles with water
 
-class GamePlay.Colony.OxygenGenerator extends GamePlay.Colony.OxygenTank
+return class OxygenGenerator extends require 'game_plays.colony.entities.oxygen_tank'
   new: (rate, capacity, oxygen) =>
     @capacity = capacity
     @oxygen = oxygen or 0

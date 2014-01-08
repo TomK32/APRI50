@@ -43,7 +43,7 @@ Features are only implemented once they have a version number
 * [0.4] Scrollable
 * [0.4] Suns lightens the polygons
 * [0.4] Improved sunshine
-* [0.4] Matter (used for liquids, minerals, compost)
+* [0.4] Matter (used for liquids, minerals)
 * [0.4] Water sources
 * [0.4] Streams (following downslope)
 * [0.4] Lakes (also moisturing neighbors)
@@ -59,7 +59,7 @@ Features are only implemented once they have a version number
 
 * Water source for moisture, rivers, and lakes
 * Re-apply evo kit for higher level. e.g from grass to plants to trees or flowers
-* Consuming: How got is it at absorbing the ground
+* Consuming: How good is it at absorbing the ground
 * [0.3] place entities
 * Hardening:
   * [DONE] Rock, harder to transform
