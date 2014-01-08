@@ -1,5 +1,3 @@
-extern float factor = 0.2;
-extern float addPercent = 0.05;
 extern vec2 offset = vec2(0,0);
 
 // from http://www.ozone3d.net/blogs/lab/20110427/glsl-random-generator/
@@ -10,7 +8,7 @@ float rand(vec2 n)
 
 vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
 {
-  float grey = 1.025 - 0.1 * rand(texture_coords + offset);
+  float grey = 1.0125 - 0.05 * rand(texture_coords + offset);
   vec4 noise = vec4(grey, grey, grey, 1);
   vec4 other = Texel(texture, texture_coords * sqrt(grey));
   vec4 n = (Texel(texture, texture_coords) + other) / 2;
