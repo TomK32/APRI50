@@ -169,7 +169,7 @@ export class Chunk
     matter = @center\getFillingMatter()
     if matter
       style, color = matter\drawStyle()
-      if color
+      if type(color) == 'table'
         @colors = color
       return @colors
     else
@@ -215,7 +215,7 @@ export class Chunk
       -- with filling is taken care of in setColor
       if matter and not matter\isFilling()
         style, drawable = matter\drawStyle()
-        if type(drawable) == 'userdata'
+        if style == 'image' and drawable
           -- scaling
           love.graphics.setColor(game.colors.white)
           love.graphics.draw(drawable, 0, 0)

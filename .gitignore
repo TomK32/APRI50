@@ -19,3 +19,5 @@ inspiration/
 screenshots/
 presskit/
 matter/*lua
+entities/plants/*lua
+lib/lsystem.lua

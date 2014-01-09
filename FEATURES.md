@@ -26,6 +26,7 @@ Features are only implemented once they have a version number
 * [0.4] Oxygen generator
 * [active] Automatically recharge OxygenTank when close to a generator
 * [0.4] exchange inventory items with other inventory nearby (base and other colonists)
+* [0.4] Basic prospecting of map chunks to see what resources are there
 * [active] Harvest resources manually
 * [active] Construct units like vehicles, machines, robots, harvester
 * [active] Buildings (habitat, utilities, workshop, garden)
@@ -35,6 +36,8 @@ Features are only implemented once they have a version number
 * Equipment
 * Job lists
 * Exhaustion and rest
+* Medium level prospecting with a tool
+* Advanced level prospecting with an automatic machine
 
 
 ## Map

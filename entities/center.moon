@@ -23,6 +23,7 @@ export class Center
     @downslope = nil -- neighbouring center that is most downhill, or self
     @border = false
     @biome = nil -- string
+    @prospected = false
     @extensions = {}
     for i, extension_class in pairs(@@extensions)
       extension = extension_class\apply(@)
@@ -127,9 +128,14 @@ export class Center
   isLake: =>
     return @downslope == @
 
+  prospect: =>
+    @prospected = true
+    @setMatterForChunk()
+
   setMatterForChunk: =>
     -- TODO Find which one is the most dominant
     @matter_for_chunk = {}
+    @filling_matter_for_chunk = nil
     for i, matter in pairs(@matter)
       table.insert(@matter_for_chunk, {matter, matter\isFilling()})
       if matter\isFilling()

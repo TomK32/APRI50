@@ -88,6 +88,12 @@ GamePlay.Colony = class Colony extends GamePlay
         colonist.inventory\replaceActive(EvolutionKit.random(game.dna_length))
         return true
 
+    -- prospect
+    if colonist and key == 'p'
+      center = @findCenter(colonist.position.x, colonist.position.y)
+      if center
+        center\prospect()
+
     if key\match("[0-9]") and not shift_pressed and not alt_pressed
       if colonist
         colonist.active = false
@@ -105,6 +111,7 @@ GamePlay.Colony = class Colony extends GamePlay
   mousepressed: (x, y, button) =>
     colonist = @currentActor()
     if colonist
+      x, y = @map_state.view\coordsForXY(x, y)
       center = @findCenter(x, y)
       if center
         colonist\moveTo(center.point)
@@ -112,7 +119,6 @@ GamePlay.Colony = class Colony extends GamePlay
     return false
 
   findCenter: (x, y) =>
-    x, y = @map_state.view\coordsForXY(x, y)
     return @map_state.map\findClosestCenter(x, y)
 
   currentActor: =>
