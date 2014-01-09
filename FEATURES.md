@@ -66,7 +66,7 @@ Features are only implemented once they have a version number
   * More precious when harvesting the tile
 * Flora
   * [active] Grass
-  * Forrest
+  * [0.4] Trees (with L-System)
   * Crops
   * Flowers
 * Fauna

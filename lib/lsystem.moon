@@ -20,6 +20,7 @@
 export class Lsystem
   new: (args) =>
     @rules = {}
+    @states = {}
     if args
       if args.start
         @\setStart(args.start)
@@ -30,9 +31,11 @@ export class Lsystem
     return @
 
   setStart: (start) =>
+    @states = {}
     @start = _.to_array(string.gmatch(start, "."))
 
   addRule: (key, action) =>
+    @states = {}
     @rules[key] = _.to_array(string.gmatch(action, "."))
 
   toString: (iterations) =>
@@ -44,6 +47,9 @@ export class Lsystem
     return ret
 
   getState: (iterations) =>
+    -- cache for iterations
+    if @states[iterations]
+      return @states[iterations]
     state = @start
 
     for n = 1, iterations
@@ -54,8 +60,8 @@ export class Lsystem
         newelem = {elem}
 
         -- Select the correct next element, or keep old element
-        if elem ~= 'F' and elem ~= '+' and elem ~= '-' and elem ~= '[' and elem ~= ']'
-          assert(@rules[elem], 'A rule is missing for ' .. elem)
+        --if elem ~= 'F' and elem ~= '+' and elem ~= '-' and elem ~= '[' and elem ~= ']'
+          --assert(@rules[elem], 'A rule is missing for ' .. elem)
         if @rules[elem]
           newelem = @rules[elem]
 
@@ -63,5 +69,5 @@ export class Lsystem
         for j = 1, #newelem
           table.insert(newstate, newelem[j])
       state = newstate
-
+    @states[iterations] = state
     return state
