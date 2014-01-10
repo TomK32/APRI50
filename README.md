@@ -49,11 +49,13 @@ Toggle the game's debug mode by pressing `F3`.
 Press `F4/F5` to increase/decrese the debug level for the map, this
 independent from the `F3` debug mode.
 
-F7 will toggle the sun light.
+`F7` will toggle the sun light.
 
-To move the map you can use WASD and to zoom in/out use q/e.
+To move the map you can use WASD and to zoom in/out use `q` and `e`.
 
 To speed up or slow down the game press `i` and `j`.
+
+To prospect an area press `p`
 
 
 ## References (other games you should play!)

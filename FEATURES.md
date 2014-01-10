@@ -1,6 +1,11 @@
 
 Features are only implemented once they have a version number
 
+## UI
+
+* Main menu with a dynamic map as background
+* Help screen
+
 ## Gameplay
 
 * [0.3] Player.resources (metal, energy, water, biomass)
@@ -24,16 +29,19 @@ Features are only implemented once they have a version number
 * [0.4] Inventory for each colonist
 * [0.4] OxygenTanks for each colonist
 * [0.4] Oxygen generator
-* [active] Automatically recharge OxygenTank when close to a generator
+* [soon] Recharge OxygenTank when placed in a OxygenGenerator output field
 * [0.4] exchange inventory items with other inventory nearby (base and other colonists)
 * [0.4] Basic prospecting of map chunks to see what resources are there
-* [active] Harvest resources manually
-* [active] Construct units like vehicles, machines, robots, harvester
-* [active] Buildings (habitat, utilities, workshop, garden)
-* [Colonist Leader
+* [soon] Harvest resources manually
+* [soon] Buildings (habitat, utilities, workshop, garden)
+* [soon] Workshop for building vehicles, machines, robots, harvester
+* [soon] Vehicles
+* Workshop to process resources
+* Automatically recharge OxygenTank when close to a generator
+* Colonist Leader
 * Explore map to see it all (Fog of War)
-* Athmospheric bubbles
-* Equipment
+* Athmospheric bubbles with breathable or toxic athmosphere
+* Tools, small machines
 * Job lists
 * Exhaustion and rest
 * Medium level prospecting with a tool
@@ -50,6 +58,7 @@ Features are only implemented once they have a version number
 * [0.4] Water sources
 * [0.4] Streams (following downslope)
 * [0.4] Lakes (also moisturing neighbors)
+* Don't always show minerals on the surface, makes prospecting more important
 * Put notes, landmarks and drawings (all on a sign) on the map
 * Generate new map chunks during exploration
 * Collision detection and callbacks
@@ -57,6 +66,7 @@ Features are only implemented once they have a version number
 * Temperature
 * Clouds
 * Rain (water, acid, snow)
+* Store dynamically generated elements (like trees) as images or animations
 
 ## EvolutionKits
 
@@ -65,7 +75,7 @@ Features are only implemented once they have a version number
 * Consuming: How good is it at absorbing the ground
 * [0.3] place entities
 * Hardening:
-  * [DONE] Rock, harder to transform
+  * [0.1] Rock, harder to transform
   * More precious when harvesting the tile
 * Flora
   * [active] Grass
@@ -80,9 +90,11 @@ Features are only implemented once they have a version number
 
 ## Sound
 
-* Athmospheric sound
-  * change with map. Water on the map => water music
-* when placing EvoKit and when it finishes
+* Soundscape
+  * Change with map: Water on the map => water music
+* FX: When placing EvoKit and when it finishes
+* FX: Colonist in danger
+* FX: Chunk prospected and found something
 
 
 ## Mods
