@@ -4,18 +4,26 @@ export class Liquid extends Matter
   @SORTS:
     Water: { color: {0, 0, 200, 255} }
 
+  new: (...) =>
+    super(...)
+    @delay_dt = game.dt * 10
+
   update: (dt) =>
     -- TODO check for frozen
     -- TODO check for capacity of center
-   if @center\isLake()
-     @center.downslope.moisture += dt
-     for i, neighbor in pairs(@center.neighbors)
-       neighbor.moisture += dt
-   else
-     -- liquid flowing downhill
-     drainingAmount = @amount * dt * (@center.point.z / @center.downslope.point.z)
-     @center.downslope\addMatter(Liquid(@sort, drainingAmount))
-     @removeAmount(drainingAmount)
+    @delay_dt -= dt
+    if @delay_dt > 0
+      return
+    if @center\isLake()
+      @center.downslope.moisture += dt
+      for i, neighbor in pairs(@center.neighbors)
+        if neighbor.moisture < 0.4
+          neighbor.moisture += dt
+    else
+      -- liquid flowing downhill
+      drainingAmount = @amount * dt * (@center.point.z / @center.downslope.point.z)
+      @center.downslope\addMatter(Liquid(@sort, drainingAmount))
+      @removeAmount(drainingAmount)
 
   drawStyle: =>
     -- TODO Return a class here
