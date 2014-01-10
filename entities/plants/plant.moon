@@ -95,3 +95,5 @@ export class Plant extends Entity
         love.graphics.setColor(unpack(@color('circle', iteration)))
         love.graphics.circle('fill', 0, 0, 2)
 
+  toString: =>
+    return @@__name .. ' ' .. @lsystem\toString()

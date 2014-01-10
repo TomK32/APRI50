@@ -1,6 +1,8 @@
 
 Features are only implemented once they have a version number
 
+Bugs go to http://github.com/TomK32/APRI50/issues/
+
 ## UI
 
 * Main menu with a dynamic map as background
@@ -58,6 +60,7 @@ Features are only implemented once they have a version number
 * [0.4] Water sources
 * [0.4] Streams (following downslope)
 * [0.4] Lakes (also moisturing neighbors)
+* [0.4] Store dynamically generated elements (like trees) as images or animations
 * Don't always show minerals on the surface, makes prospecting more important
 * Put notes, landmarks and drawings (all on a sign) on the map
 * Generate new map chunks during exploration
@@ -66,19 +69,19 @@ Features are only implemented once they have a version number
 * Temperature
 * Clouds
 * Rain (water, acid, snow)
-* Store dynamically generated elements (like trees) as images or animations
 
 ## EvolutionKits
 
+* Move from chunk to center, use parent in the extensions
 * Water source for moisture, rivers, and lakes
 * Re-apply evo kit for higher level. e.g from grass to plants to trees or flowers
 * Consuming: How good is it at absorbing the ground
-* [0.3] place entities
+* [0.3] Place and apply to Chunk
 * Hardening:
   * [0.1] Rock, harder to transform
   * More precious when harvesting the tile
-* Flora
-  * [active] Grass
+* [0.1] Flora
+  * [0.4] Grass
   * [0.4] Trees (with L-System)
   * Crops
   * Flowers

@@ -16,6 +16,7 @@ export class Map
     @map_gen = MapGen(@, width, height, seed, number_of_points)
     @bucket_size = 32
     @createCenterBuckets()
+
     @
 
   points: =>

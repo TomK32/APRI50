@@ -31,7 +31,8 @@ game = {
   layers = {
     machines = 40,
     buildings = 20,
-    player = 50
+    player = 50,
+    plants = 30
   },
   matchers = {
     -- make sure they are unique and don't overlap too much.

@@ -250,7 +250,7 @@ export class MapView extends View
     @debug_mouse_window.width *= lh / 2
     love.graphics.pop()
 
-  drawEntity: (entity, x, y) =>
+  drawEntity: (entity) =>
     love.graphics.push()
     love.graphics.translate(entity.position.x, entity.position.y)
     if entity.width and entity.height

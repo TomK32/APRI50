@@ -1,5 +1,7 @@
+require "entities.plants.tree"
+require "entities.plants.grass"
 
--- gradually changes the colour of a chunk
+-- places plants on the map
 export class Flora
   @matcher = game.matchers.flora
 
@@ -14,8 +16,11 @@ export class Flora
       return
 
     @targetChunk.center\increment('flora', score)
-    if @targetChunk.center.hardening < 0.3
-      @targetChunk.center\increment('hardening', 0.1)
+    position = _.extend(@position, {z: game.layers.plants})
+    if @targetChunk.center.flora < 0.8
+      @map\addEntity(Plant.Grass({radius: 50, position: position}))
+    else
+      @map\addEntity(Plant.Tree({position: position}))
 
   createImage: =>
     table.insert(@entities, {drawable: game\image('images/entities/flora1.png')})
