@@ -33,10 +33,10 @@ export class Chunk
     SNOW: {0xee, 0xee, 0xee}
     TUNDRA: {0xbb, 0xbb, 0xaa}
     BARE: {0x88, 0x88, 0x88}
-    SCORCHED: {0x55, 0x55, 0x55}
+    SCORCHED: {0xb2, 0x99, 0x6b}
     TAIGA: {0x99, 0xaa, 0x77}
     SHRUBLAND: {0x88, 0x99, 0x77}
-    TEMPERATE_DESERT: {0xa9, 0xa9, 0x9b}
+    TEMPERATE_DESERT: {0xc2, 0xa9, 0x7b}
     TEMPERATE_RAIN_FOREST: {0x44, 0x88, 0x55}
     TEMPERATE_DECIDUOUS_FOREST: {0x67, 0x94, 0x59}
     GRASSLAND: {0x88, 0xaa, 0x55}
@@ -215,12 +215,12 @@ export class Chunk
       -- with filling is taken care of in setColor
       if matter and not matter\isFilling()
         style, drawable = matter\drawStyle()
+        love.graphics.push()
         if style == 'image' and drawable
           -- scaling
           love.graphics.setColor(game.colors.white)
           love.graphics.draw(drawable, 0, 0)
         if style == 'downslopeLine' and @center.downslope
-          love.graphics.push()
           love.graphics.setLineWidth(3)
           --love.graphics.setColor(@@MATTER_COLORS[matter.__class.__name][matter.sort])
           love.graphics.setColor(0,0,255,255)
@@ -231,4 +231,4 @@ export class Chunk
           else
             n = @relativePoint(@center.downslope.point)
           love.graphics.line(c.x, c.y, n.x, n.y)
-          love.graphics.pop()
+        love.graphics.pop()

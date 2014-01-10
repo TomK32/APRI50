@@ -123,12 +123,13 @@ export class MapView extends View
       if game.use_shaders
         love.graphics.setShader()
 
-    focused_center = @focusedCenter()
-    if focused_center and focused_center.chunk
-      love.graphics.push()
-      focused_center.chunk\drawDebug()
-      love.graphics.pop()
-    love.graphics.setColor(255, 255, 255, 255)
+    if game.debug
+      focused_center = @focusedCenter()
+      if focused_center and focused_center.chunk
+        love.graphics.push()
+        focused_center.chunk\drawDebug()
+        love.graphics.pop()
+      love.graphics.setColor(255, 255, 255, 255)
 
     if game.map_debug > 0
       -- center and corners do have absolute positions so they stay
@@ -159,6 +160,7 @@ export class MapView extends View
 
   drawCanvas: =>
     @move(0,0)
+    last_canvas = love.graphics.getCanvas()
     love.graphics.setCanvas(@canvas)
     @canvas\clear()
 
@@ -174,7 +176,7 @@ export class MapView extends View
 
       center.chunk\draw()
       love.graphics.pop()
-    love.graphics.setCanvas()
+    love.graphics.setCanvas(last_canvas)
 
   drawGUI: =>
     if game.debug
