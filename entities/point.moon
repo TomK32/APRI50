@@ -13,7 +13,7 @@ export class Point
     return Point((a.x + b.x) * strength, (a.y + b.y) * strength, z)
 
   toString: =>
-    return 'x: ' .. @x .. ', y: ' .. @y .. ', z: ' .. @z
+    return 'x: ' .. @x .. ', y: ' .. @y .. ', z: ' .. (@z or '-')
 
   distance: (other) =>
     a = @x - other.x
