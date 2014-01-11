@@ -45,7 +45,6 @@ export class Plant extends Entity
       @createImage()
 
     love.graphics.translate(-@canvas_size / 2, -@canvas_size / 2)
-    love.graphics.setBlendMode('alpha')
     love.graphics.draw(@canvas, 0, 0)
 
   createImage: =>
@@ -56,11 +55,9 @@ export class Plant extends Entity
     love.graphics.origin()
     love.graphics.translate(@canvas_size / 2, @canvas_size / 2)
     @drawSystem()
-    @image = love.graphics.newImage(@canvas\getImageData())
     love.graphics.pop()
     love.graphics.setCanvas(last_canvas)
     @dirty = false
-    @image
 
   drawSystem: =>
     state = @lsystem\getState(@iterations)
