@@ -5,6 +5,11 @@ require 'lib.strict'
 require 'lib.underscore'
 require 'lib.helpers'
 require 'lib.LuaBit'
+serialize = require 'lib.serpent'
+
+function love.debug(...)
+  print(serialize.block(...))
+end
 
 tween = require 'lib.tween'
 require 'game'

@@ -38,6 +38,7 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 * [soon] Buildings (habitat, utilities, workshop, garden)
 * [soon] Workshop for building vehicles, machines, robots, harvester
 * [soon] Vehicles (extending Actor, car-controls)
+* [soon] Cats
 * Workshop to process resources
 * Automatically recharge OxygenTank when close to a generator
 * Colonist Leader
