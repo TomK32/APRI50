@@ -1,16 +1,10 @@
-require 'actors.actor'
+require 'actors.movable_actor'
 
-return class Colonist extends Actor
+return class Colonist extends MovableActor
   index: 0
   names: {'Angelica', 'Miriam', 'Thomas', 'Rene', 'Kritzi', 'Jebediah'}
-  movements:
-    up: { x: 0, y: -1 }
-    down: { x: 0, y: 1 }
-    left: { x: -1, y: 0 }
-    right: { x: 1, y: 0 }
-
   new: (position) =>
-    super(@)
+    super({})
     @speed = 10
     @dead = false
     @health = 10 * game.dt
@@ -19,9 +13,9 @@ return class Colonist extends Actor
     @reach = @image\getWidth() / 2 -- how far the arms stretch
     @setDimensions()
     @scale = game.icon_size / @image\getWidth()
-    @__class.index += 1
-    @id = @__class.index
-    @name = @__class.names[(@id % #@__class.names) + 1] .. @id
+    @id = @@index + 1
+    @@index += 1
+    @name = @@names[(@id % #@__class.names) + 1] .. @id
     @inventory = Inventory(@, @name, @inventoryChanged)
     -- just add one
     @inventory\add(EvolutionKit.random(game.dna_length))
@@ -38,9 +32,6 @@ return class Colonist extends Actor
 
   selectable: =>
     return not @dead
-
-  afterMove: () =>
-    @camera\lookAt(@position.x, @position.y)
 
   breath: (dt) =>
     -- Let's find a filled up tank
@@ -67,12 +58,7 @@ return class Colonist extends Actor
       return
     if not @active
       return
-    dir = {x: 0, y: 0}
-    for key, direction in pairs(@__class.movements)
-      if love.keyboard.isDown(key)
-        dir.x += direction.x
-        dir.y += direction.y
-    @move(dir, dt * 10)
+    super\update(dt)
 
   die: (reason) =>
     game.log("Colonist %s died %s at x: %s, y: %s"\format(@name, reason, @position.x, @position.y))
