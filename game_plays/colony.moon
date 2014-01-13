@@ -1,4 +1,6 @@
 require 'game_states.inventory_exchange_state'
+require 'actors/vehicle'
+
 _EvolutionKit = EvolutionKit
 export class EvolutionKit extends _EvolutionKit
   toString: =>
@@ -25,9 +27,12 @@ GamePlay.Colony = class Colony extends GamePlay
       @map_state.map\addEntity(colonist)
     @map_state.scores.biomass = {label: 'Biomass', score: game.player.colonists.length}
 
+
     space_ship = GamePlay.Colony.SpaceShip({position: start_position, name: 'Colony Ship APRI50'})
     @map_state.map\addEntity(space_ship)
     @map_state.view.camera\lookAt(start_position.x, start_position.y)
+
+    @map_state.map\addEntity(Vehicle({rotation: 20, position: Point(start_position.x + 40, start_position.y - 50, game.layers.vehicles)}))
 
     @actors_view = InventoryView(game.player.colonists, {30, 30, 200, 100}, '0-9')
     @map_state\addView(@actors_view)

@@ -1,6 +1,7 @@
 require 'entities/entity'
 export class Actor extends Entity
   new: (options) =>
+    super(options)
     @speed = 1
 
   move: (offset, dt) =>

@@ -1,4 +1,5 @@
 require 'actors.actor'
+
 export class MovableActor extends Actor
   movements:
     up: { x: 0, y: -1 }
@@ -10,7 +11,13 @@ export class MovableActor extends Actor
     if @camera
       @camera\lookAt(@position.x, @position.y)
 
+  new: (options) =>
+    @active_control = false
+    super(options)
+
   update: (dt) =>
+    if not @active_control
+      return
     dir = {x: 0, y: 0}
     for key, direction in pairs(@__class.movements)
       if love.keyboard.isDown(key)

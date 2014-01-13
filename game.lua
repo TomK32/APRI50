@@ -16,6 +16,7 @@ game = {
   use_shaders = true,
   show_sun = true,
   dt = 0.05,
+  gravity = 9.8,
   time = 0, -- counts dt. 1 (about 50 ticks)is 1 hour
   time_minutes = 15 * 0.075,
   time_hours = 4 * 15 * 0.075,
@@ -29,10 +30,11 @@ game = {
   colors = require('colors'),
   shaders = { },
   layers = {
-    machines = 40,
     buildings = 20,
-    player = 50,
-    plants = 30
+    plants = 30,
+    machines = 40,
+    vehicles = 41,
+    player = 50
   },
   matchers = {
     -- make sure they are unique and don't overlap too much.
