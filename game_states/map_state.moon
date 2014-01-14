@@ -94,6 +94,8 @@ export class MapState extends State
       return true
 
   mousepressed: (x, y, button) =>
+    if @view\mousepressed(x, y)
+      return true
     for i, view in ipairs(@sub_views)
       if view\active() and view.mousepressed and view\mousepressed(x, y)
         return true

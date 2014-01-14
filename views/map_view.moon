@@ -96,6 +96,23 @@ export class MapView extends View
     w, h = @cameraWH()
     @map\entitiesInRect(@camera.x - w + 2 * @display.x, @camera.y - h + 2 * @display.y, w * 4, h * 4)
 
+  mousepressed: (x, y) =>
+    x, y = @getMousePosition()
+    entities = @map\entitiesNear(x, y, game.icon_size * @camera.scale)
+    if #entities == 0
+      @clicked_entity = nil
+      return false
+    p = Point(x, y)
+    @clicked_entity = entities[1]
+    clicked_distance = p\distance(@clicked_entity.position)
+    for i, entity in pairs(entities)
+      d = p\distance(entity.position)
+      if d < clicked_distance
+        @clicked_entity = entity
+        clicked_distance = d
+    return true
+
+
   update: (dt) =>
     @drawCanvas()
     -- TODO possibly run this less often for a better performance
@@ -253,8 +270,10 @@ export class MapView extends View
   drawEntity: (entity) =>
     love.graphics.push()
     love.graphics.translate(entity.position.x, entity.position.y)
-    if entity.width and entity.height
-      love.graphics.translate(entity.width / -2, entity.height / -2)
+    entity\transform()
+    if entity == @clicked_entity
+      love.graphics.setColor(255, 100, 0, 150)
+      love.graphics.circle('line', entity.width/2, entity.height/2, entity.diameter/2)
     if entity.active and entity.drawActive
       entity\drawActive({240, 240, 0, 200})
     if entity.draw or entity.drawable

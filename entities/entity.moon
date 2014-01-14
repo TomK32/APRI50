@@ -8,15 +8,24 @@ export class Entity
     @setDimensions()
 
   setDimensions: =>
+    if not @scale
+      @scale = 1
     if @image
-      @width = @image\getWidth()
-      @height = @image\getHeight()
+      @width = @image\getWidth() / @scale
+      @height = @image\getHeight() / @scale
+      @diameter = math.max(@width, @height) / @scale
+
+  transform: =>
+    if @width and @height
+      love.graphics.translate(@width / -2, @height / -2)
+    if @rotation
+      love.graphics.rotate(-@rotation)
+    if @scale
+      love.graphics.scale(@scale)
 
   draw: =>
     love.graphics.push()
     love.graphics.setColor(255,255,255, 255)
-    if @scale
-      love.graphics.scale(@scale)
     if @particles
       love.graphics.draw(@particles, 0, 0)
     @\drawContent()
@@ -34,8 +43,6 @@ export class Entity
       return
     love.graphics.push()
     love.graphics.setColor(highlightColour)
-    if @scale
-      love.graphics.scale(@scale)
     love.graphics.rectangle('line', 0, 0, @width, @height)
     love.graphics.pop()
 

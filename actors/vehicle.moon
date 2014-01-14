@@ -60,10 +60,6 @@ export class Vehicle extends MovableActor
 
     @vehicle = _.extend(@@vehicle, @vehicle or {})
 
-  drawContent: =>
-    love.graphics.translate(@width / -2, @height / -2)
-    love.graphics.rotate(-@rotation)
-    super()
 
   resetVehicle: =>
     @vehicle.velocity = {x: 0, y: 0}
