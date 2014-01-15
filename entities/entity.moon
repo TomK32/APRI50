@@ -18,6 +18,8 @@ export class Entity
     if options
       for k, v in pairs(options) do
         self[k] = v
+    if @inventory and not @inventory.owner
+      @inventory.owner = @
     @setDimensions()
 
   setDimensions: =>
