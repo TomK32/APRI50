@@ -86,12 +86,13 @@ export class MapState extends State
     if @focus and @focus.keypressed and @focus\keypressed(key, unicode)
       return
 
-    if key == "q"
-      @view\zoom(1/1.2)
-      return true
-    if key == "e"
-      @view\zoom(1.2)
-      return true
+    if (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift"))
+      if key == "q"
+        @view\zoom(1/1.2)
+        return true
+      if key == "e"
+        @view\zoom(1.2)
+        return true
 
   mousepressed: (x, y, button) =>
     if @view\mousepressed(x, y)

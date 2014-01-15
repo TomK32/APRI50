@@ -51,7 +51,7 @@ independent from the `F3` debug mode.
 
 `F7` will toggle the sun light.
 
-To move the map you can use WASD and to zoom in/out use `q` and `e`.
+To move the map you can use WASD and to zoom in/out use `shift-q` and `shift-e`.
 
 To speed up or slow down the game press `i` and `j`.
 
