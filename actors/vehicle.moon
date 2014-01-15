@@ -60,22 +60,16 @@ export class Vehicle extends MovableActor
 
     @vehicle = _.extend(@@vehicle, @vehicle or {})
 
-  controllable: () =>
-    true
-  controllableClicked: () =>
-    -- TODO Play engine sound
-    @active_control = true
-
-  inventoryTradable: () =>
-    true
-
   resetVehicle: =>
     @vehicle.velocity = {x: 0, y: 0}
     @vehicle.angular_velocity = 0
     @moved = false
 
+  lostFocus: =>
+    super()
+    @active_control = false
+
   update: (dt) =>
-    -- http://www.asawicki.info/Mirror/Car%20Physics%20for%20Games/Car%20Physics%20for%20Games.html
     if not @active_control
       return
 
@@ -94,6 +88,7 @@ export class Vehicle extends MovableActor
           @moved = true
     if not @moved return
 
+    -- http://www.asawicki.info/Mirror/Car%20Physics%20for%20Games/Car%20Physics%20for%20Games.html
     @vehicle.throttle = @@.clamp(@vehicle.throttle, -@vehicle.max_throttle/2, @vehicle.max_throttle)
 
     sn = math.sin(@rotation)

@@ -1,8 +1,16 @@
 
 export class Entity
-  @interactions:
-    inventoryTradable: {game\quadFromImage('images/entities/interaction.png', 2)}
-    controllable: {game\quadFromImage('images/entities/interaction.png', 1)}
+  @interactions: {
+    inventory:
+      icon: {game\quadFromImage('images/entities/interaction.png', 2)}
+      match: (e) -> e.inventory
+      clicked: (e) -> true -- implement in your gameplay
+    controls:
+      icon: {game\quadFromImage('images/entities/interaction.png', 1)}
+      match: (e) ->
+        e.controls and e.active_control ~= nil
+      clicked: (e) -> e.active_control = true
+  }
   @interactions_width: 34 -- equals height
 
   new: (options) =>
@@ -46,14 +54,11 @@ export class Entity
       return
     love.graphics.push()
     love.graphics.translate(-@width, -@height)
-    for action, icon in pairs(@@interactions)
-      if @hasInteraction(action)
-        love.graphics.draw(icon[1], icon[2], 0, 0)
+    for action, options in pairs(@@interactions)
+      if options.match(@)
+        love.graphics.draw(options.icon[1], options.icon[2], 0, 0)
         love.graphics.translate(@@interactions_width, 0)
     love.graphics.pop()
-
-  hasInteraction: (action) =>
-    @[action] and type(@[action] == 'function') and @[action](@)
 
   hitInteractionIcon: (x, y) =>
     x += @width
@@ -64,7 +69,8 @@ export class Entity
       action = _.keys(@@interactions)[col]
       if not action
         return false
-      @[action .. 'Clicked'](self)
+      action = @@interactions[action]
+      action.clicked(self)
       return true
 
   drawActive: (highlightColour) =>
@@ -86,6 +92,9 @@ export class Entity
     if @animation
       @animation\draw()
 
+  lostFocus: =>
+    @active = false
+
   update: (dt) =>
     if @particles and @particles.update
       @particles\update(dt)
@@ -105,3 +114,5 @@ export class Entity
     if @includesPoint({x: x1, y: y0}) or @includesPoint({x: x1, y: y1})
       return true
 
+  toString: =>
+    @@name
