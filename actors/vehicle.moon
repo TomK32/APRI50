@@ -60,6 +60,8 @@ export class Vehicle extends MovableActor
 
     @vehicle = _.extend(@@vehicle, @vehicle or {})
 
+  controllable: () =>
+    true
 
   resetVehicle: =>
     @vehicle.velocity = {x: 0, y: 0}

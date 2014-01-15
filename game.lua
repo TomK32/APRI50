@@ -65,14 +65,24 @@ function game:image(path)
   return self.images[path]
 end
 
+-- number_of_quads can be nil if the quads are in one row only
 function game:imageWithQuads(image, number_of_quads)
   local image = game:image(image)
+  if not number_of_quads then
+    number_of_quads = math.floor(image:getWidth() / image:getHeight())
+  end
   local quads = {}
-  local size = image:getWidth() / 3
+  local size = image:getWidth() / number_of_quads
   for i = 1, number_of_quads do
     quads[i] = love.graphics.newQuad((i - 1) * size, 0, size, size, size*3, size)
   end
   return image, quads
+end
+
+function game:quadFromImage(image_name, quad_number, number_of_quads)
+  local image, quads = game:imageWithQuads(image_name, number_of_quads)
+  assert(quads[quad_number], 'quad ' .. quad_number .. ' not found in image ' .. image_name)
+  return image, quads[quad_number]
 end
 
 function game.createAnimation(image_path, grid_options, animation_options)

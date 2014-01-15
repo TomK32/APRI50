@@ -1,5 +1,10 @@
 
 export class Entity
+  @interactions:
+    controllable: {game\quadFromImage('images/entities/interaction.png', 1)}
+    inventoryTradable: {game\quadFromImage('images/entities/interaction.png', 2)}
+
+
   new: (options) =>
     @active = false
     if options
@@ -11,20 +16,20 @@ export class Entity
     if not @scale
       @scale = 1
     if @image
-      @width = @image\getWidth() / @scale
-      @height = @image\getHeight() / @scale
-      @diameter = math.max(@width, @height) / @scale
-
+      @width = @image\getWidth() * @scale
+      @height = @image\getHeight() * @scale
+      @diameter = math.max(@width, @height)
+ 
   transform: =>
-    if @width and @height
-      love.graphics.translate(@width / -2, @height / -2)
     if @rotation
       love.graphics.rotate(-@rotation)
-    if @scale
-      love.graphics.scale(@scale)
+    if @width and @height
+      love.graphics.translate(@width / -2, @height / -2)
 
   draw: =>
     love.graphics.push()
+    if @scale
+      love.graphics.scale(@scale)
     love.graphics.setColor(255,255,255, 255)
     if @particles
       love.graphics.draw(@particles, 0, 0)
@@ -35,6 +40,19 @@ export class Entity
       love.graphics.setColor(255,255,255,255)
       love.graphics.print(@position\toString(), 0, 0)
     love.graphics.pop()
+
+  drawInteractionIcons: =>
+    if not @@interactions
+      return
+    love.graphics.push()
+    love.graphics.translate(-@width, -@height)
+    for action, icon in pairs(@@interactions)
+      if @hasInteraction(action)
+        love.graphics.draw(icon[1], icon[2], 0, 0)
+    love.graphics.pop()
+
+  hasInteraction: (action) =>
+    @[action] and type(@[action] == 'function') and @[action](@)
 
   drawActive: (highlightColour) =>
     if @image and not (@width or @height)
@@ -59,7 +77,6 @@ export class Entity
     if @particles and @particles.update
       @particles\update(dt)
     if @animation
-      print "OK"
       @animation.animation\update(dt)
 
   includesPoint: (point) =>

@@ -270,6 +270,7 @@ export class MapView extends View
   drawEntity: (entity) =>
     love.graphics.push()
     love.graphics.translate(entity.position.x, entity.position.y)
+    love.graphics.push()
     entity\transform()
     if entity == @clicked_entity
       love.graphics.setColor(255, 100, 0, 150)
@@ -281,6 +282,10 @@ export class MapView extends View
         entity\draw()
       else
         love.graphics.draw(entity.drawable)
+    love.graphics.pop()
+    if entity == @clicked_entity
+      love.graphics.setColor(255, 255, 255, 200)
+      entity\drawInteractionIcons()
     love.graphics.pop()
 
   debugCenter: (center) =>

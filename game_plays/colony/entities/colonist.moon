@@ -9,10 +9,10 @@ return class Colonist extends MovableActor
     @dead = false
     @health = 10 * game.dt
     @position = position
+    @scale = 0.5
     @image = game\image('game_plays/colony/images/colonist-angelica.png')
-    @reach = @image\getWidth() / 2 -- how far the arms stretch
     @setDimensions()
-    @scale = game.icon_size / @image\getWidth()
+    @reach = @diameter / 2 -- how far the arms stretch
     @id = @@index + 1
     @@index += 1
     @name = @@names[(@id % #@__class.names) + 1] .. @id

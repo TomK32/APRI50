@@ -32,7 +32,7 @@ GamePlay.Colony = class Colony extends GamePlay
     @map_state.map\addEntity(space_ship)
     @map_state.view.camera\lookAt(start_position.x, start_position.y)
 
-    @map_state.map\addEntity(Vehicle({rotation: 20, position: Point(start_position.x + 40, start_position.y - 50, game.layers.vehicles)}))
+    @map_state.map\addEntity(Vehicle({rotation: 20, position: Point(start_position.x + 40, start_position.y - 120, game.layers.vehicles)}))
 
     @actors_view = InventoryView(game.player.colonists, {30, 30, 200, 100}, '0-9')
     @map_state\addView(@actors_view)
