@@ -33,6 +33,9 @@ return class Colonist extends MovableActor
   selectable: =>
     return not @dead
 
+  controllable: =>
+    return not @dead
+
   breath: (dt) =>
     -- Let's find a filled up tank
     if not @current_oxygen_tank or @current_oxygen_tank\empty()

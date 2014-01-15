@@ -1,9 +1,9 @@
 
 export class Entity
   @interactions:
-    controllable: {game\quadFromImage('images/entities/interaction.png', 1)}
     inventoryTradable: {game\quadFromImage('images/entities/interaction.png', 2)}
-
+    controllable: {game\quadFromImage('images/entities/interaction.png', 1)}
+  @interactions_width: 34 -- equals height
 
   new: (options) =>
     @active = false
@@ -49,10 +49,23 @@ export class Entity
     for action, icon in pairs(@@interactions)
       if @hasInteraction(action)
         love.graphics.draw(icon[1], icon[2], 0, 0)
+        love.graphics.translate(@@interactions_width, 0)
     love.graphics.pop()
 
   hasInteraction: (action) =>
     @[action] and type(@[action] == 'function') and @[action](@)
+
+  hitInteractionIcon: (x, y) =>
+    x += @width
+    y += @height
+
+    if y <= @@interactions_width and y >= 0
+      col = math.floor(x / @@interactions_width) + 1
+      action = _.keys(@@interactions)[col]
+      if not action
+        return false
+      @[action .. 'Clicked'](self)
+      return true
 
   drawActive: (highlightColour) =>
     if @image and not (@width or @height)

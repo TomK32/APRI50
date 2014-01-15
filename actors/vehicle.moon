@@ -62,6 +62,12 @@ export class Vehicle extends MovableActor
 
   controllable: () =>
     true
+  controllableClicked: () =>
+    -- TODO Play engine sound
+    @active_control = true
+
+  inventoryTradable: () =>
+    true
 
   resetVehicle: =>
     @vehicle.velocity = {x: 0, y: 0}

@@ -98,6 +98,10 @@ export class MapView extends View
 
   mousepressed: (x, y) =>
     x, y = @getMousePosition()
+    if @clicked_entity and @clicked_entity\hitInteractionIcon(x - @clicked_entity.position.x, y - @clicked_entity.position.y)
+      @clicked_entity = nil
+      return true
+
     entities = @map\entitiesNear(x, y, game.icon_size * @camera.scale)
     if #entities == 0
       @clicked_entity = nil
