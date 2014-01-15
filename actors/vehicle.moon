@@ -116,7 +116,7 @@ export class Vehicle extends MovableActor
       sideslip = math.atan2(velocity.y, velocity.x)
       rotation_angle = math.atan2(yawspeed, velocity.x)
 
-    slipangle_front = sideslip + rotation_angle - @vehicle.steer_angle
+    slipangle_front = sideslip + rotation_angle - (@vehicle.steer_angle * @@.sign(@vehicle.throttle))
     slipangle_rear  = sideslip - rotation_angle
 
     weight = @vehicle.mass * game.gravity * 0.5 -- # of axes
