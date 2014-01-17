@@ -1,7 +1,7 @@
 require 'actors.actor'
 
 export class MovableActor extends Actor
-  movements:
+  controls:
     up: { x: 0, y: -1 }
     down: { x: 0, y: 1 }
     left: { x: -1, y: 0 }
@@ -19,7 +19,7 @@ export class MovableActor extends Actor
     if not @active_control
       return
     dir = {x: 0, y: 0}
-    for key, direction in pairs(@__class.movements)
+    for key, direction in pairs(@@controls)
       if love.keyboard.isDown(key)
         dir.x += direction.x
         dir.y += direction.y

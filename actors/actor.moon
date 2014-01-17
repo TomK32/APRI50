@@ -9,6 +9,10 @@ export class Actor extends Entity
     if @afterMove
       @afterMove(offset)
 
+  lostFocus: =>
+    @active_control = false
+    super()
+
   moveTo: (point) =>
     distance = @position\distance(point)
     if distance == 0

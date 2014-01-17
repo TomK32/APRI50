@@ -9,7 +9,9 @@ export class Entity
       icon: {game\quadFromImage('images/entities/interaction.png', 1)}
       match: (e) ->
         e.controls and e.active_control ~= nil
-      clicked: (e) -> e.active_control = true
+      clicked: (e) ->
+        game.current_state\focusEntity(e)
+        e.active_control = true
   }
   @interactions_width: 32 -- equals height
 
@@ -96,7 +98,7 @@ export class Entity
       @animation\draw()
 
   lostFocus: =>
-    @active = false
+    true
 
   update: (dt) =>
     if @particles and @particles.update

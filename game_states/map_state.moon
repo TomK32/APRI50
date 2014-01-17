@@ -129,3 +129,8 @@ export class MapState extends State
     inventory_exchange_state = InventoryExchangeState(entity.inventory, _.pluck(entities, 'inventory'), @)
     game.setState(inventory_exchange_state)
 
+  focusEntity: (entity) =>
+    if @focusedEntity
+      @focusedEntity\lostFocus()
+    @focusedEntity = entity
+

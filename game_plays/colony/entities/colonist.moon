@@ -61,8 +61,6 @@ return class Colonist extends MovableActor
     if @health < 0
       @die('of insufficent health')
       return
-    if not @active
-      return
     super\update(dt)
 
   die: (reason) =>

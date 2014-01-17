@@ -45,6 +45,11 @@ export class Inventory
         table.insert(r, item)
     return r
 
+  deselect: =>
+    if @activeItem()
+      @activeItem().active = false
+      @active = nil
+
   activate: (position) =>
     if @items[tonumber(position)]
       @active = tonumber(position)

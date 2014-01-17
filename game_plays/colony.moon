@@ -101,10 +101,8 @@ GamePlay.Colony = class Colony extends GamePlay
 
     if key\match("[0-9]") and not shift_pressed and not alt_pressed
       if colonist
-        colonist.active = false
+        game.player.colonists\deselect()
         @inventory_view.inventory = nil
-      if game.player.colonists\activeItem()
-        game.player.colonists\activeItem().selected = false
       colonist = game.player.colonists\activate(tonumber(key))
       if colonist and colonist\selectable()
         colonist.active = true
@@ -128,5 +126,3 @@ GamePlay.Colony = class Colony extends GamePlay
 
   currentActor: =>
     return game.player.colonists\activeItem()
-
-
