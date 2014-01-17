@@ -1,6 +1,7 @@
 require 'actors.movable_actor'
 
 return class Colonist extends MovableActor
+  @interactions: _.deepcopy(MovableActor.interactions)
   index: 0
   names: {'Angelica', 'Miriam', 'Thomas', 'Rene', 'Kritzi', 'Jebediah'}
   new: (position) =>
@@ -15,7 +16,7 @@ return class Colonist extends MovableActor
     @reach = @diameter / 2 -- how far the arms stretch
     @id = @@index + 1
     @@index += 1
-    @name = @@names[(@id % #@__class.names) + 1] .. @id
+    @name = @@names[(@id % #@@names) + 1] .. @id
     @inventory = Inventory(@, @name, @inventoryChanged)
     -- just add one
     @inventory\add(EvolutionKit.random(game.dna_length))
@@ -23,6 +24,7 @@ return class Colonist extends MovableActor
     @current_oxygen_tank = nil
 
     @inventory.active = 1
+    @@interactions.controls.icon = {game\quadFromImage('images/entities/interaction.png', 3)}
 
   toString: =>
     @name

@@ -325,6 +325,22 @@ function Underscore.funcs.is_empty(obj)
 	return next(obj) == nil
 end
 
+-- http://snippets.luacode.org/snippets/Deep_copy_of_a_Lua_Table_2
+function Underscore.funcs.deepcopy(t)
+  if type(t) ~= 'table' then return t end
+  local mt = getmetatable(t)
+  local res = {}
+  for k,v in pairs(t) do
+    if type(v) == 'table' then
+      v = Underscore.funcs.deepcopy(v)
+    end
+    res[k] = v
+  end
+  setmetatable(res,mt)
+  return res
+end
+
+
 -- Originally based on penlight's deepcompare() -- http://luaforge.net/projects/penlight/
 function Underscore.funcs.is_equal(o1, o2, ignore_mt)
 	local ty1 = type(o1)
