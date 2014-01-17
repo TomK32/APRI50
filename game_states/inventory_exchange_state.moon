@@ -39,7 +39,7 @@ export class InventoryExchangeState extends State
       @dragged_inventory\add(other_item, dragged_position)
     else
       other_position, other_inventory = @clickedPositionAndInventory(x, y)
-      if @dragged_inventory\remove(@dragged_item, dragged_position)
+      if other_position and @dragged_inventory\remove(@dragged_item, dragged_position)
         other_inventory\add(@dragged_item, other_position)
 
     @dragged_item, @dragged_inventory = nil, nil
