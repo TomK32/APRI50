@@ -120,3 +120,12 @@ export class MapState extends State
       return true
     return false
 
+  openInventory: (entity) =>
+    entities = @map\entitiesNear(entity.position.x, entity.position.y, entity.reach or game.icon_size)
+    for i, e in ipairs entities
+      if e.inventory == entity.inventory
+        table.remove(entities, i)
+
+    inventory_exchange_state = InventoryExchangeState(entity.inventory, _.pluck(entities, 'inventory'), @)
+    game.setState(inventory_exchange_state)
+

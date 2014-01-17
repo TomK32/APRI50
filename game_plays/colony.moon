@@ -34,6 +34,7 @@ GamePlay.Colony = class Colony extends GamePlay
 
     @map_state.map\addEntity(Vehicle({
       rotation: 20,
+      name: 'Vehicle #1'
       position: Point(start_position.x + 40, start_position.y - 120, game.layers.vehicles)
       inventory: Inventory()
     }))
@@ -72,12 +73,7 @@ GamePlay.Colony = class Colony extends GamePlay
           return true
 
     if key == 't' and colonist
-      entities = @map_state.map\entitiesNear(colonist.position.x, colonist.position.y, colonist.reach)
-      for i, e in ipairs entities
-        if e.inventory == colonist.inventory
-          table.remove(entities, i)
-      @inventory_exchange_state = InventoryExchangeState(colonist.inventory, _.pluck(entities, 'inventory'), @map_state)
-      game.setState(@inventory_exchange_state)
+      @map_state\openInventory(colonist)
 
     if key == ' ' and colonist and item and item.placeable ~= nil and (item.placeable == true or item\placeable())
       if @map_state\placeItem(colonist.position.x, colonist.position.y, item)

@@ -4,14 +4,14 @@ export class Entity
     inventory:
       icon: {game\quadFromImage('images/entities/interaction.png', 2)}
       match: (e) -> e.inventory
-      clicked: (e) -> true -- implement in your gameplay
+      clicked: (e) -> game.current_state\openInventory(e)
     controls:
       icon: {game\quadFromImage('images/entities/interaction.png', 1)}
       match: (e) ->
         e.controls and e.active_control ~= nil
       clicked: (e) -> e.active_control = true
   }
-  @interactions_width: 34 -- equals height
+  @interactions_width: 32 -- equals height
 
   new: (options) =>
     @active = false
@@ -20,6 +20,7 @@ export class Entity
         self[k] = v
     if @inventory and not @inventory.owner
       @inventory.owner = @
+      @inventory.name = @.name
     @setDimensions()
 
   setDimensions: =>
