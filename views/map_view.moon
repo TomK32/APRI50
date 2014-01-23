@@ -225,8 +225,11 @@ export class MapView extends View
     if game.debug
       love.graphics.print("FPS: "..love.timer.getFPS(), 10, @display.height - 40)
 
-  getMousePosition: =>
+  getMousePosition: (offset) =>
     x, y = love.mouse.getPosition()
+    if offset
+      x -= offset.x
+      y -= offset.y
     return x + @camera.x - @display.width / 2, y + @camera.y - @display.height / 2
 
   focusedCenter: =>
@@ -292,7 +295,7 @@ export class MapView extends View
     love.graphics.pop()
     if entity == @clicked_entity
       love.graphics.setColor(255, 255, 255, 200)
-      entity\drawInteractionIcons()
+      entity\drawInteractionIcons(@getMousePosition(entity.position))
     love.graphics.pop()
 
   debugCenter: (center) =>

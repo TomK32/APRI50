@@ -57,29 +57,37 @@ export class Entity
       love.graphics.print(@position\toString(), 0, 0)
     love.graphics.pop()
 
-  drawInteractionIcons: =>
+  drawInteractionIcons: (x, y) =>
     if not @@interactions
       return
     love.graphics.push()
-    love.graphics.translate(-@width, -@height)
+    love.graphics.translate(-@width, -(@height/2 + @@interactions_width/2))
+    highlightedAction = @findInteraction(x, y)
     for action, options in pairs(@@interactions)
       if options.match(@)
+        if highlightedAction == action
+          love.graphics.setColor(game.colors.white)
+          love.graphics.setLineWidth(1)
+          love.graphics.rectangle('line', 0, 0, @@interactions_width, @@interactions_width)
         love.graphics.draw(options.icon[1], options.icon[2], 0, 0)
         love.graphics.translate(@@interactions_width, 0)
     love.graphics.pop()
 
-  hitInteractionIcon: (x, y) =>
+  findInteraction: (x, y) =>
     x += @width
-    y += @height
-
+    y += (@height / 2 + @@interactions_width / 2)
     if y <= @@interactions_width and y >= 0
       col = math.floor(x / @@interactions_width) + 1
-      action = _.keys(@@interactions)[col]
-      if not action
-        return false
-      action = @@interactions[action]
-      action.clicked(self)
-      return true
+      return _.keys(@@interactions)[col]
+
+  hitInteractionIcon: (x, y) =>
+    action = @findInteraction(x, y)
+    if not action
+      return
+
+    action = @@interactions[action]
+    action.clicked(self)
+    return true
 
   drawActive: (highlightColour) =>
     if @image and not (@width or @height)
