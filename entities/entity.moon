@@ -46,6 +46,9 @@ export class Entity
     love.graphics.setColor(255,255,255, 255)
     if @particles
       love.graphics.draw(@particles, 0, 0)
+    if game.debug
+      -- bounding box
+      love.graphics.rectangle('line', 0, 0, @width/@scale, @height/@scale)
     @\drawContent()
     love.graphics.pop()
     love.graphics.push()
