@@ -8,7 +8,7 @@ export class Entity
     controls:
       icon: {game\quadFromImage('images/entities/interaction.png', 1)}
       match: (e) ->
-        e.controls and e.active_control ~= nil
+        e.controllable and (e.controllable == true or e\controllable())
       clicked: (e) ->
         game.current_state\focusEntity(e)
         e.active_control = true

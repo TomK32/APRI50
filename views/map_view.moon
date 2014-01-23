@@ -105,7 +105,7 @@ export class MapView extends View
       else
         @clicked_entity\lostFocus()
 
-    entities = @map\entitiesNear(x, y, game.icon_size * @camera.scale)
+    entities = @map\entitiesNear(x, y, game.icon_size / @camera.scale)
     if #entities == 0
       @clicked_entity = nil
       return false

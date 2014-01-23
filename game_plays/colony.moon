@@ -54,9 +54,6 @@ GamePlay.Colony = class Colony extends GamePlay
   registerExtensions: =>
     true
 
-  update: (dt) =>
-    colonist = @currentActor()
-
   keypressed: (key, unicode) =>
     shift_pressed = (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift"))
     alt_pressed = (love.keyboard.isDown("lalt") or love.keyboard.isDown("ralt"))
@@ -102,27 +99,15 @@ GamePlay.Colony = class Colony extends GamePlay
     if key\match("[0-9]") and not shift_pressed and not alt_pressed
       if colonist
         game.player.colonists\deselect()
+        @map_state\focusEntity(nil)
         @inventory_view.inventory = nil
       colonist = game.player.colonists\activate(tonumber(key))
       if colonist and colonist\selectable()
-        colonist.active = true
+        @map_state\focusEntity(colonist)
         @inventory_view.inventory = colonist.inventory
         colonist.camera\lookAt(colonist.position.x, colonist.position.y)
         return true
     return false
 
-  mousepressed: (x, y, button) =>
-    colonist = @currentActor()
-    if colonist
-      x, y = @map_state.view\coordsForXY(x, y)
-      center = @findCenter(x, y)
-      if center
-        colonist\moveTo(center.point)
-      return true
-    return false
-
   findCenter: (x, y) =>
     return @map_state.map\findClosestCenter(x, y)
-
-  currentActor: =>
-    return game.player.colonists\activeItem()

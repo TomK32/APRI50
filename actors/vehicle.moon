@@ -60,6 +60,10 @@ export class Vehicle extends MovableActor
 
     @vehicle = _.extend(@@vehicle, @vehicle or {})
 
+  moveTo: (point) =>
+    -- TODO
+    return
+
   resetVehicle: =>
     @vehicle.velocity = {x: 0, y: 0}
     @vehicle.angular_velocity = 0

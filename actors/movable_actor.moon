@@ -7,6 +7,9 @@ export class MovableActor extends Actor
     left: { x: -1, y: 0 }
     right: { x: 1, y: 0 }
 
+  controllable: =>
+    true
+
   afterMove: () =>
     if @camera
       @camera\lookAt(@position.x, @position.y)

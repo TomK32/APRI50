@@ -105,6 +105,15 @@ export class MapState extends State
       if @focus\mousepressed(x, y, button)
         return true
 
+    if @focused_entity and @focused_entity.moveTo
+      x, y = @view\coordsForXY(x, y)
+      center = @map\findClosestCenter(x, y)
+      if center
+        @focused_entity\moveTo(center.point, @map)
+      return true
+    return false
+
+
   placeItem: (x, y, item) =>
     center = @map\findClosestCenter(x, y)
     if not center
@@ -130,7 +139,7 @@ export class MapState extends State
     game.setState(inventory_exchange_state)
 
   focusEntity: (entity) =>
-    if @focusedEntity
-      @focusedEntity\lostFocus()
-    @focusedEntity = entity
+    if @focused_entity
+      @focused_entity\lostFocus()
+    @focused_entity = entity
 
