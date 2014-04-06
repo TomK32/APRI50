@@ -1,7 +1,6 @@
 
 require 'views/map_view'
 require 'views/inventory_view'
-require 'views/resources_view'
 require 'views/scores_view'
 
 require 'game_plays/game_play'
@@ -26,7 +25,6 @@ export class MapState extends State
     @game_play = GamePlay.Colony(@)
     @focus = @game_play
 
-    @resources_view = ResourcesView(game.player.resources)
     @light_dt = 0
 
     -- change @compute_scores from your game play,
@@ -46,7 +44,6 @@ export class MapState extends State
     super(@)
 
     -- GUI
-    @resources_view\draw()
     @scores_view\draw()
 
   update: (dt) =>

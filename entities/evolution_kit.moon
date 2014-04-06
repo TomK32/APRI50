@@ -40,14 +40,6 @@ export class EvolutionKit
     @center = center
     @map = map
 
-    cost = { metal: 1, energy: 1, water: 1, biomass: 1 }
-    if game.player\hasResources(cost)
-      @apply()
-      game.player\useResources(cost)
-      return @
-    else
-      return false
-
   registerExtension: (extension) =>
     if game.debug
       print('Registering extension ' .. extension)
