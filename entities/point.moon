@@ -15,6 +15,9 @@ export class Point
   toString: =>
     return 'x: ' .. @round(@x) .. ', y: ' .. @round(@y) .. ', z: ' .. @round(@z) or '-'
 
+  offset: (x, y) =>
+    return Point(@x + x, @y + y)
+
   round: (x) =>
     if not x
       return nil
