@@ -13,5 +13,5 @@ GAME_VERSION=${GAME_VERSION}.${REVISION}
 
 moonc . &&
 echo "return '${GAME_VERSION}'" > "version.lua" &&
-/Applications/gamedev/love-0.9.app/Contents/MacOS/love .
+/Applications/gamedev/love-0.9.1.app/Contents/MacOS/love .
 

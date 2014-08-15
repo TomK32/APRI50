@@ -12,7 +12,7 @@ REVISION=`git log ${GAME_VERSION}..HEAD --oneline | wc -l | sed -e 's/ //g'`
 GAME_VERSION=${GAME_VERSION}.${REVISION}
 
 FILENAME="$NAME-$GAME_VERSION"
-VERSION=0.9.0
+VERSION=0.9.1
 BUILD="`pwd`/build"
 mkdir -p "${BUILD}"
 

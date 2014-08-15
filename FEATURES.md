@@ -31,18 +31,17 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 * [0.4] Inventory for each colonist
 * [0.4] OxygenTanks for each colonist
 * [0.4] Oxygen generator
-* [soon] Recharge OxygenTank when placed in a OxygenGenerator output field
 * [0.4] exchange inventory items with other inventory nearby (base and other colonists)
 * [0.4] Basic prospecting of map chunks to see what resources are there
-* [soon] Harvest resources manually (progress animation)
 * [soon] Buildings (habitat, utilities, workshop, garden)
 * [soon] Workshop for building vehicles, machines, robots, harvester
+* Workshop to process resources
 * [0.4] Vehicles (extending Actor, car-controls)
 * [soon] Cats
-* Workshop to process resources
+* Recharge OxygenTank when placed in a OxygenGenerator output field
 * Automatically recharge OxygenTank when close to a generator
+* Harvest resources manually (progress animation)
 * Colonist Leader
-* Explore map to see it all (Fog of War)
 * Athmospheric bubbles with breathable or toxic athmosphere
 * Tools, small machines
 * Job lists
