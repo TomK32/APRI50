@@ -24,7 +24,10 @@ export class State
 
   keypressed: (key, code) =>
     if @view and @view.gui then
-      @view.gui.keyboard.pressed(key, code)
+      if @view.gui.keyboard.pressed(key, code)
+        return
+    if (key == 'escape' or key == 'q') and @last_state
+      game.setState(@last_state)
 
   addView: (view) =>
     view.game_state = @

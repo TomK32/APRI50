@@ -17,10 +17,6 @@ export class InventoryExchangeState extends State
 
     @
 
-  keypressed: (key, unicode) =>
-    if key == 'escape' or key == 'q'
-      game.setState(@last_state)
-
   mousepressed: (x, y, button) =>
     if button ~= "l"
       return
