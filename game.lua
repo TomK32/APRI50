@@ -74,7 +74,7 @@ function game:imageWithQuads(image, number_of_quads)
   local quads = {}
   local size = image:getWidth() / number_of_quads
   for i = 1, number_of_quads do
-    quads[i] = love.graphics.newQuad((i - 1) * size, 0, size, size, size*3, size)
+    quads[i] = love.graphics.newQuad((i - 1) * size, 0, size, size, size * number_of_quads, size)
   end
   return image, quads
 end
