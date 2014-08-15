@@ -12,6 +12,7 @@ game = {
     mode = { }
   },
   speed = 1,
+  speed_text = '>',
   map_debug = 0,
   use_shaders = true,
   show_sun = true,

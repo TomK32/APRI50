@@ -207,6 +207,7 @@ export class MapView extends View
       @debugMousePointer()
 
     love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.print(game.speed_text, 10, @display.height - 10 - game.fonts.lineHeight)
     love.graphics.print(game\timeInWords(), 10, @display.height - 20)
     if game.show_sun
       width = 300

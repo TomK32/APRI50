@@ -60,9 +60,20 @@ function love.keypressed(key)
   elseif key == 'f7' then
     game.show_sun = not game.show_sun
   elseif key == 'i' then
-    game.speed = game.speed * 2
+    game.speed = game.speed + 1
+    if game.speed == 1 then
+      game.speed_text = ''
+    end
+    game.speed_text = game.speed_text .. '>'
   elseif key == 'j' then
-    game.speed = game.speed / 2
+    game.speed = game.speed - 1
+    if game.speed < 0 then
+      game.speed = 0
+    end
+    game.speed_text = game.speed_text:gsub(".$", "")
+    if game.speed == 0 then
+      game.speed_text = '||'
+    end
   end
 
   if not game.current_state then return end
