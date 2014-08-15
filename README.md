@@ -53,7 +53,9 @@ independent from the `F3` debug mode.
 
 To move the map you can use WASD and to zoom in/out use `shift-q` and `shift-e`.
 
-To speed up or slow down the game press `i` and `j`.
+To speed up or slow down the game press `i` and `j`. To pause press `j`
+often enough until the game stops the the line above the game date in
+the bottom right shows `||`.
 
 To prospect an area press `p`
 
