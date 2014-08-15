@@ -62,7 +62,7 @@ export class Entity
       return
     love.graphics.push()
     love.graphics.translate(-@width, -(@height/2 + @@interactions_width/2))
-    highlightedAction = @findInteraction(x, y)
+    highlightedAction = @findInteractionName(x, y)
     for action, options in pairs(@@interactions)
       if options.match(@)
         if highlightedAction == action
@@ -73,21 +73,33 @@ export class Entity
         love.graphics.translate(@@interactions_width, 0)
     love.graphics.pop()
 
-  findInteraction: (x, y) =>
+  findInteractionName: (x, y) =>
     x += @width
     y += (@height / 2 + @@interactions_width / 2)
     if y <= @@interactions_width and y >= 0
       col = math.floor(x / @@interactions_width) + 1
       return _.keys(@@interactions)[col]
+    return nil
+
+  findInteraction: (x, y) =>
+    action = @findInteractionName(x, y)
+    if action
+      return @@interactions[action]
+    return nil
 
   hitInteractionIcon: (x, y) =>
     action = @findInteraction(x, y)
-    if not action
-      return
+    if action
+      action.clicked(self)
+      return true
+    return false
 
-    action = @@interactions[action]
-    action.clicked(self)
-    return true
+  -- overwrite if it is based on the entity's state
+  defaultInteraction: () =>
+    if #_.keys(@@interactions) == 1
+      return _.values(@@interactions)[1]
+    return nil
+
 
   drawActive: (highlightColour) =>
     if @image and not (@width or @height)
