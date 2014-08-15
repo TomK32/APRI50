@@ -24,7 +24,7 @@ return class Colonist extends MovableActor
     @current_oxygen_tank = nil
 
     @inventory.active = 1
-    @@interactions.controls.icon = {game\quadFromImage('images/entities/interaction.png', 3)}
+    @@interactions.controls.icon = @@interactions_icons.controls_person
 
   toString: =>
     @name

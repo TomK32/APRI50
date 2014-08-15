@@ -1,12 +1,18 @@
 
 export class Entity
+  @interactions_icons:
+    controls: {game\quadFromImage('images/entities/interaction.png', 1)}
+    inventory: {game\quadFromImage('images/entities/interaction.png', 2)}
+    controls_person: {game\quadFromImage('images/entities/interaction.png', 3)}
+    controls_machine: {game\quadFromImage('images/entities/interaction.png', 4)}
+
   @interactions: {
     inventory:
-      icon: {game\quadFromImage('images/entities/interaction.png', 2)}
+      icon: @@interactions_icons.inventory
       match: (e) -> e.inventory
       clicked: (e) -> game.current_state\openInventory(e)
     controls:
-      icon: {game\quadFromImage('images/entities/interaction.png', 1)}
+      icon: @@interactions_icons.controls
       match: (e) ->
         e.controllable and (e.controllable == true or e\controllable())
       clicked: (e) ->
@@ -32,7 +38,7 @@ export class Entity
       @width = @image\getWidth() * @scale
       @height = @image\getHeight() * @scale
       @diameter = math.max(@width, @height)
- 
+
   transform: =>
     if @rotation
       love.graphics.rotate(-@rotation)
