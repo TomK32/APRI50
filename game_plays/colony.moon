@@ -1,5 +1,9 @@
 require 'game_states.inventory_exchange_state'
 require 'actors/vehicle'
+package.path = './game_plays/colony/views/?.lua;' .. package.path
+package.path = './game_plays/colony/game_states/?.lua;' .. package.path
+package.path = './game_plays/colony/entities/?.lua;' .. package.path
+
 
 _EvolutionKit = EvolutionKit
 export class EvolutionKit extends _EvolutionKit
@@ -8,10 +12,11 @@ export class EvolutionKit extends _EvolutionKit
     super('no fuction. [m]utate or [r]andomize')
 
 GamePlay.Colony = class Colony extends GamePlay
-  Colonist: require 'game_plays.colony.entities.colonist'
-  OxygenGenerator: require 'game_plays.colony.entities.oxygen_generator'
-  OxygenTank: require 'game_plays.colony.entities.oxygen_tank'
-  SpaceShip: require 'game_plays.colony.entities.space_ship'
+  Colonist: require 'colonist'
+  OxygenGenerator: require 'oxygen_generator'
+  OxygenTank: require 'oxygen_tank'
+  SpaceShip: require 'space_ship'
+  Workshop: require 'workshop'
 
   new: (map_state) =>
     super(map_state)

@@ -1,4 +1,5 @@
-return class SpaceShip extends Entity
+require 'entities.building'
+return class SpaceShip extends Building
   new: (options) =>
     @image = game\image('images/entities/ship1.png')
     super(options)

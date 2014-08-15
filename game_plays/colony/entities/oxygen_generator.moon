@@ -1,7 +1,7 @@
 -- TODO
 --   * works better on tiles with water
 
-return class OxygenGenerator extends require 'game_plays.colony.entities.oxygen_tank'
+return class OxygenGenerator extends require 'oxygen_tank'
   new: (rate, capacity, oxygen) =>
     @capacity = capacity
     @oxygen = oxygen or 0
