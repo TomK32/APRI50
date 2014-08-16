@@ -29,9 +29,9 @@ local utf8 = require(BASE .. 'utf8')
 
 -- default style
 local color = {
-	normal = {bg = {78,78,78}, fg = {200,200,200}, border={20,20,20}},
-	hot    = {bg = {98,98,98}, fg = {69,201,84},   border={30,30,30}},
-	active = {bg = {88,88,88}, fg = {49,181,64},   border={10,10,10}}
+	normal = {bg = {0,72,92}, fg = {200,200,200}, border={20,20,20}},
+	hot    = {bg = {20,72,92}, fg = {69,201,84},   border={30,30,30}},
+	active = {bg = {20,72,92}, fg = {49,181,64},   border={10,10,10}}
 }
 
 -- box drawing
