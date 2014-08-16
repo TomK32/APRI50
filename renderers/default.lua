@@ -20,6 +20,13 @@ function DefaultRenderer:rectangle(style, color, x, y, tiles_x, tiles_y)
   )
 end
 
+function DefaultRenderer.draw(drawable, x, y)
+  love.graphics.push()
+  love.graphics.setColor(255,255,255,255)
+  love.graphics.draw(drawable, x, y)
+  love.graphics.pop()
+end
+
 function DefaultRenderer:sprite(which, x, y)
 end
 
