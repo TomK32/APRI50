@@ -34,15 +34,26 @@ end
 
 -- options: {w, h, padding: {x, y}, rect_color, text_color}
 function DefaultRenderer.textInRectangle(text, x, y, options)
+  local w, h = options.w, options.h
+	local f = assert(love.graphics.getFont())
+  local rect_x, rect_y = x, y
+
   if not options then
     options = {}
   end
   if not options.padding then
-    options.padding = {x = 5, y = 5}
+    options.padding = {}
   end
-  local w, h = options.w, options.h
-	local f = assert(love.graphics.getFont())
-  local rect_x, rect_y = x, y
+  if not options.padding.x then
+    options.padding.x = 5
+  end
+  if not options.padding.y then
+    if h then
+      options.padding.y = (h - f:getHeight(text)) / 2
+    else
+      options.padding.y = 5
+    end
+  end
 
   if not w then
     w = f:getWidth(text)
