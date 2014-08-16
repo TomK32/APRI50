@@ -1,10 +1,10 @@
 class WorkshopState extends State
 
   new: (workshop, last_state) =>
-    WorkshopView = require('workshop')
+    super(@, game, 'Workshop')
+    WorkshopView = require('workshop_view')
     @view = WorkshopView(@, workshop)
     @workshop = workshop
-    super(@, game, 'Workshop', nil)
     @last_state = last_state
 
     @

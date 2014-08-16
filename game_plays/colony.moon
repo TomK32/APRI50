@@ -36,7 +36,11 @@ GamePlay.Colony = class Colony extends GamePlay
     @map_state.map\addEntity(space_ship)
     @map_state.view.camera\lookAt(start_position.x, start_position.y)
 
-    workshop = GamePlay.Colony.Workshop({completed: true, position: start_position\offset(70, 60), name: 'Storage'})
+    inventory = Inventory()
+    inventory\add(EvolutionKit.random(game.dna_length))
+    inventory\add(EvolutionKit.random(game.dna_length))
+    inventory\add(EvolutionKit.random(game.dna_length))
+    workshop = GamePlay.Colony.Workshop({completed: true, position: start_position\offset(70, 60), name: 'Evolution Kit Laboratory', inventory: inventory})
     @map_state.map\addEntity(workshop)
 
     @map_state.map\addEntity(Vehicle({
