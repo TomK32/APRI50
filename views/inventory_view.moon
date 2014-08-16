@@ -48,7 +48,7 @@ export class InventoryView extends View
 
     love.graphics.push()
     if @title
-      love.graphics.setFont(game.fonts.small)
+      love.graphics.setFont(game.fonts.regular)
       love.graphics.setColor(0, 0, 0, 255)
       w = game.fonts.lineHeight * 8
       love.graphics.printf(@title, @display.width - w, -game.fonts.lineHeight * 0.7, w, 'right')
@@ -79,11 +79,11 @@ export class InventoryView extends View
     love.graphics.pop()
     love.graphics.translate(@padding, @icon_size + 2 * @padding)
     if @inventory\activeItem()
-      love.graphics.setFont(game.fonts.small)
+      love.graphics.setFont(game.fonts.regular)
       description = @inventory\activeItem()\toString()
       if description and @item_description == 'static'
         love.graphics.setColor(0, 0, 0 , 150)
-        love.graphics.rectangle('fill', 0, 0, game.fonts.small\getWidth(description) + 2, 20)
+        love.graphics.rectangle('fill', 0, 0, game.fonts.regular\getWidth(description) + 2, 20)
         love.graphics.setColor(255, 255, 255, 255)
         love.graphics.print(description, 2, 0)
 

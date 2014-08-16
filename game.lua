@@ -112,9 +112,9 @@ function game:createFonts(offset)
   local font_file = 'fonts/Comfortaa-Regular.ttf'
   self.fonts = {
     lineHeight = (14 + offset) * 1.7,
-    small = love.graphics.newFont(font_file, 14 + offset),
-    regular = love.graphics.newFont(font_file, 20 + offset),
-    large = love.graphics.newFont(font_file, 24 + offset),
+    small = love.graphics.newFont(font_file, 10 + offset),
+    regular = love.graphics.newFont(font_file, 14 + offset),
+    large = love.graphics.newFont(font_file, 20 + offset),
     very_large = love.graphics.newFont(font_file, 48 + offset)
   }
 end
