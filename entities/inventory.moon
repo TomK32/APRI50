@@ -61,6 +61,13 @@ export class Inventory
       return false
     return @items[@active]
 
+  replace: (old, new) =>
+    for i, item in ipairs(@items)
+      if item == old
+        @items[i] = new
+        return new
+    return false
+
   replaceActive: (other) =>
     if not @activeItem()
       return false
