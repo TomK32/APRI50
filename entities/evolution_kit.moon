@@ -85,9 +85,9 @@ export class EvolutionKit
 
   -- if dna_matcher is given it will mutate upto 10 times until
   -- the score for the new mutation is higher than for the parent
-  mutate: (dna_matcher) =>
+  mutate: (dna_matcher, mutations_counter) =>
     max_mutations = 1
-    mutations_counter = 1
+    mutations_counter or= 1
     mutation = nil
     if dna_matcher
       max_mutations = 100
@@ -117,20 +117,20 @@ export class EvolutionKit
     if @dna
       @to_string = table.concat(@dna, '')
       @to_string = @to_string .. ' • '
-      has_score = false
-      @to_string = @to_string .. @extensionsToString()
-      if not has_score and no_score_text
-        @to_string = @to_string .. no_score_text
+      @to_string = @to_string .. @extensionsToString(no_score_text)
       return @to_string
     else
       return 'Evolution Kit'
 
-  extensionsToString: =>
+  extensionsToString: (no_score_text) =>
     to_string = ''
+    has_score = false
     for i, extension in ipairs(EvolutionKit.extensions)
       if extension.score and extension.score(@) > 0
         has_score = true
         to_string = to_string .. extension.__name .. ': ' .. string.format("%.1f", extension.score(@)) .. ' '
+    if not has_score and no_score_text
+      to_string = to_string .. no_score_text
     return to_string
 
   toImage: =>
