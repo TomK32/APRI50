@@ -9,9 +9,11 @@ export class Building extends Entity
       match: (e) ->
         e.controllable and (e.controllable == true or e\controllable())
       clicked: (e) ->
-        game_state = e\game_state()
-        if game_state
-          game.setState(game_state)
+        if e.game_state
+          game_state = e\game_state()(e, game.current_state)
+          if game_state
+            return game.setState(game_state)
+        print "No game state has been implemented yet"
 
   new: (options) =>
     @image or= game\image('images/entities/building.png')

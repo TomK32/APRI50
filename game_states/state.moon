@@ -16,18 +16,22 @@ export class State
   draw: () =>
     if @view and @view.draw then
       @view\draw()
-    for i, view in ipairs(@sub_views)
-      if view\active()
-        view\draw()
-    if @view.drawAfterSubViews
+    if @sub_views
+      for i, view in ipairs(@sub_views)
+        if view\active()
+          view\draw()
+    if @view and @view.drawAfterSubViews
       @view\drawAfterSubViews()
 
   keypressed: (key, code) =>
     if @view and @view.gui then
       if @view.gui.keyboard.pressed(key, code)
         return
-    if (key == 'escape' or key == 'q') and @last_state
-      game.setState(@last_state)
+    if (key == 'escape' or key == 'q')
+      if @last_state
+        game.setState(@last_state)
+      else
+        print "Tried to exit but no @last_state defined"
 
   addView: (view) =>
     view.game_state = @
