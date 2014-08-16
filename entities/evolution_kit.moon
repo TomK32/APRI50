@@ -118,15 +118,20 @@ export class EvolutionKit
       @to_string = table.concat(@dna, '')
       @to_string = @to_string .. ' • '
       has_score = false
-      for i, extension in ipairs(EvolutionKit.extensions)
-        if extension.score and extension.score(@) > 0
-          has_score = true
-          @to_string = @to_string .. extension.__name .. ': ' .. string.format("%.1f", extension.score(@)) .. ' '
+      @to_string = @to_string .. @extensionsToString()
       if not has_score and no_score_text
         @to_string = @to_string .. no_score_text
       return @to_string
     else
       return 'Evolution Kit'
+
+  extensionsToString: =>
+    to_string = ''
+    for i, extension in ipairs(EvolutionKit.extensions)
+      if extension.score and extension.score(@) > 0
+        has_score = true
+        to_string = to_string .. extension.__name .. ': ' .. string.format("%.1f", extension.score(@)) .. ' '
+    return to_string
 
   toImage: =>
     assert(@dna)
