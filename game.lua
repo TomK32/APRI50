@@ -51,6 +51,7 @@ game = {
   icon_size = 32,
   images = {}
 }
+game.renderer.colors = game.colors
 
 function game:shader(name)
   if not self.shaders[name] then
@@ -64,6 +65,14 @@ function game:image(path)
     self.images[path] = love.graphics.newImage(path)
   end
   return self.images[path]
+end
+
+function game:scaledImage(path)
+  local image = game:image(path)
+  return image, {
+      x = game.graphics.mode.width / image:getWidth(),
+      y = game.graphics.mode.height / image:getHeight()
+    }
 end
 
 -- number_of_quads can be nil if the quads are in one row only

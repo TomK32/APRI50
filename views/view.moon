@@ -10,6 +10,10 @@ export class View
     love.graphics.push()
     if @display.x ~= 0 or @display.y ~= 0
       love.graphics.translate(@display.x, @display.y)
+    -- fill the background with one color
+    if @background_color
+      love.graphics.setColor(unpack(@background_color))
+      love.graphics.rectangle('fill', 0, 0, @display.width, @display.height)
     love.graphics.setColor(255,255,255,255)
     @\drawContent()
     love.graphics.pop()

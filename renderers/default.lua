@@ -3,6 +3,10 @@
 --
 
 local DefaultRenderer = {}
+DefaultRenderer.colors = {
+  text = {255,255,255,255},
+  background = {0, 0, 0, 255}
+}
 DefaultRenderer.map_view = nil
 
 function DefaultRenderer:translate(x, y)
