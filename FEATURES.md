@@ -33,6 +33,7 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 * [0.4] Oxygen generator
 * [0.4] exchange inventory items with other inventory nearby (base and other colonists)
 * [0.4] Basic prospecting of map chunks to see what resources are there
+* [0.4] Workshop for mutating your EvoKits
 * [soon] Buildings (habitat, utilities, workshop, garden)
 * [soon] Workshop for building vehicles, machines, robots, harvester
 * Workshop to process resources
