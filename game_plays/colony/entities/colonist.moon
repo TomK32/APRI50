@@ -3,7 +3,7 @@ require 'actors.movable_actor'
 return class Colonist extends MovableActor
   @interactions: _.deepcopy(MovableActor.interactions)
   index: 0
-  names: {'Angelica', 'Miriam', 'Thomas', 'Rene', 'Kritzi', 'Jebediah'}
+  names: {'Colonist'}
   new: (position) =>
     super({})
     @speed = 10
@@ -11,7 +11,7 @@ return class Colonist extends MovableActor
     @health = 10 * game.dt
     @position = position
     @scale = 0.5
-    @image = game\image('game_plays/colony/images/colonist-angelica.png')
+    @image = game\image('game_plays/colony/images/colonist.png')
     @setDimensions()
     @reach = @diameter / 2 -- how far the arms stretch
     @id = @@index + 1
