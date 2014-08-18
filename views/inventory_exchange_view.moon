@@ -26,7 +26,7 @@ export class InventoryExchangeView extends View
       button_state = nil
       if inventory == @state.left_inventory
         button_state = 'hot'
-      if gui.Button({text: inventory\toString()\sub(0, 12), state: button_state})
+      if gui.Button({text: inventory\toString()\sub(0, 20), state: button_state})
         @state\setLeftInventory(inventory)
 
   drawAfterSubViews: =>

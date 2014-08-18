@@ -179,6 +179,13 @@ export class MapView extends View
       entities = @entitiesInRect()
       for i,entity in ipairs(entities) do
         @\drawEntity(entity)
+
+    if @clicked_entity
+      love.graphics.push()
+      love.graphics.translate(@clicked_entity.position.x, @clicked_entity.position.y)
+      love.graphics.setColor(255, 255, 255, 200)
+      @clicked_entity\drawInteractionIcons(@getMousePosition(@clicked_entity.position))
+      love.graphics.pop()
     if game.use_shaders
       love.graphics.setShader()
 
@@ -294,9 +301,6 @@ export class MapView extends View
       else
         love.graphics.draw(entity.drawable)
     love.graphics.pop()
-    if entity == @clicked_entity
-      love.graphics.setColor(255, 255, 255, 200)
-      entity\drawInteractionIcons(@getMousePosition(entity.position))
     love.graphics.pop()
 
   debugCenter: (center) =>
