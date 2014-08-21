@@ -27,6 +27,8 @@ function love.load()
       preferred_mode = mode
     end
   end
+  game.log('Starting game version '.. require('version'))
+  print('Starting game version '.. require('version'))
   game:setMode(preferred_mode)
 
   -- game.current_state = Intro(game.newVersionOrStart)
