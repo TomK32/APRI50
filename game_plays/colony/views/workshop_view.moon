@@ -29,27 +29,28 @@ class WorkshopView extends View
         @activateItem(item)
     gui.group.pop()
 
-    if not @active_item
-      return
-    gui.group.push{grow: "down", pos: {90, 400}, spacing: 30}
-    love.graphics.setFont(game.fonts.large)
-    font = love.graphics.getFont()
-    for i, mutation in ipairs(@active_item.mutations)
-      dna = table.concat(mutation.dna, '')
-      if gui.Button{
-          text: table.concat(mutation.dna, ''),
-          size: {game.icon_size + 4 + font\getWidth(dna), game.icon_size},
-          draw: (s,t,x,y,w,h) ->
-            game.renderer.draw(mutation.image, x, y)
-            game.renderer.textInRectangle(dna, x + game.icon_size + 4, y, @item_options)
-            game.renderer.textInRectangle(mutation\extensionsToString('-'), 380, y, @item_options)
-        }
-        @activateItem(@workshop.inventory\replace(@active_item, mutation))
-    gui.group.pop()
+    if @active_item
+      gui.group.push{grow: "down", pos: {90, 400}, spacing: 30}
+      love.graphics.setFont(game.fonts.large)
+      font = love.graphics.getFont()
+      for i, mutation in ipairs(@active_item.mutations)
+        dna = table.concat(mutation.dna, '')
+        if gui.Button{
+            text: table.concat(mutation.dna, ''),
+            size: {game.icon_size + 4 + font\getWidth(dna), game.icon_size},
+            draw: (s,t,x,y,w,h) ->
+              game.renderer.draw(mutation.image, x, y)
+              game.renderer.textInRectangle(dna, x + game.icon_size + 4, y, @item_options)
+              game.renderer.textInRectangle(mutation\extensionsToString('-'), 380, y, @item_options)
+          }
+          @activateItem(@workshop.inventory\replace(@active_item, mutation))
+      gui.group.pop()
     @
 
 
   activateItem: (item) =>
+    if not item
+      return
     if #item.mutations == 0
       item\mutate(nil, 3)
       item\mutate(nil, 3)
