@@ -3,15 +3,16 @@ class WorkshopView extends View
     super(@)
     @state = state
     @workshop = workshop
-    @background_image, @background_image_scaling = game\scaledImage('game_plays/colony/images/workshop.png')
+    @setBackgroundImage('game_plays/colony/images/evolution_kit_lab.jpg')
     @background_color = game.colors.white
     @item_options or= {rect_color: {0, 72, 92}, h: game.icon_size, padding: {x: 15}}
+    @text_options or= {font: game.fonts.regular, rect_color: _.flatten({game.colors.background, 60}), h: game.icon_size, padding: {x: 15}}
     @
 
   update: (dt) =>
     if not @workshop.inventory
       return
-    gui.group.push{grow: "right", pos: {70, 180}, spacing: 8}
+    gui.group.push{grow: "right", pos: {90, 180}, spacing: 8}
     for i, item in ipairs(@workshop.inventory\itemsByClass('EvolutionKit'))
       if gui.Button{
           text: '',
@@ -51,26 +52,22 @@ class WorkshopView extends View
     @active_item = item
 
   drawContent: =>
-    love.graphics.draw(@background_image, 0, 0, 0, @background_image_scaling.x, @background_image_scaling.x)
-    love.graphics.setColor(game.colors.text2)
+    love.graphics.draw(@background_image, 0, 0, 0, @background_image_scaling, @background_image_scaling)
+    love.graphics.setColor(game.colors.text)
     love.graphics.setFont(game.fonts.very_large)
     love.graphics.print(@workshop.name, 180, 70)
-    love.graphics.setFont(game.fonts.regular)
-    love.graphics.print('Select one of your evo kits to analyze and mutate', 70, 150)
+    game.renderer.textInRectangle("Select one of your evo kits to analyze and mutate", 70, 150, @text_options)
 
     if not @workshop.inventory
-      love.graphics.print("There's no inventory to take evo kits from", 70, 180)
+      game.renderer.textInRectangle("There's no inventory to take evo kits from", 70, 180, @text_options)
 
     if @active_item
-      love.graphics.setColor(game.colors.text2)
-      love.graphics.print("This is your evo kit.", 70, 230)
+      game.renderer.textInRectangle("This is your evo kit.", 70, 230, @text_options)
       love.graphics.setFont(game.fonts.large)
       game.renderer.draw(@active_item.image, 90, 260)
       game.renderer.textInRectangle(table.concat(@active_item.dna, ''), 90 + 4 + game.icon_size, 260, @item_options)
       game.renderer.textInRectangle(@active_item\extensionsToString('-'), 380, 260, @item_options)
-      love.graphics.setFont(game.fonts.regular)
-      love.graphics.setColor(game.colors.text2)
-      love.graphics.print("Now pick one mutation to replace your evo kit with.", 70, 320)
+      game.renderer.textInRectangle("Now pick one mutation to replace your evo kit with.", 70, 310, @text_options)
 
 
     love.graphics.push()

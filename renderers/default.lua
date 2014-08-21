@@ -42,6 +42,9 @@ end
 -- options: {w, h, padding: {x, y}, rect_color, text_color}
 function DefaultRenderer.textInRectangle(text, x, y, options)
   local w, h = options.w, options.h
+  if options.font then
+    love.graphics.setFont(options.font)
+  end
 	local f = assert(love.graphics.getFont())
   local rect_x, rect_y = x, y
 

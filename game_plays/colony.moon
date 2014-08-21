@@ -40,7 +40,7 @@ GamePlay.Colony = class Colony extends GamePlay
     inventory\add(EvolutionKit.random(game.dna_length))
     inventory\add(EvolutionKit.random(game.dna_length))
     inventory\add(EvolutionKit.random(game.dna_length))
-    workshop = GamePlay.Colony.Workshop({completed: true, position: start_position\offset(70, 60), name: 'Evolution Kit Laboratory', inventory: inventory})
+    workshop = GamePlay.Colony.Workshop({completed: true, position: start_position\offset(150, -90), name: 'Evolution Kit Laboratory', inventory: inventory})
     @map_state.map\addEntity(workshop)
 
     @map_state.map\addEntity(Vehicle({

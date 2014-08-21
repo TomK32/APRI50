@@ -36,6 +36,10 @@ export class View
     x, y = love.mouse.getPosition()
     return x - @display.x, y - @display.y
 
+  setBackgroundImage: (image) =>
+    @background_image, @background_image_scaling = game\scaledImage(image)
+    @background_image_scaling = math.max(unpack(_.values(@background_image_scaling)))
+
   setDisplay: (display) =>
     if not @display then
       @display = {}
