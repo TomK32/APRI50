@@ -19,8 +19,8 @@ GamePlay.Colony = class Colony extends GamePlay
     @map_state.compute_scores = true
     game.player.colonists = Inventory()
     start_position = Point(@map_state.map.width / 2, @map_state.map.height / 2, game.layers.buildings)
-    for i=1, 5
-      colonist = GamePlay.Colony.Colonist(Point(start_position.x + i * game.icon_size, start_position.y - 30, game.layers.player))
+    for i=1, 1
+      colonist = GamePlay.Colony.Colonist(Point(start_position.x + i * game.icon_size, start_position.y + 60, game.layers.player))
       colonist.camera = @map_state.view.camera
       game.player.colonists\add(colonist)
       @map_state.map\addEntity(colonist)
