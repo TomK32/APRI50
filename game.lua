@@ -158,7 +158,9 @@ function game.log(message)
   if not game.log_file then
     game.log_file = love.filesystem.newFile('apri50.log', 'a')
   end
-  game.log_file:write('[' .. game:timeInWords() .. '] ' .. message .. "\r\n")
+  message = '[' .. game:timeInWords() .. '] ' .. message
+  print(message)
+  game.log_file:write(message .. "\r\n")
 end
 
 function game:timeInWords()
