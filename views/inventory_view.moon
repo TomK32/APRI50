@@ -47,6 +47,7 @@ export class InventoryView extends View
     love.graphics.rectangle('fill', 0,0, self.display.width + @padding, self.display.height + @padding)
 
     love.graphics.push()
+    love.graphics.setLineWidth('1')
     if @title
       love.graphics.setFont(game.fonts.regular)
       love.graphics.setColor(0, 0, 0, 255)
