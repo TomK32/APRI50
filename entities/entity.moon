@@ -54,6 +54,7 @@ export class Entity
       love.graphics.draw(@particles, 0, 0)
     if game.debug
       -- bounding box
+      love.graphics.setLineWidth(1)
       love.graphics.rectangle('line', 0, 0, @width/@scale, @height/@scale)
     @\drawContent()
     love.graphics.pop()
@@ -61,6 +62,7 @@ export class Entity
     if game.debug
       love.graphics.setColor(255,255,255,255)
       love.graphics.print(@position\toString(), 0, 0)
+      game.renderer.textInRectangle("w: " .. @width .. ", h: " .. @height, 0, game.fonts.lineHeight)
     love.graphics.pop()
 
   drawInteractionIcons: (x, y) =>

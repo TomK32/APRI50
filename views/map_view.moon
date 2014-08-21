@@ -264,9 +264,11 @@ export class MapView extends View
     love.graphics.setColor(50,50,50,200)
     love.graphics.rectangle('fill', -5, -5, @debug_mouse_window.width + 10, @debug_mouse_window.height + 10)
     love.graphics.setColor(255,255,255,200)
-    love.graphics.print( f.point.x .. ', ' .. f.point.y .. ', ' .. f.point.z, 10, 5)
+    x, y = @getMousePosition()
+    love.graphics.print( 'm:' .. x .. ', ' .. y .. ', ', 10, 5)
+    love.graphics.print( 'c:' ..  f.point.x .. ', ' .. f.point.y .. ', ' .. f.point.z, 10, lh + 5)
     @debug_mouse_window = {height: lh, width: 0}
-    i = 1
+    i = 2
     for m, matter in pairs(f.matter)
       love.graphics.print( matter\toString(), 10, i * lh)
       i += 1

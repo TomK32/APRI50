@@ -5,6 +5,7 @@
 local DefaultRenderer = {}
 DefaultRenderer.colors = {
   text = {255,255,255,255},
+  text_background = {0,0,0,55},
   background = {0, 0, 0, 255}
 }
 DefaultRenderer.map_view = nil
@@ -41,6 +42,7 @@ end
 
 -- options: {w, h, padding: {x, y}, rect_color, text_color}
 function DefaultRenderer.textInRectangle(text, x, y, options)
+  local options = options or {}
   local w, h = options.w, options.h
   if options.font then
     love.graphics.setFont(options.font)
@@ -73,7 +75,7 @@ function DefaultRenderer.textInRectangle(text, x, y, options)
     h = f:getHeight(text)
     h = h + options.padding.y * 2
   end
-  love.graphics.setColor(unpack(options.rect_color or DefaultRenderer.colors.background))
+  love.graphics.setColor(unpack(options.rect_color or DefaultRenderer.colors.text_background))
   love.graphics.rectangle('fill', x, y, w, h)
 
   x = x + options.padding.x
