@@ -11,6 +11,10 @@ class WorkshopView extends View
     @
 
   update: (dt) =>
+    gui.group.push{grow: "right", pos: {20, 20}}
+    if gui.Button({text: 'return', draw: (s,t,x,y,w,h) -> game.renderer\print(t, game.colors.text, x, y)})
+      @state\leaveState()
+    gui.group.pop()
     if not #@items == 0
       return
     gui.group.push{grow: "right", pos: {90, 180}, spacing: 8}
