@@ -28,10 +28,13 @@ export class State
       if @view.gui.keyboard.pressed(key, code)
         return
     if (key == 'escape' or key == 'q')
-      if @last_state
-        game.setState(@last_state)
-      else
-        print "Tried to exit but no @last_state defined"
+      @leaveState()
+
+  leaveState: =>
+    if @last_state
+      game.setState(@last_state)
+    else
+      game.log("Tried to exit from " .. @@name .. ", but no @last_state defined")
 
   addView: (view) =>
     view.game_state = @
