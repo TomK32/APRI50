@@ -5,12 +5,6 @@ package.path = './game_plays/colony/game_states/?.lua;' .. package.path
 package.path = './game_plays/colony/entities/?.lua;' .. package.path
 
 
-_EvolutionKit = EvolutionKit
-export class EvolutionKit extends _EvolutionKit
-  toString: =>
-    -- just pass the fallback string
-    super('no fuction. [m]utate or [r]andomize')
-
 GamePlay.Colony = class Colony extends GamePlay
   Colonist: require 'colonist'
   OxygenGenerator: require 'oxygen_generator'
@@ -92,14 +86,6 @@ GamePlay.Colony = class Colony extends GamePlay
     if shift_pressed and colonist and key\match("[0-9]")
       if not colonist.inventory\activate(tonumber(key))
         colonist.inventory.active = nil
-
-    if colonist and item and item.__class.__name == 'EvolutionKit'
-      if key == "m"
-        colonist.inventory\replaceActive(item\mutate())
-        return true
-      if key == "r"
-        colonist.inventory\replaceActive(EvolutionKit.random(game.dna_length))
-        return true
 
     -- prospect
     if colonist and key == 'p'
