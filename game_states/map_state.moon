@@ -18,7 +18,7 @@ export class MapState extends State
     @scores = {}
     @compute_scores = false
 
-    @map = Map(2000, 1000, game.seed, 800)
+    @map = Map(3000, 2000, game.seed, 800)
     game.log('Started game with seed ' .. game.seed)
     @view = MapView(@map)
 
@@ -32,6 +32,14 @@ export class MapState extends State
     --  * scoreForCenter(all_scores, center)
     --  * resetScore(map_state)
     @scores_view = ScoresView(@)
+
+    -- just to kickstart the map a little, and we do that on a larger part of the map
+    scale = @view.camera.scale
+    inspect scale
+    @view.camera.scale = 0.5
+    for i = 1, 20
+      @update(0.25)
+    @view.camera.scale = scale
 
     return @
 
