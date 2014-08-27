@@ -233,12 +233,16 @@ export class MapView extends View
     if game.debug
       love.graphics.print("FPS: "..love.timer.getFPS(), 10, @display.height - 40)
 
-  getMousePosition: (offset) =>
+  getMousePoint: (offset) =>
     x, y = love.mouse.getPosition()
     if offset
       x -= offset.x
       y -= offset.y
-    return x + @camera.x - @display.width / 2, y + @camera.y - @display.height / 2
+    return Point(x + @camera.x - @display.width / 2, y + @camera.y - @display.height / 2)
+
+  getMousePosition: (offset) =>
+    point = @getMousePoint(offset)
+    return point.x, point.y
 
   focusedCenter: =>
     m_x, m_y = @getMousePosition()
@@ -297,6 +301,11 @@ export class MapView extends View
       love.graphics.circle('line', entity.width/2, entity.height/2, entity.diameter/2)
     if entity.active and entity.drawActive
       entity\drawActive({240, 240, 0, 200})
+
+    if entity\includesPoint(@getMousePoint())
+      love.graphics.setColor(255, 200, 0, 50)
+      love.graphics.circle('line', entity.width/2, entity.height/2, entity.diameter/2)
+
     if entity.draw or entity.drawable
       if entity.draw
         entity\draw()

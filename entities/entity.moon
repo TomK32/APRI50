@@ -34,6 +34,9 @@ export class Entity
   setDimensions: =>
     if not @scale
       @scale = 1
+    @width = 1
+    @height = 1
+    @diameter = 1
     if @image
       @width = @image\getWidth() * @scale
       @height = @image\getHeight() * @scale
@@ -141,9 +144,11 @@ export class Entity
       @animation.animation\update(dt)
 
   includesPoint: (point) =>
+    point = {x: point.x + @width / 2, y: point.y + @height / 2}
     if @position.x <= point.x and @position.y <= point.y
-      if @width and @height and @position.x + @width >= point.x and @position.y + @height >= point.y
+      if @position.x + @width >= point.x and @position.y + @height >= point.y
         return true
+    return false
 
   inRect: (x0, y0, x1, y1) =>
     if @position\inRect(x0, y0, x1, y1)
