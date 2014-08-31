@@ -39,7 +39,7 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 * Workshop to process resources
 * [0.4] Vehicles (extending Actor, car-controls)
 * [soon] Vehilces leaving tracks
-* Athmosphere (CO, CO2, N2, O2, ...)
+* [soon] Athmosphere (CO, CO2, N2, O2, ...)
   * earth is 78% N2, 21% O2, 0.9% Ar, 0.0397% CO2 and 0.001% to 5% H20
   * mars is 96.0% CO2, 2.1% Ar, 1.9% N2, 0.145% O2, 0.056% CO
 * [soon] Cats

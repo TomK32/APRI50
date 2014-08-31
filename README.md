@@ -59,6 +59,8 @@ the bottom right shows `||`.
 
 To prospect an area press `p`
 
+Hit `a` to see details on the planet's atmosphere.
+
 
 ## References (other games you should play!)
 
