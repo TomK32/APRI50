@@ -110,13 +110,20 @@ end
 
 function game:createFonts(offset)
   local font_file = 'fonts/Comfortaa-Regular.ttf'
+  local mono_font = 'fonts/LiberationMono-Bold.ttf'
   self.fonts = {
     lineHeight = (14 + offset) * 1.7,
     small = love.graphics.newFont(font_file, 10 + offset),
     regular = love.graphics.newFont(font_file, 14 + offset),
     large = love.graphics.newFont(font_file, 20 + offset),
-    very_large = love.graphics.newFont(font_file, 48 + offset)
+    very_large = love.graphics.newFont(font_file, 48 + offset),
+    mono_small = love.graphics.newFont(mono_font, 10 + offset),
+    mono_regular = love.graphics.newFont(mono_font, 16 + offset)
   }
+end
+
+function game.setFont(font)
+  love.graphics.setFont(game.fonts[font])
 end
 
 function game:setMode(mode)
