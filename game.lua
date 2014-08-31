@@ -138,6 +138,7 @@ end
 
 function game.setState(state)
   assert(state, 'game state missing')
+  state.last_state = state.last_state or game.current_state
   game.current_state = state
 end
 
