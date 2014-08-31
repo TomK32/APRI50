@@ -3,6 +3,7 @@ require 'actors/vehicle'
 package.path = './game_plays/colony/views/?.lua;' .. package.path
 package.path = './game_plays/colony/game_states/?.lua;' .. package.path
 package.path = './game_plays/colony/entities/?.lua;' .. package.path
+require 'views.atmosphere_view'
 
 
 GamePlay.Colony = class Colony extends GamePlay
@@ -52,6 +53,8 @@ GamePlay.Colony = class Colony extends GamePlay
     @inventory_view.display.y = @map_state.view.display.height - @inventory_view.display.height - 20
     @map_state\addView(@inventory_view)
 
+    @atmosphere = Atmosphere(game.seed)
+
     @dt = 0
     @burning_centers = {}
     @particle_systems = {}
@@ -73,6 +76,9 @@ GamePlay.Colony = class Colony extends GamePlay
       if colonist.keypressed
         if colonist\keypressed(key, unicode)
           return true
+
+    if key == 'a'
+      game.setState(State(game, 'Atmosphere Info', AtmosphereView(@atmosphere)))
 
     if key == 't' and colonist
       @map_state\openInventory(colonist)
