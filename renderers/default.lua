@@ -36,6 +36,11 @@ function DefaultRenderer:print(text, color, x, y)
   love.graphics.print(text, x, y)
 end
 
+function  DefaultRenderer:printLine(text, color, x, y)
+  DefaultRenderer:print(text, color, x, y)
+  love.graphics.translate(0, game.fonts.lineHeight)
+end
+
 function DefaultRenderer:rotate(angle)
   love.graphics.rotate(angle)
 end
