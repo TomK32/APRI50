@@ -78,7 +78,7 @@ GamePlay.Colony = class Colony extends GamePlay
           return true
 
     if key == 'a'
-      game.setState(State(game, 'Atmosphere Info', AtmosphereView(@atmosphere)))
+      game.setState(State(game, 'Atmosphere Info', AtmosphereView({atmosphere: @atmosphere, offset: {x: 620, y: 250}})))
 
     if key == 't' and colonist
       @map_state\openInventory(colonist)
