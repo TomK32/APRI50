@@ -55,6 +55,7 @@ export class MapState extends State
     @scores_view\draw()
 
   update: (dt) =>
+    game.tickTime(dt)
     if @focus and @focus.update
       @focus\update(dt)
     if @focus_changed

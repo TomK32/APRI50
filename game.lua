@@ -171,6 +171,10 @@ function game.log(message)
   game.log_file:write(message .. "\r\n")
 end
 
+function game.tickTime(dt)
+  game.time = game.time + dt * game.speed
+end
+
 function game:timeInWords()
   self.time_string = ''
   local t = self.time
