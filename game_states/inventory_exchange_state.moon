@@ -3,7 +3,7 @@ export class InventoryExchangeState extends State
 
   new: (inventory, others, last_state) =>
     require 'views.inventory_exchange_view'
-    super(@, game, 'InventoryExchangeView', nil)
+    super(game, 'InventoryExchangeView', nil)
     @inventory, @others = inventory, others
     @last_state = last_state
 
