@@ -6,7 +6,18 @@ export class AtmosphereView extends View
     @offset or= {x: 0, y: 0}
     assert(@atmosphere, "atmosphere hasn't been set")
 
+  update: (dt) =>
+    super(dt)
+    gui.group.push{grow: "right", pos: {20, 20}}
+    if gui.Button({text: 'return', draw: (s,t,x,y,w,h) -> game.renderer\print(t, game.colors.text2, x, y)})
+      @state\leaveState()
+    gui.group.pop()
+
   drawContent: =>
+    love.graphics.push()
+    gui.core.draw()
+    love.graphics.pop()
+
     love.graphics.translate(@offset.x, @offset.y)
     game.setFont('mono_regular')
     game.renderer\print('Atmosphere composition', @text_color, 0, 0)

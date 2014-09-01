@@ -4,6 +4,8 @@ export class State
     @game = game
     @name = name
     @view = view
+    if @view and not @view.state
+      @view.state = @
     @focus = nil
     @last_focus = {}
     @focus_changed = false
