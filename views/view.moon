@@ -1,7 +1,11 @@
 
 export class View
-  new: =>
+  new: (options) =>
     @display = {}
+    for k, v in pairs(options or {})
+      @[k] = v
+    if @background_image
+      @setBackgroundImage(@background_image)
     @\setDisplay({x: 0, y: 0, width: 0, height: 0})
 
   draw: =>
@@ -15,6 +19,8 @@ export class View
       love.graphics.setColor(unpack(@background_color))
       love.graphics.rectangle('fill', 0, 0, @display.width, @display.height)
     love.graphics.setColor(255,255,255,255)
+    if @background_image
+      love.graphics.draw(@background_image, 0, 0, 0, @background_image_scaling, @background_image_scaling)
     @\drawContent()
     love.graphics.pop()
     if @camera

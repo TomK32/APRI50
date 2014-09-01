@@ -58,7 +58,6 @@ class WorkshopView extends View
     @active_item = item
 
   drawContent: =>
-    love.graphics.draw(@background_image, 0, 0, 0, @background_image_scaling, @background_image_scaling)
     love.graphics.setColor(game.colors.text)
     love.graphics.setFont(game.fonts.very_large)
     @y = 70
