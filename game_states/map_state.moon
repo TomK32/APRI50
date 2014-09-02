@@ -35,7 +35,6 @@ export class MapState extends State
 
     -- just to kickstart the map a little, and we do that on a larger part of the map
     scale = @view.camera.scale
-    inspect scale
     @view.camera.scale = 0.5
     for i = 1, 20
       @update(0.25)
