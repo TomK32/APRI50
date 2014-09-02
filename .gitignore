@@ -12,6 +12,7 @@ game_plays/*lua
 game_states/*lua
 spec/**/*_spec.lua
 game_plays/colony/entities/*lua
+game_plays/colony/**/*lua
 lib/map_gen.lua
 lib/voronoi.lua
 tmp
@@ -21,3 +22,4 @@ presskit/
 matter/*lua
 entities/plants/*lua
 lib/lsystem.lua
+data/*.lua

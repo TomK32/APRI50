@@ -46,6 +46,8 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
   * daily log of the composition
   * chart
 * [soon] Cats
+* [soon] info screen for machines (print out their recipies and sources/target inventories)
+* Energy (generator and distribution, store it in inventories or directly on entities)
 * Recharge OxygenTank when placed in a OxygenGenerator output field
 * Automatically recharge OxygenTank when close to a generator
 * Harvest resources manually (progress animation)
