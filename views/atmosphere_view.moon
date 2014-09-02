@@ -22,7 +22,8 @@ export class AtmosphereView extends View
     game.setFont('mono_regular')
     game.renderer\print('Atmosphere composition', @text_color, 0, 0)
     game.renderer\printLine(game\timeInWords(), @text_color, game.fonts.lineHeight * 20, 0)
-    for element, value in pairs(@atmosphere.composition)
+    for element, value in pairs(@atmosphere.normalized_composition)
       love.graphics.printf(string.format("%2.3f%%", value), game.fonts.lineHeight * 3, 0, game.fonts.lineHeight * 3, 'right')
       game.renderer\printLine(element, @text_color, 0, 0)
+
 
