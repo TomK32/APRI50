@@ -12,6 +12,35 @@ export class Inventory
       @.changed_callback(@owner, @)
     true
 
+  amountForElement: (element) =>
+    amount = 0
+    for i, item in *@items
+      if item == element
+        amount += item.amount
+    return amount
+
+  -- remove the amount from all items matching the element
+  -- and if it fails to remove all the amount that wasn't
+  -- removed will be returned
+  extractAmount: (element, amount) =>
+    for i, item in *@items
+      if item == element
+        if item.amount >= amount
+          item.amount -= amount
+          return 0
+        else
+          amount -= item.amount
+          item.amount = 0
+    return amount
+
+  addAmount: (element, amount) =>
+    for i, item in *@items
+      if item == element
+        item.amount += amount
+        return true
+    @add(element)
+    element.amount = amount
+
   add: (item, position) =>
     if not position
       position = 1

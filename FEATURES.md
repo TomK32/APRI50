@@ -42,6 +42,9 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 * [soon] Athmosphere (CO, CO2, N2, O2, ...)
   * earth is 78% N2, 21% O2, 0.9% Ar, 0.0397% CO2 and 0.001% to 5% H20
   * mars is 96.0% CO2, 2.1% Ar, 1.9% N2, 0.145% O2, 0.056% CO
+  * [soon] machine to consume and create certain elements and add them to the atmosphere
+  * daily log of the composition
+  * chart
 * [soon] Cats
 * Recharge OxygenTank when placed in a OxygenGenerator output field
 * Automatically recharge OxygenTank when close to a generator

@@ -22,15 +22,22 @@ export class Atmosphere
     for element, value in pairs(@composition)
       @composition[element] = value * normal
 
-  consume: (element, amount) =>
+  -- much simplier than a regular inventory
+  amountForElement: (element) =>
+    return @composition[element]
+
+  extractAmount: (element, amount) =>
     if @composition[element] < amount
       return false
     @composition[element] -= amount
     @normalizeComposition()
 
-  add: (element, amount) =>
-    if @composition[element] < amount
-      return false
-    @composition[element] -= amount
+  addAmount: (element, amount) =>
+    if amount == 0
+      return
+    if not @composition[element]
+      @composition[element] = 0
+    @composition[element] += amount
     @normalizeComposition()
+    return true
 
