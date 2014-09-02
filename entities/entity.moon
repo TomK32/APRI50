@@ -30,6 +30,10 @@ export class Entity
       @inventory.owner = @
       @inventory.name = @.name
     @setDimensions()
+    -- as we try to render all icons but have to skip some,
+    -- we need to keep book about those icons we did draw
+    -- so we hightlight and activate the correct one.
+    @drawn_interactions = {}
 
   setDimensions: =>
     if not @scale
@@ -41,6 +45,9 @@ export class Entity
       @width = @image\getWidth() * @scale
       @height = @image\getHeight() * @scale
       @diameter = math.max(@width, @height)
+    @interactions_offset =
+      x: -@width/2
+      y: -(@height/2 + @@interactions_width/2)
 
   transform: =>
     if @rotation
@@ -72,10 +79,12 @@ export class Entity
     if not @@interactions
       return
     love.graphics.push()
-    love.graphics.translate(-@width, -(@height/2 + @@interactions_width/2))
+    love.graphics.translate(@interactions_offset.x, @interactions_offset.y)
+    drawn_interactions = {}
     highlightedAction = @findInteractionName(x, y)
     for action, options in pairs(@@interactions)
       if options.match(@)
+        table.insert(drawn_interactions, action)
         if highlightedAction == action
           love.graphics.setColor(game.colors.white)
           love.graphics.setLineWidth(1)
@@ -85,14 +94,15 @@ export class Entity
         love.graphics.setColor(game.colors.white)
         love.graphics.draw(options.icon[1], options.icon[2], 0, 0)
         love.graphics.translate(@@interactions_width, 0)
+    @drawn_interactions = drawn_interactions
     love.graphics.pop()
 
   findInteractionName: (x, y) =>
-    x += @width
-    y += (@height / 2 + @@interactions_width / 2)
+    x -= @interactions_offset.x
+    y -= @interactions_offset.y
     if y <= @@interactions_width and y >= 0
       col = math.floor(x / @@interactions_width) + 1
-      return _.keys(@@interactions)[col]
+      return @drawn_interactions[col]
     return nil
 
   findInteraction: (x, y) =>
