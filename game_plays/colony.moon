@@ -19,31 +19,22 @@ GamePlay.Colony = class Colony extends GamePlay
     @map_state.scores.biomass = {label: 'Biomass', score: 0}
     @map_state.compute_scores = true
     game.player.colonists = Inventory()
-    start_position = Point(@map_state.map.width / 2, @map_state.map.height / 2, game.layers.buildings)
+    @start_position = Point(@map_state.map.width / 2, @map_state.map.height / 2, game.layers.buildings)
+    @map_state.view.camera\lookAt(@start_position.x, @start_position.y)
+
     for i=1, 1
-      colonist = GamePlay.Colony.Colonist(Point(start_position.x + i * game.icon_size, start_position.y + 60, game.layers.player))
+      colonist = GamePlay.Colony.Colonist(Point(@start_position.x + i * game.icon_size, @start_position.y + 60, game.layers.player))
       colonist.camera = @map_state.view.camera
       game.player.colonists\add(colonist)
       @map_state.map\addEntity(colonist)
     @map_state.scores.biomass = {label: 'Biomass', score: game.player.colonists.length}
 
-    space_ship = GamePlay.Colony.SpaceShip({position: start_position, name: 'Colony Ship APRI50'})
-    @map_state.map\addEntity(space_ship)
-    @map_state.view.camera\lookAt(start_position.x, start_position.y)
-
     inventory = Inventory()
     inventory\add(EvolutionKit.random(game.dna_length))
     inventory\add(EvolutionKit.random(game.dna_length))
     inventory\add(EvolutionKit.random(game.dna_length))
-    workshop = GamePlay.Colony.Workshop({completed: true, position: start_position\offset(150, -90), name: 'Evolution Kit Laboratory', inventory: inventory})
+    workshop = GamePlay.Colony.Workshop({completed: true, position: @start_position\offset(150, -90), name: 'Evolution Kit Laboratory', inventory: inventory})
     @map_state.map\addEntity(workshop)
-
-    @map_state.map\addEntity(Vehicle({
-      rotation: 20,
-      name: 'Vehicle #1'
-      position: Point(start_position.x + 40, start_position.y - 120, game.layers.vehicles)
-      inventory: Inventory()
-    }))
 
     @actors_view = InventoryView(game.player.colonists, {30, 30, 200, 100}, '0-9')
     @map_state\addView(@actors_view)
@@ -53,7 +44,21 @@ GamePlay.Colony = class Colony extends GamePlay
     @inventory_view.display.y = @map_state.view.display.height - @inventory_view.display.height - 20
     @map_state\addView(@inventory_view)
 
-    @atmosphere = Atmosphere(game.seed)
+    start_data = require('game_plays.colony.data.start')
+    if start_data.requires
+      for i, file in *start_data.requires
+        require file
+
+    for name, entity in pairs(start_data.entities)
+      if entity.before_create
+        entity.before_create(entity, @)
+      inspect entity.args
+      e = entity.class(entity.args)
+      if entity.state
+        @[name] = e
+      if entity.map
+        e.position or= @start_position
+        @map_state.map\addEntity(e)
 
     @dt = 0
     @burning_centers = {}
