@@ -13,12 +13,11 @@ entities:
       for k, v in pairs state
         print k, v
       @args.position = state.start_position\offset(200, 100)
-      @args.source_inventories = state.atmosphere
+      @args.source_inventories = {state.atmosphere}
       @args.target_inventory = state.atmosphere
     args:
       name: 'O2 Generator'
       recipes: {Recipe.recipes.co2_o2}
-
 
   space_ship:
     class: GamePlay.Colony.SpaceShip

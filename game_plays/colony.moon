@@ -52,7 +52,6 @@ GamePlay.Colony = class Colony extends GamePlay
     for name, entity in pairs(start_data.entities)
       if entity.before_create
         entity.before_create(entity, @)
-      inspect entity.args
       e = entity.class(entity.args)
       if entity.state
         @[name] = e
