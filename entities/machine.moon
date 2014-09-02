@@ -44,7 +44,9 @@ export class Machine extends Building
   -- machines consume from inventories that provide a consume method (element, amount)
   -- and place things into target_inventories that provide an add method (element, amount)
   new: (options) =>
+    @animation = game.createAnimation('images/entities/machine.png', {48, 48}, {'loop', {1, '1-3'}, 1.4})
     super(options)
+    @image = nil
     assert(@recipes, 'recipes')
     assert(@source_inventories, 'sources')
     assert(@target_inventory, 'target') -- needs add method
