@@ -29,13 +29,8 @@ GamePlay.Colony = class Colony extends GamePlay
     workshop = GamePlay.Colony.Workshop({completed: true, position: @start_position\offset(150, -90), name: 'Evolution Kit Laboratory', inventory: inventory})
     @map_state.map\addEntity(workshop)
 
-    @actors_view = InventoryView(game.player.colonists, {30, 30, 200, 100}, '0-9')
-    @map_state\addView(@actors_view)
-
-    @inventory_view = InventoryView(nil, {30, 200, 30, 100}, 'Shift + 0-9')
-    @inventory_view.display.x = (@map_state.view.display.width - @inventory_view.display.width) / 2
-    @inventory_view.display.y = @map_state.view.display.height - @inventory_view.display.height - 20
-    @map_state\addView(@inventory_view)
+    --@actors_view = InventoryView(game.player.colonists, {30, 30, 200, 100}, 'press <shift> + <0-9>')
+    --@map_state\addView(@actors_view)
 
     start_data = require('game_plays.colony.data.start')
     if start_data.requires
@@ -54,6 +49,12 @@ GamePlay.Colony = class Colony extends GamePlay
         @map_state.map\addEntity(e)
       game.log('Addeded ' .. name)
 
+    @inventory_view = InventoryView(nil, {30, 200, 30, 100}, 'press <0-9>')
+    @inventory_view.display.x = (@map_state.view.display.width - @inventory_view.display.width) / 2
+    @inventory_view.display.y = @map_state.view.display.height - @inventory_view.display.height - 20
+    @map_state\addView(@inventory_view)
+    @inventory_view.inventory = @colonist.inventory
+
     @dt = 0
     @burning_centers = {}
     @particle_systems = {}
@@ -65,7 +66,7 @@ GamePlay.Colony = class Colony extends GamePlay
     shift_pressed = (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift"))
     alt_pressed = (love.keyboard.isDown("lalt") or love.keyboard.isDown("ralt"))
 
-    colonist = game.player.colonists\activeItem()
+    colonist = @colonist --game.player.colonists\activeItem()
     if colonist and not colonist\selectable()
       colonist = nil
       game.player.colonists.active = nil
@@ -88,7 +89,7 @@ GamePlay.Colony = class Colony extends GamePlay
         return true
 
     -- select items on the two inventory views
-    if shift_pressed and colonist and key\match("[0-9]")
+    if not shift_pressed and not alt_pressed and colonist and key\match("[0-9]")
       if not colonist.inventory\activate(tonumber(key))
         colonist.inventory.active = nil
 
@@ -98,7 +99,7 @@ GamePlay.Colony = class Colony extends GamePlay
       if center
         center\prospect()
 
-    if key\match("[0-9]") and not shift_pressed and not alt_pressed
+    if false and key\match("[0-9]") and shift_pressed
       if colonist
         game.player.colonists\deselect()
         @map_state\focusEntity(nil)
