@@ -4,12 +4,11 @@ return class Colonist extends MovableActor
   @interactions: _.deepcopy(MovableActor.interactions)
   index: 0
   names: {'Colonist'}
-  new: (position) =>
-    super({})
+  new: (options) =>
+    super(options)
     @speed = 10
     @dead = false
     @health = 10 * game.dt
-    @position = position
     @scale = 0.5
     @image = game\image('game_plays/colony/images/colonist.png')
     @setDimensions()

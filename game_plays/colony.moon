@@ -22,13 +22,6 @@ GamePlay.Colony = class Colony extends GamePlay
     @start_position = Point(@map_state.map.width / 2, @map_state.map.height / 2, game.layers.buildings)
     @map_state.view.camera\lookAt(@start_position.x, @start_position.y)
 
-    for i=1, 1
-      colonist = GamePlay.Colony.Colonist(Point(@start_position.x + i * game.icon_size, @start_position.y + 60, game.layers.player))
-      colonist.camera = @map_state.view.camera
-      game.player.colonists\add(colonist)
-      @map_state.map\addEntity(colonist)
-    @map_state.scores.biomass = {label: 'Biomass', score: game.player.colonists.length}
-
     inventory = Inventory()
     inventory\add(EvolutionKit.random(game.dna_length))
     inventory\add(EvolutionKit.random(game.dna_length))
@@ -48,6 +41,7 @@ GamePlay.Colony = class Colony extends GamePlay
     if start_data.requires
       for i, file in *start_data.requires
         require file
+    game.log('Initializing Colony')
 
     for name, entity in pairs(start_data.entities)
       if entity.before_create
@@ -58,6 +52,7 @@ GamePlay.Colony = class Colony extends GamePlay
       if entity.map
         e.position or= @start_position
         @map_state.map\addEntity(e)
+      game.log('Addeded ' .. name)
 
     @dt = 0
     @burning_centers = {}
