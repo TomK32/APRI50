@@ -12,6 +12,7 @@ entities:
     map: true
     args:
       name: 'April'
+      active_control: true
     before_create: (state) =>
       @args.position = state.start_position\offset(0, 60)
       @args.camera = state.map_state.view.camera
