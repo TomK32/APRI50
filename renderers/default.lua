@@ -32,6 +32,10 @@ function DefaultRenderer:sprite(which, x, y)
 end
 
 function DefaultRenderer:print(text, color, x, y)
+  if not y then
+    x, y = color, x
+    color = DefaultRenderer.colors.text
+  end
   love.graphics.setColor(unpack(color))
   love.graphics.print(text, x, y)
 end
