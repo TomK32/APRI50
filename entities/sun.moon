@@ -76,5 +76,5 @@ export class Sun
       r = math.floor(@r * factor)
       g = math.floor(@g * factor)
       b = math.floor(@b * factor)
-      a = math.floor(40 * math.sqrt(factor))
+      a = math.floor(100 * math.sqrt(factor))
       return {r, g, b, a}

@@ -5,6 +5,7 @@ require 'lib.strict'
 require 'lib.underscore'
 require 'lib.helpers'
 require 'lib.LuaBit'
+inspect = require 'lib.inspect'
 serialize = require 'lib.serpent'
 
 function love.debug(...)

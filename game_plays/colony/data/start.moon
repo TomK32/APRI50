@@ -10,8 +10,6 @@ entities:
     class: Machine
     map: true
     before_create: (self, state) ->
-      for k, v in pairs state
-        print k, v
       @args.position = state.start_position\offset(200, 100)
       @args.source_inventories = {state.atmosphere}
       @args.target_inventory = state.atmosphere

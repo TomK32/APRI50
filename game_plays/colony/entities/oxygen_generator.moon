@@ -23,7 +23,7 @@ return class OxygenGenerator extends require 'oxygen_tank'
     if @active
       @oxygen += dt * @rate
       @setQuad()
-    
+
   toString: =>
     'Generating ' .. @rate .. ' per tick, ' .. math.floor(100 * @oxygen / @capacity) .. '% filled with oxygen'
 
