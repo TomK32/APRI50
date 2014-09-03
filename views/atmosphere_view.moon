@@ -3,7 +3,6 @@ export class AtmosphereView extends View
   text_color: {0, 255, 0, 255}
   new: (options) =>
     super(options)
-    @offset or= {x: 0, y: 0}
     assert(@atmosphere, "atmosphere hasn't been set")
 
   update: (dt) =>

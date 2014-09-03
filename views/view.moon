@@ -4,6 +4,7 @@ export class View
     @display = {}
     for k, v in pairs(options or {})
       @[k] = v
+    @offset or= {x: 0, y: 0}
     if @background_image
       @setBackgroundImage(@background_image)
     @\setDisplay({x: 0, y: 0, width: 0, height: 0})
