@@ -34,6 +34,7 @@ export class Entity
     -- we need to keep book about those icons we did draw
     -- so we hightlight and activate the correct one.
     @drawn_interactions = {}
+    @interactions or= @@interactions
 
   setDimensions: =>
     if not @scale
@@ -76,14 +77,14 @@ export class Entity
     love.graphics.pop()
 
   drawInteractionIcons: (x, y) =>
-    if not @@interactions
+    if not @interactions
       return
     love.graphics.push()
     love.graphics.translate(@interactions_offset.x, @interactions_offset.y)
     drawn_interactions = {}
     highlightedAction = @findInteractionName(x, y)
-    for action, options in pairs(@@interactions)
-      if options.match(@)
+    for action, options in pairs(@interactions)
+      if not options.match or options.match(@)
         table.insert(drawn_interactions, action)
         if highlightedAction == action
           love.graphics.setColor(game.colors.white)
@@ -108,7 +109,7 @@ export class Entity
   findInteraction: (x, y) =>
     action = @findInteractionName(x, y)
     if action
-      return @@interactions[action]
+      return @interactions[action]
     return nil
 
   hitInteractionIcon: (x, y) =>
@@ -120,8 +121,8 @@ export class Entity
 
   -- overwrite if it is based on the entity's state
   defaultInteraction: () =>
-    if #_.keys(@@interactions) == 1
-      return _.values(@@interactions)[1]
+    if #_.keys(@interactions) == 1
+      return _.values(@interactions)[1]
     return nil
 
 
