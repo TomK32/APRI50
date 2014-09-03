@@ -1,9 +1,13 @@
 
 export class State
   new: (game, name, view) =>
-    @game = game
-    @name = name
-    @view = view
+    if game.name and game.view and not name and not view -- it's a table
+      @name = game.name
+      @view = game.view
+    else
+      @game = game
+      @name = name
+      @view = view
     if @view and not @view.state
       @view.state = @
     @focus = nil
