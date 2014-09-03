@@ -84,9 +84,9 @@ GamePlay.Colony = class Colony extends GamePlay
       @map_state\openInventory(colonist)
 
     if key == ' ' and colonist and item and item.placeable ~= nil and (item.placeable == true or item\placeable())
-      if @map_state\placeItem(colonist.position.x, colonist.position.y, item)
+      @map_state\placeItem colonist.position.x, colonist.position.y, item, (item) ->
         colonist.inventory\remove(item)
-        return true
+      return
 
     -- select items on the two inventory views
     if not shift_pressed and not alt_pressed and colonist and key\match("[0-9]")

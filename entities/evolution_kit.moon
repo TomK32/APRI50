@@ -24,6 +24,7 @@ export class EvolutionKit
   new: (dna, parent, position) =>
     @updateCallbacks = {} -- e.g. for methods to be called if the kit if growing over a longer time
     @dna = dna -- a table
+    @dna_string = table.concat(@dna, '')
     @parent = parent
     @entities = {}
     if position then
@@ -35,7 +36,8 @@ export class EvolutionKit
     @toImage()
     @
 
-  place: (map, position, center) =>
+  place: (map, position, center, success_callback) =>
+    game.setState(State({name: 'Placing an evolution kit', view: require('views.evolution_kit.place_view')({evolution_kit: @, success_callback: success_callback})}))
     @position = position
     @center = center
     @map = map
@@ -115,9 +117,9 @@ export class EvolutionKit
     if @to_string
       return @to_string
     if @dna
-      @to_string = table.concat(@dna, '')
+      @to_string = @dna_string
       @to_string = @to_string .. ' • '
-      @to_string = @to_string .. @extensionsToString(no_score_text)
+      @to_string = @to_string .. @extensionsToString(no_score_text or ' - ')
       return @to_string
     else
       return 'Evolution Kit'

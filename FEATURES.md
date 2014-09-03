@@ -47,6 +47,8 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
   * chart
 * [soon] Cats
 * [soon] info screen for machines (print out their recipies and sources/target inventories)
+* [0.4] Confirmation dialog when placing an evolution kit
+* [soon] Show map/chunk details in dialog when placing an evolution kit
 * Energy (generator and distribution, store it in inventories or directly on entities)
 * Recharge OxygenTank when placed in a OxygenGenerator output field
 * Automatically recharge OxygenTank when close to a generator
