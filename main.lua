@@ -15,8 +15,10 @@ end
 tween = require 'lib.tween'
 require 'game'
 require 'views.view'
+require 'entities/evolution_kit'
+require 'views/mutator_view'
 require 'game_states.state'
-require 'game_states.mutator'
+--require 'game_states.mutator'
 require 'game_states.map_state'
 --require 'views.credits_view'
 function love.load()
