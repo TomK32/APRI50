@@ -14,8 +14,6 @@ export class Center
     @matter_for_chunk = {}
     @filling_matter_for_chunk
     @moisture = point.moisture or 0 -- 0..1
-    @flora = 0
-    @hardening = 0
 
     @neighbors = {} -- Center
     @borders = {} -- Edge
@@ -81,9 +79,9 @@ export class Center
   -- needs of the island map generator.
   getBiome: () =>
     z = @point.z
-    m = @moisture
+    m = @moisture or 0
 
-    for i, extension in pairs @@extensions
+    for i, extension in pairs @extensions
       if extension.getBiome
         ret = extension.getBiome(@)
         if ret
@@ -120,10 +118,7 @@ export class Center
     if m > 0.07
       return 'GRASSLAND'
     else
-      if @flora > 0.5
-        return 'GRASSLAND'
-      else
-        return 'SUBTROPICAL_DESERT'
+      return 'SUBTROPICAL_DESERT'
 
   isLake: =>
     return @downslope == @

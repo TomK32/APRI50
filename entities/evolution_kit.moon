@@ -9,6 +9,11 @@ require 'entities/scorable'
 require 'entities/chunk'
 require 'entities/center'
 require 'entities/corner'
+require 'entities/building'
+
+export class PlacedEvolutionKit extends Building
+  new: (options) =>
+    super _.extend({image: false}, options)
 
 export class EvolutionKit
   placeable: true
@@ -37,10 +42,13 @@ export class EvolutionKit
     @
 
   place: (map, position, center, success_callback) =>
-    game.setState(State({name: 'Placing an evolution kit', view: require('views.evolution_kit.place_view')({evolution_kit: @, success_callback: success_callback})}))
-    @position = position
-    @center = center
-    @map = map
+    success = (item) =>
+      success_callback(item)
+      map\addEntity(PlacedEvolutionKit({
+        position: position, center: center,
+        animation: game.createAnimation('images/entities/evolution_kit_placed.png', {64, 64}, {'loop', {1, '1-5'}, 1.4})
+      }))
+    game.setState(State({name: 'Placing an evolution kit', view: require('views.evolution_kit.place_view')({evolution_kit: @, success_callback: success})}))
 
   registerExtension: (extension) =>
     if game.debug
@@ -177,4 +185,3 @@ EvolutionKit\registerExtension('transforming')
 EvolutionKit\registerExtension('liquifying')
 EvolutionKit\registerExtension('flora')
 EvolutionKit\registerExtension('hardening')
-EvolutionKit\registerExtension('seeding')

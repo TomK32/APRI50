@@ -122,14 +122,11 @@ export class MapState extends State
   placeItem: (x, y, item, success_callback) =>
     center = @map\findClosestCenter(x, y)
     if not center
-      game.log("Couldn't find center " .. x .. "/" .. y " when placing item " .. item\toString())
-      return
+      game.log("Couldn't find center " .. x .. "/" .. y .. " when placing item " .. item\toString())
+      return false
     point = Point(center.point.x, center.point.y)
     if item.place
-      _state = @
-      item\place @map, point, center, (item) =>
-        _state.map\addEntity(item)
-        success_callback(item)
+      item\place @map, point, center, success_callback
     else
       item.position = point
       @map\addEntity(item)

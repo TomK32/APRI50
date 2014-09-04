@@ -1,6 +1,7 @@
 require 'views.view'
 class EvolutionKit.PlaceView extends View
   new: (options) =>
+    @gui = gui
     @background_image = 'images/views/evolution_kit_placement.png'
     super(options)
     @offset = {x: 200, y: 250}
@@ -8,11 +9,11 @@ class EvolutionKit.PlaceView extends View
     assert(@success_callback)
 
   update: (dt) =>
-    gui.group.push({grow: "down", pos: {@offset.x, @offset.y + 200}})
-    if gui.Button({text: "Place it"})
+    @gui.group.push({grow: "down", pos: {@offset.x, @offset.y + 200}})
+    if @gui.Button({text: "Place it"})
       @success_callback(@evolution_kit)
       @state\leaveState()
-    gui.group.pop()
+    @gui.group.pop()
 
   drawContent: =>
     love.graphics.push()

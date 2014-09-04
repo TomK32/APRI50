@@ -8,6 +8,5 @@ class Hardening
   -- add grey borders to the chunk
   finish: =>
     score = Hardening.score(@)
-    @targetChunk.center\increment('hardening', score)
 
 return Hardening

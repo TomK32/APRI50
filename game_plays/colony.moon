@@ -16,7 +16,6 @@ GamePlay.Colony = class Colony extends GamePlay
   new: (map_state) =>
     super(map_state)
 
-    @map_state.scores.biomass = {label: 'Biomass', score: 0}
     @map_state.compute_scores = true
     game.player.colonists = Inventory()
     @start_position = Point(@map_state.map.width / 2, @map_state.map.height / 2, game.layers.buildings)

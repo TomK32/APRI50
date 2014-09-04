@@ -1,3 +1,4 @@
+require 'entities.entity'
 export class Building extends Entity
   @interactions:
     inventory:
@@ -16,5 +17,6 @@ export class Building extends Entity
         print "No game state has been implemented yet"
 
   new: (options) =>
-    @image or= game\image('images/entities/building.png')
+    if options.image != false
+      @image or= game\image('images/entities/building.png')
     super(options)

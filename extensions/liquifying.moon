@@ -13,10 +13,7 @@ export class Liquifying
     if score < 0
       return
 
-    @targetChunk.center\increment('liquifying', score)
     @targetChunk.center\increment('moisture', score / 2)
-    if @targetChunk.center.hardening > 0.3
-      @targetChunk.center\increment('hardening', -0.1)
 
     -- TODO: corners
 
