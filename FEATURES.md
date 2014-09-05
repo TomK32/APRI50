@@ -73,6 +73,7 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 * [0.4] Streams (following downslope)
 * [0.4] Lakes (also moisturing neighbors)
 * [0.4] Store dynamically generated elements (like trees) as images or animations
+* [soon] Minerals in all the map chunks
 * [soon] Colour polygons depending on height
 * Don't always show minerals on the surface, makes prospecting more important
 * Put notes, landmarks and drawings (all on a sign) on the map

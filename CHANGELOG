@@ -3,11 +3,16 @@ Version 0.4
 
 * Sunlight for map
 * Add some shaders
-* Colonists to move around
+* A Colonist to move around
 * Inventories, exchange items between them
 * Colonists die when air runs out
 * Oxygen generator
 * Workshop to mutate your EvoKits
+* A basic atmosphere with info screen
+* Machine to work recepies, e.g. to change the atmosphere
+* Confirmation dialog when placing an EvoKit
+* More matter (minerals, rock, sand, anything really) for the map
+* Water sources that flow downhill and acutally form a lake
 
 Version 0.3
 
