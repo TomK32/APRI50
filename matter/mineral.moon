@@ -7,11 +7,11 @@ class Mineral extends Matter
   }
 
   isFilling: =>
-    @center.prospected ~= true
+    @amount > (@@SORTS[@sort].amount * @@SORTS[@sort].fillingDensity)
 
   drawStyle: =>
     -- only show image if the center had been prospected, otherwise
-    if @isFilling()
-      return 'fill', @@SORTS[@sort].color
-    else
+    if @center.prospected
       return 'image', game\image('images/matter/minerals/' .. string.lower(@sort) .. '.png')
+    elseif @isFilling()
+      return 'fill', @@SORTS[@sort].color

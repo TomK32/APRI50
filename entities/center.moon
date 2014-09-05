@@ -135,8 +135,6 @@ export class Center
     return @
 
   getFillingMatter: =>
-    if @filling_matter_for_chunk
-      print @filling_matter_for_chunk.sort
     @filling_matter_for_chunk
 
   getMatter: =>

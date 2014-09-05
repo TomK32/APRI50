@@ -169,21 +169,20 @@ export class Chunk
     matter = @center\getFillingMatter()
     if matter
       style, color = matter\drawStyle()
-      if type(color) == 'table'
+      if color and type(color) == 'table'
         @colors = color
-      return @colors
-    else
-      @center.biome = @center\getBiome()
-      for i, extension in pairs @@extensions
-        if extension.BIOME_COLORS and extension.BIOME_COLORS[@center.biome]
-          @colors = @randomizeColor(extension.BIOME_COLORS[@center.biome])
-          return @colors
+        return color
+    @center.biome = @center\getBiome()
+    for i, extension in pairs @@extensions
+      if extension.BIOME_COLORS and extension.BIOME_COLORS[@center.biome]
+        @colors = @randomizeColor(extension.BIOME_COLORS[@center.biome])
+        return @colors
 
-      if colors ~= nil
-        @colors = colors
-      else
-        @colors = @randomizeColor(Chunk.BIOME_COLORS[@center.biome])
-      return @colors
+    if colors ~= nil
+      @colors = colors
+    else
+      @colors = @randomizeColor(Chunk.BIOME_COLORS[@center.biome])
+    return @colors
 
   drawDebug: =>
     love.graphics.setColor(250,250,0, 255)
