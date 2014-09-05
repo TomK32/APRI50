@@ -66,17 +66,17 @@ end
 -- Drawing / Frame update
 --
 local draw_items = {n = 0}
-local function registerDraw(id, f, state, ...)
+local function registerDraw(id, f, ...)
 	assert(type(f) == 'function' or (getmetatable(f) or {}).__call,
 	       'Drawing function is not a callable type!')
 
 	local font = love.graphics.getFont()
 
-	local rest = {n = select('#', ...), ...}
-	state = state or 'normal'
+	local state = 'normal'
 	if mouse.isHot(id) or keyboard.hasFocus(id) then
 		state = mouse.isActive(id) and 'active' or 'hot'
 	end
+	local rest = {n = select('#', ...), ...}
 	draw_items.n = draw_items.n + 1
 	draw_items[draw_items.n] = function()
 		if font then love.graphics.setFont(font) end
