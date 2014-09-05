@@ -211,7 +211,7 @@ export class Chunk
     return {x: other.x - @position.x, y: other.y - @position.y}
 
   drawMatter: =>
-    for i, matter in pairs(@center.matter)
+    for i, matter in pairs(@center\matter())
       -- with filling is taken care of in setColor
       if matter and not matter\isFilling()
         style, drawable = matter\drawStyle()

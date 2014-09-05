@@ -273,7 +273,7 @@ export class MapView extends View
     love.graphics.print( 'c:' ..  f.point.x .. ', ' .. f.point.y .. ', ' .. f.point.z, 10, lh + 5)
     @debug_mouse_window = {height: lh, width: 0}
     i = 2
-    for m, matter in pairs(f.matter)
+    for m, matter in pairs(f\matter())
       love.graphics.print( matter\toString(), 10, i * lh)
       i += 1
     for k, v in pairs(f)

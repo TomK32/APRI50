@@ -7,8 +7,8 @@ class MineralsDeposit extends Deposit
   @apply: (center) =>
     r = love.math.noise(center.point.x, center.point.y, center.point.z) * love.math.noise(center.point.z, center.point.x, center.point.y)
     for sort_name, sort in pairs(Mineral.SORTS)
-      if r > sort.seed and r < sort.seed + sort.chance
-        center\addMatter(Mineral(sort_name, math.ceil((r - sort.seed) * sort.amount)))
+      if r < sort.chance
+        center\addMatter(Mineral(sort_name, math.ceil(r * sort.amount)))
     return false
 
   new: (center, strength) =>

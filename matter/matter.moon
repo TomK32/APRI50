@@ -3,8 +3,16 @@ export class Matter
     @center = nil
     @sort, @amount = sort, amount
 
+  add: (amount) =>
+    @amount += amount
+
+  extract: (amount) =>
+    @amount -= amount
+
   merge: (matter) =>
+    return false if matter.sort ~= @sort
     @amount += matter.amount
+    return @amount
 
   removeAmount: (amount) =>
     if amount > @amount

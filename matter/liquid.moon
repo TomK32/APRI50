@@ -15,13 +15,13 @@ export class Liquid extends Matter
     if @delay_dt > 0
       return
     if @center\isLake()
-      @center.downslope.moisture += dt
+      @center.moisture += dt
       for i, neighbor in pairs(@center.neighbors)
         if neighbor.moisture < 0.4
           neighbor.moisture += dt
     else
       -- liquid flowing downhill
-      drainingAmount = @amount * dt * (@center.point.z / @center.downslope.point.z)
+      drainingAmount = @amount * dt * (@center.point.z / math.max(0.001, @center.downslope.point.z))
       @center.downslope\addMatter(Liquid(@sort, drainingAmount))
       @removeAmount(drainingAmount)
 

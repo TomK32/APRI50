@@ -1,3 +1,4 @@
+require 'entities.other.deposit'
 
 -- This is the logic representation, the Chunk is doing all things visual
 export class Center
@@ -10,7 +11,7 @@ export class Center
     @map, @point = map, point
     @index = 0
 
-    @matter = { } -- all sorts of things, rocks, water, compost
+    @deposit = Deposit()
     @matter_for_chunk = {}
     @filling_matter_for_chunk
     @moisture = point.moisture or 0 -- 0..1
@@ -39,35 +40,27 @@ export class Center
   update: (dt) =>
     for i, extension in pairs(@extensions)
       extension\update(dt)
-    for i, matter in pairs(@matter)
+    for i, matter in pairs(@matter())
       if matter.update
         matter\update(dt)
 
   findMatter: (matter) =>
-    for i, m in pairs(@matter)
-      if m.sort == matter.sort
-        return m, i
-    return nil
+    return @matter()[matter.sort]
 
   addMatter: (matter) =>
-    m, i = @findMatter(matter, true)
+    m = @findMatter(matter)
     if m
       m\merge(matter)
     else
       matter.center = @
-      table.insert(@matter, matter)
+      @deposit\addElement(matter.sort, matter)
       @setMatterForChunk()
 
   removeMatter: (matter, amount) =>
-    m, i = findMatter(matter)
+    m = @findMatter(matter)
     if not m
       return
-    if not m\removeAmount(amount)
-      return false
-    else if m.amount == 0
-      table.remove(@matter, i)
-      @setMatterForChunk()
-
+    m\removeAmount(amount)
 
   addParticleSystem: (system) =>
     @chunk\addParticleSystem(system)
@@ -127,17 +120,23 @@ export class Center
     @prospected = true
     @setMatterForChunk()
 
+  matter: =>
+    @deposit.composition
+
   setMatterForChunk: =>
     -- TODO Find which one is the most dominant
     @matter_for_chunk = {}
     @filling_matter_for_chunk = nil
-    for i, matter in pairs(@matter)
+    for i, matter in pairs(@matter())
       table.insert(@matter_for_chunk, {matter, matter\isFilling()})
       if matter\isFilling()
         @filling_matter_for_chunk = matter
+        return @
     return @
 
   getFillingMatter: =>
+    if @filling_matter_for_chunk
+      print @filling_matter_for_chunk.sort
     @filling_matter_for_chunk
 
   getMatter: =>
