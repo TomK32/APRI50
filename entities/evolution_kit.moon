@@ -48,7 +48,7 @@ export class EvolutionKit
         position: position, center: center,
         animation: game.createAnimation('images/entities/evolution_kit_placed.png', {64, 64}, {'loop', {1, '1-5'}, 1.4})
       }))
-    game.setState(State({name: 'Placing an evolution kit', view: require('views.evolution_kit.place_view')({evolution_kit: @, success_callback: success})}))
+    game.setState(State({name: 'Placing an evolution kit', view: require('views.evolution_kit.place_view')({evolution_kit: @, success_callback: success, center: center})}))
 
   registerExtension: (extension) =>
     if game.debug

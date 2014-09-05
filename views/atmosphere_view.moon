@@ -1,4 +1,4 @@
-require 'entities.atmosphere'
+require 'entities.other.atmosphere'
 export class AtmosphereView extends View
   text_color: {0, 255, 0, 255}
   new: (options) =>
