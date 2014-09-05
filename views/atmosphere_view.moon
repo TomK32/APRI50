@@ -5,13 +5,6 @@ export class AtmosphereView extends View
     super(options)
     assert(@atmosphere, "atmosphere hasn't been set")
 
-  update: (dt) =>
-    super(dt)
-    gui.group.push{grow: "right", pos: {20, 20}}
-    if gui.Button({text: 'return', draw: (s,t,x,y,w,h) -> game.renderer\print(t, game.colors.text2, x, y)})
-      @state\leaveState()
-    gui.group.pop()
-
   drawContent: =>
     love.graphics.push()
     gui.core.draw()
