@@ -118,7 +118,8 @@ function game:createFonts(offset)
     large = love.graphics.newFont(font_file, 20 + offset),
     very_large = love.graphics.newFont(font_file, 48 + offset),
     mono_small = love.graphics.newFont(mono_font, 10 + offset),
-    mono_regular = love.graphics.newFont(mono_font, 16 + offset)
+    mono_regular = love.graphics.newFont(mono_font, 16 + offset),
+    title = love.graphics.newFont(font_file, 128 + offset)
   }
 end
 

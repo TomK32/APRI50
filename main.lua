@@ -33,11 +33,10 @@ function love.load()
   game.log('Starting game version '.. require('version'))
   game:setMode(preferred_mode)
 
-  -- game.current_state = Intro(game.newVersionOrStart)
+  game.current_state = require('game_states.intro')(game.start)
 
   --love.audio.play(game.sounds.music.track01)
-  --game:mutator()
-  game:start()
+  --game:start()
 end
 madeScreenshot = false
 function love.draw()
