@@ -179,9 +179,6 @@ export class EvolutionKit
       if e == callback
         table.remove(@[event], i)
 
--- @extensions = {
---EvolutionKit\registerExtension('consuming')
-EvolutionKit\registerExtension('transforming')
 EvolutionKit\registerExtension('liquifying')
 EvolutionKit\registerExtension('flora')
 EvolutionKit\registerExtension('hardening')

@@ -47,7 +47,6 @@ export class Chunk
   new: (center, evolution_kit) =>
     -- evolution_kit can be nil
     @canvas = nil
-    @tween_data = {} -- going to be merged into the center(s) after the transformation
     @center = center
     @center.chunk = @
     @particle_systems = {}
@@ -151,10 +150,6 @@ export class Chunk
     for i, corner in ipairs(@center.corners)
       callback(corner, @center)
     return true
-
-  mergeAttributes: () =>
-    for k,v in pairs @tween_data
-      @center[k] = v
 
   toString: =>
     string = @width .. 'x' .. @height .. "\n"
