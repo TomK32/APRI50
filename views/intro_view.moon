@@ -1,14 +1,14 @@
 require 'views.view'
 class IntroView extends View
   steps: {
-    { time: 10, text: 'ananasblau games present', colors: {205, 205, 205, 255} },
-    { time: 10, text: 'a Thomas R. Koll game', colors: {205, 205, 205, 255} },
+    { time: 10, text: 'ananasblau games', colors: {205, 205, 205, 255} },
+    { time: 8, text: 'proudly presents a', colors: {205, 205, 205, 255}, font: 'large' },
+    { time: 10, text: 'Thomas R. Koll game', colors: {205, 205, 205, 255} },
     { time: 20, text: 'APRI50', colors: {0, 255, 0, 255}, font: 'title' }
   }
 
   new: (callback) =>
     super()
-    print callback
     @callback = callback
     @dt_timer = 0
 
@@ -19,7 +19,6 @@ class IntroView extends View
 
   drawContent: =>
     for i, step in ipairs(@steps)
-      print i, step.text
       if step.time < @dt_timer -- we've seen it. next
         table.remove(@steps, i)
         @dt_timer = 0
@@ -37,9 +36,9 @@ class IntroView extends View
       step.y = (game.graphics.mode.height - font\getHeight(step.text)) / 2
     sh = step.time / 2
     if @dt_timer < sh
-      step.colors[4] = 255 * math.pow(@dt_timer / sh, 2)
+      step.colors[4] = 255 * math.sqrt(@dt_timer / sh, 4)
     else
-      step.colors[4] = 255 * math.sqrt(math.sqrt((step.time - @dt_timer) / sh))
+      step.colors[4] = 255 * math.sqrt((step.time - @dt_timer) / sh, 2)
     love.graphics.setColor(unpack(step.colors))
     love.graphics.translate(step.x, step.y)
     love.graphics.print(step.text, 0, 0)
