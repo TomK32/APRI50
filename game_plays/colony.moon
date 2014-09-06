@@ -77,7 +77,7 @@ GamePlay.Colony = class Colony extends GamePlay
           return true
 
     if shift_pressed and key == 'a'
-      game.setState(State(game, 'Atmosphere Info', AtmosphereView({atmosphere: @atmosphere, offset: {x: 620, y: 250}, background_image: 'game_plays/colony/images/geodesic_dome.png'})))
+      game.setState(State(game, 'Atmosphere Info', AtmosphereView({atmosphere: @atmosphere})))
 
     if key == 't' and colonist
       @map_state\openInventory(colonist)

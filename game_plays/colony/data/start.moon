@@ -31,7 +31,6 @@ entities:
         atmosphere:
           icon: Entity.interactions_icons.controls_machine
           clicked: =>
-            game.setState(State(game, 'Atmosphere Info', AtmosphereView({atmosphere: game.current_state.game_play.atmosphere, offset: {x: 620, y: 250}, background_image: 'game_plays/colony/images/geodesic_dome.png'})))
 
   space_ship:
     class: GamePlay.Colony.SpaceShip
