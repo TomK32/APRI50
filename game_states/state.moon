@@ -25,7 +25,7 @@ export class State
     if @sub_views
       for i, view in ipairs(@sub_views)
         if view\active()
-          view\draw()
+          view\draw(true)
     if @view and @view.drawAfterSubViews
       @view\drawAfterSubViews()
 

@@ -4,16 +4,19 @@ export class InventoryExchangeView extends View
 
     @state = state
     @inventory, @others = inventory, others
+    if @inventory.background_image
+      @setBackgroundImage(@inventory.background_image)
 
     @icon_size = game.icon_size * 2
 
   inventory_margin: 10
   inventory_width: game.graphics.mode.width / 2 - (2 * 10)
-  inventory_y: 40
+  inventory_offset:
+    x: 140
+    y: 100
 
   drawContent: =>
     love.graphics.setColor(game.colors.text)
-    love.graphics.print(@inventory\toString(), 5, 5)
 
     love.graphics.push()
     gui.core.draw()
@@ -43,9 +46,9 @@ InventoryExchangeView.InventoryView = class extends InventoryView
     super(...)
     @padding = 2
     @display.x = InventoryExchangeView.inventory_width + InventoryExchangeView.inventory_margin
-    @display.y = InventoryExchangeView.inventory_y
+    @display.y = InventoryExchangeView.inventory_offset.y
     @display.width = InventoryExchangeView.inventory_width
-    @display.height = game.graphics.mode.height - InventoryExchangeView.inventory_y - InventoryExchangeView.inventory_margin
+    @display.height = game.graphics.mode.height - InventoryExchangeView.inventory_offset.y - InventoryExchangeView.inventory_margin
     @icon_size = game.icon_size * 1.5
     @rows = 5
     @columns = 10
@@ -59,9 +62,9 @@ InventoryExchangeView.CharacterView = class extends InventoryView
   new: (...) =>
     super(...)
     @display.x = InventoryExchangeView.inventory_margin
-    @display.y = InventoryExchangeView.inventory_y
+    @display.y = InventoryExchangeView.inventory_offset.y
     @display.width = InventoryExchangeView.inventory_width
-    @display.height = game.graphics.mode.height - InventoryExchangeView.inventory_y - InventoryExchangeView.inventory_margin
+    @display.height = game.graphics.mode.height - InventoryExchangeView.inventory_offset.y - InventoryExchangeView.inventory_margin
     @icon_size = game.icon_size * 1.5
     @item_description = 'hover'
     @rows = 5

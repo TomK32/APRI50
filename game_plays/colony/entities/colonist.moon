@@ -3,7 +3,7 @@ require 'actors.movable_actor'
 return class Colonist extends MovableActor
   @interactions: _.deepcopy(MovableActor.interactions)
   index: 0
-  names: {'Colonist'}
+  names: {'APRI50', 'Colonist'}
   new: (options) =>
     super(options)
     @speed = 10
@@ -15,8 +15,9 @@ return class Colonist extends MovableActor
     @reach = @diameter / 2 -- how far the arms stretch
     @id = @@index + 1
     @@index += 1
-    @name = @@names[(@id % #@@names) + 1] .. @id
+    @name = options.name or @@names[(@id % #@@names) + 1] .. @id
     @inventory = Inventory(@, @name, @inventoryChanged)
+    @inventory.background_image = 'game_plays/colony/images/colonist_landscape.png'
     -- just add one
     @inventory\add(EvolutionKit.random(game.dna_length))
     @inventory\add(GamePlay.Colony.OxygenTank(20000))

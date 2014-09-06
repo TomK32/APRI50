@@ -2,13 +2,18 @@
 export class InventoryView extends View
   new: (inventory, color, title) =>
     @color = color or {0, 200, 0, 100}
-    @title = title
+    @title = 'Inventory of ' .. title
     super(@)
     @padding = 2
     @rows = 1
     @columns = 10
     @icon_size = game.icon_size
     @inventory = inventory
+    if @inventory
+      if @inventory.background_image
+        @setBackgroundImage(@inventory.background_image)
+      if @inventory.view_offset
+        @offset = @inventory.view_offset
     @item_description = 'static' -- other option is hover
     @setDisplayWithColumns()
 
