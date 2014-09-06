@@ -74,6 +74,9 @@ export class View
     for k, v in pairs(display) do
       @display[k] = v
 
+  printLine: (...) =>
+    game.renderer\printLine(...)
+
   -- if you don't need it, set @guiReturnButton to nil in you subsclass
   guiReturnButton: =>
     gui.group.push{grow: "right", pos: {20, 20}}
