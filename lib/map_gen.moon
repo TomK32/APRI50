@@ -31,7 +31,7 @@ class LineSegment
 -- MIT License
 -- @author Michael Baczynski, http://lab.polygonal.de/?p=162
 -- @author Thomas R. Koll, www.ananasblau.com
-class PM_PRNG
+export class PM_PRNG
   prime: math.pow(2, 31) - 1
   new: (seed) =>
     @seed = seed or math.floor(math.random() * 10)

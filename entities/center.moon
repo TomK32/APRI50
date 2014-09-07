@@ -44,6 +44,9 @@ export class Center
       if matter.update
         matter\update(dt)
 
+  relativeXY: =>
+    return {@point.x / @map.width, @point.y / @map.height}
+
   findMatter: (matter) =>
     return @matter()[matter.sort]
 
