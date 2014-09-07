@@ -3,6 +3,8 @@ require "entities.plants.seedling"
 -- places plants on the map
 export class Flora
   @matcher = game.matchers.flora
+  requirements: {'Dirt'}
+  recipes: {}
 
   score: =>
     return @\score(Flora.matcher, 0.3)

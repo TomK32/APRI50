@@ -38,6 +38,11 @@ export class EvolutionKit
 
     mixin(@, Scorable)
 
+    @active_extensions = {}
+    for i, extension in ipairs(EvolutionKit.extensions)
+      if extension.score and extension.score(@) > 0
+        table.insert(@active_extensions, extension)
+
     @toImage()
     @
 
@@ -134,13 +139,10 @@ export class EvolutionKit
 
   extensionsToString: (no_score_text) =>
     to_string = ''
-    has_score = false
-    for i, extension in ipairs(EvolutionKit.extensions)
-      if extension.score and extension.score(@) > 0
-        has_score = true
-        to_string = to_string .. extension.__name .. ': ' .. string.format("%.1f", extension.score(@)) .. ' '
-    if not has_score and no_score_text
-      to_string = to_string .. no_score_text
+    for i, extension in ipairs(@active_extensions)
+      to_string = to_string .. extension.__name .. ': ' .. string.format("%.1f", extension.score(@)) .. ' '
+    if #@active_extensions == 0 and no_score_text
+      return to_string .. no_score_text
     return to_string
 
   toImage: =>
@@ -178,6 +180,14 @@ export class EvolutionKit
     for i,e in ipairs(@[event])
       if e == callback
         table.remove(@[event], i)
+
+  suitable_ground: (center, extension) =>
+    return false if not extension.requirements
+    matter = _.keys(center\matter())
+    for i, requirement in ipairs(extension.requirements)
+      if not _.include(matter, requirement)
+        return false
+    return true
 
 EvolutionKit\registerExtension('liquifying')
 EvolutionKit\registerExtension('flora')

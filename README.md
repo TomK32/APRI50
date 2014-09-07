@@ -19,7 +19,7 @@
 
 You are playing *Angelica Smith*, highly trained scientist with a few
 biomechanic modifications, who was sent here as part of humanity's
-search for _new planets to colonize_. 
+search for _new planets to colonize_.
 
 After your arrival in orbit in a hyperspace ship you have
 successfully landed on the planet. In a barren landscape shaped by
