@@ -24,6 +24,7 @@ export class Center
     @biome = nil -- string
     @prospected = false
     @extensions = {}
+    @_diameter = nil
     for i, extension_class in pairs(@@extensions)
       extension = extension_class\apply(@)
       if extension
@@ -143,3 +144,25 @@ export class Center
   getMatter: =>
     return unpack(@matter_for_chunks)
 
+  diameter: =>
+    return @_diameter if @_diameter
+    @_diameter = math.sqrt(math.pow(@boundingBox().width, 2) + math.pow(@boundingBox().height, 2))
+    return @_diameter
+
+  boundingBox: =>
+    return @bounding_box if @bounding_box
+    @bounding_box = {}
+    x, y = @corners[1].point.x, @corners[1].point.y
+    x0, y0, x1, y1 = x, y, x, y
+    for i, corner in ipairs(@corners)
+      if x0 > corner.point.x
+        x0 = corner.point.x
+      if y0 > corner.point.y
+        y0 = corner.point.y
+      if x1 < corner.point.x
+        x0 = corner.point.x
+      if y1 < corner.point.y
+        y0 = corner.point.y
+
+    @bounding_box = {x: x0, y: y0, width: x1 - x0, height: y1 - y1}
+    return @bounding_box
