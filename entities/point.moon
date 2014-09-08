@@ -12,6 +12,12 @@ export class Point
       z = (a.z + b.z) * strength
     return Point((a.x + b.x) * strength, (a.y + b.y) * strength, z)
 
+  add: (other) =>
+    assert(other)
+    @x += other.x
+    @y += other.y
+    return @
+
   toString: =>
     return 'x: ' .. @round(@x) .. ', y: ' .. @round(@y) .. ', z: ' .. @round(@z) or '-'
 
