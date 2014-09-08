@@ -1,3 +1,4 @@
+require 'entities.evolution_kit'
 require 'game_states.inventory_exchange_state'
 require 'actors/vehicle'
 package.path = './game_plays/colony/views/?.lua;' .. package.path

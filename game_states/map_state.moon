@@ -1,4 +1,5 @@
 
+require 'entities.map'
 require 'views/map_view'
 require 'views/inventory_view'
 require 'views/scores_view'

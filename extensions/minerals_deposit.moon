@@ -1,3 +1,4 @@
+require 'lib.pm_prng'
 Mineral = require 'matter/mineral'
 require 'entities.other.deposit'
 

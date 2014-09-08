@@ -5,10 +5,8 @@
 -- Also read:
 -- https://github.com/jbrownlee/learning-lua/blob/master/genetic_algorithm.lua
 
-require 'entities/scorable'
-require 'entities/chunk'
+require 'extensions/scorable'
 require 'entities/center'
-require 'entities/corner'
 require 'entities/building'
 
 export class PlacedEvolutionKit extends Building

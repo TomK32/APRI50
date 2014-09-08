@@ -13,9 +13,9 @@ function love.debug(...)
 end
 
 tween = require 'lib.tween'
+_ = require 'lib.underscore'
 require 'game'
 require 'views.view'
-require 'entities/evolution_kit'
 require 'views/mutator_view'
 require 'game_states.state'
 --require 'game_states.mutator'

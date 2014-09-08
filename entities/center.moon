@@ -1,4 +1,6 @@
 require 'entities.other.deposit'
+require 'entities.corner'
+require 'entities.chunk'
 
 -- This is the logic representation, the Chunk is doing all things visual
 export class Center

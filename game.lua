@@ -1,5 +1,4 @@
 
-require 'entities/map'
 require 'entities/player'
 anim8 = require 'lib/anim8'
 gui = require 'lib.quickie'
