@@ -28,13 +28,14 @@ export class Scorable
     return @\scoresWithSum(dna_matchers).scores
 
   @scoresSum: (dna_matchers) =>
-    @\scoresWithSum(dna_matchers).score
+    Scorable.scoresWithSum(@, dna_matchers).score
 
   @scoresWithSum: (dna_matchers) =>
+    assert(dna_matchers)
     score = 0
     scores = {}
     for name, dna_matcher in pairs(dna_matchers) do
-      scores[name] = @\score(dna_matcher)
+      scores[name] = Scorable.score(@, dna_matcher)
       score += scores[name]
     return {score: score, scores: scores}
 

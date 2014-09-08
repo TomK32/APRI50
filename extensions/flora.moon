@@ -1,18 +1,27 @@
-require "entities.plants.seedling"
+require "entities.plants.plant"
 
 -- places plants on the map
 class Spawner
   new: (score, evolution_kit, center) =>
     @evolution_kit = evolution_kit
     @center = center
-    @score = (1 + score) * @center\diameter()
+    @dt_max = score * @center\diameter()
+    @score = score
+    @dt_timer = 0
 
   update: (dt) =>
-    speed = @score / 2 + love.math.random(@score)
-    @center.map\addEntity(Plant.Seedling({position: @randomPoint(), speed: speed, dna: @evolution_kit\randomize(1)}))
+    @dt_timer += dt
+    if @dt_timer < @dt_max
+      return
+    @dt_timer = 0
+    plant = Plant.seed({position: @randomPoint(), dna: @evolution_kit\randomize(1)}, @center.map)
+    if plant
+      @center.map\addEntity(plant)
 
   randomPoint: =>
-    point = Point(love.math.random(@score), love.math.random(@score))
+    print @score
+    d = (1 + @score) * @center\diameter()
+    point = Point(love.math.random(0, d), love.math.random(0, d))
     point\add(@center.point)
     point.z = game.layers.plants
     return point

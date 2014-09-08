@@ -12,6 +12,7 @@ require 'entities/building'
 export class PlacedEvolutionKit extends Building
   new: (options) =>
     super _.extend({image: false}, options)
+    assert(@evolution_kit)
 
   update: (dt) =>
     super(dt)
@@ -52,12 +53,12 @@ export class EvolutionKit
   place: (map, position, center, success_callback) =>
     success = (evolution_kit) =>
       evolution_kit\apply(center)
-      kit = map\addEntity(PlacedEvolutionKit({
+      map\addEntity(PlacedEvolutionKit({
         evolution_kit: evolution_kit,
         position: position, center: center,
         animation: game.createAnimation('images/entities/evolution_kit_placed.png', {64, 64}, {'loop', {1, '1-5'}, 1.4})
-      success_callback(evolution_kit)
       }))
+      success_callback(evolution_kit)
     game.setState(State({name: 'Placing an evolution kit', view: require('views.evolution_kit.place_view')({evolution_kit: @, success_callback: success, center: center})}))
 
   registerExtension: (extension) =>
@@ -69,7 +70,6 @@ export class EvolutionKit
 
   apply: (center) =>
     assert(center)
-    -- Any extension might change the chunks is size and composition
     -- first pass
     for extension in *EvolutionKit.extensions
       if extension.apply

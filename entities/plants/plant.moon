@@ -1,5 +1,6 @@
 require 'entities.entity'
 require 'lib.lsystem'
+require 'extensions.scorable'
 
 export class Plant extends Entity
   LSYSTEM:
@@ -19,6 +20,9 @@ export class Plant extends Entity
     super(options)
     @canvas_size = 256
     @setLsystem(@@LSYSTEM)
+
+  update: (dt) =>
+    super(dt)
 
   setLsystem: (system) =>
     @lsystem = Lsystem(system)
@@ -94,3 +98,16 @@ export class Plant extends Entity
 
   toString: =>
     return @@__name .. ' ' .. @lsystem\toString()
+
+  @seed: (options, map) ->
+    assert(options.position)
+    assert(options.dna)
+    assert(map)
+    for i, plant in ipairs(Plant.PLANTS)
+      for i, matcher in ipairs(plant.DNA_MATCHERS)
+        score = Scorable.scoresSum({dna: options.dna}, {matcher})
+        if score > 0
+          return map\addEntity(plant(options))
+    return false
+
+Plant.PLANTS = _.collect({'grass', 'tree'}, (f) -> require('entities.plants.' .. f))

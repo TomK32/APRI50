@@ -1,6 +1,5 @@
-require 'entities.plants.plant'
-
-export class Plant.Tree extends Plant
+class Plant.Tree extends Plant
+  DNA_MATCHERS: _.map(_.range(1,10), -> game.randomDnaMatcher(3))
   LSYSTEM:
     start: 'FFX'
     rules:

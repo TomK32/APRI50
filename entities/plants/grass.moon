@@ -1,6 +1,5 @@
-require 'entities.plants.plant'
-
-export class Plant.Grass extends Plant
+class Plant.Grass extends Plant
+  DNA_MATCHERS: _.map(_.range(1,10), -> game.randomDnaMatcher(2))
   LSYSTEM:
     start: 'YXX[X]'
     rules:
@@ -15,6 +14,7 @@ export class Plant.Grass extends Plant
   new: (options) =>
     super(options)
     @variations = {}
+    @radius or= 20
     r = @radius / 2
     r2 = r * 2
     for i=1, @radius
