@@ -8,7 +8,7 @@ float rand(vec2 n)
 
 vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
 {
-  float grey = 1.0125 - 0.05 * rand(texture_coords + offset);
+  float grey = 1.0125 - 0.025 * rand(texture_coords + offset);
   vec4 noise = vec4(grey, grey, grey, 1);
   vec4 other = Texel(texture, texture_coords * sqrt(grey));
   vec4 n = (Texel(texture, texture_coords) + other) / 2;
