@@ -1,6 +1,6 @@
 
 class Hardening
-  @matcher = game.matchers.hardening
+  @matcher = game.randomDnaMatcher(7)
 
   score: =>
     return @\score(Hardening.matcher)

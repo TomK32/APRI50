@@ -18,7 +18,7 @@ class Spawner
     return point
 
 class Flora
-  @matcher = game.matchers.flora
+  @matcher = game.randomDnaMatcher(5)
   requirements: {'Dirt'}
   recipes: {}
 

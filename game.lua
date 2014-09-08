@@ -27,6 +27,7 @@ game = {
   version = require('version'),
   url = 'http://ananasblau.com/apri50',
   dna_length = 12,
+  dna_chars = {'A', 'C', 'G', 'T'},
   evolution_kits_to_start = 7,
   colors = require('colors'),
   shaders = { },
@@ -37,21 +38,30 @@ game = {
     vehicles = 41,
     player = 50
   },
-  matchers = {
-    -- make sure they are unique and don't overlap too much.
-    markable   = splitDNA('A  C  G  T A'),
-    liquifying = splitDNA(' A     C T G'),
-    growable   = splitDNA('A   T      G'),
-    river      = splitDNA('T     G     '),
-    flora      = splitDNA('A   T   T GT'),
-    seeding    = splitDNA('  A T  C G  '),
-    hardening  = splitDNA(' TG   A GGT ')
-  },
   player = Player(),
   icon_size = 32,
   images = {}
 }
 game.renderer.colors = game.colors
+
+function game.randomDnaMatcher(places)
+  local dna = {}
+  for i=1, game.dna_length do
+    dna[i] = ' '
+  end
+  places = math.min(places, game.dna_length)
+  repeat
+    local n = love.math.random(1, game.dna_length)
+    if dna[n] == ' ' then
+      dna[n] = game.dna_chars[love.math.random(1, #game.dna_chars)]
+      places = places - 1
+    end
+  until places == 0
+  return dna
+end
+function game.randomDnaMatcherString(places)
+  return table.concat(game.randomDnaMatcher(places))
+end
 
 function game:shader(name)
   if not self.shaders[name] then

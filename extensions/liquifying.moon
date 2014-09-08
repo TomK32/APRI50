@@ -1,7 +1,7 @@
 
 -- gradually changes the colour of a chunk
 export class Liquifying
-  @matcher = game.matchers.liquifying
+  @matcher = game.randomDnaMatcher(6)
 
   score: =>
     return @\score(Liquifying.matcher, 0.2)
