@@ -1,7 +1,23 @@
 require "entities.plants.seedling"
 
 -- places plants on the map
-export class Flora
+class Spawner
+  new: (score, evolution_kit, center) =>
+    @evolution_kit = evolution_kit
+    @center = center
+    @score = (1 + score) * @center\diameter()
+
+  update: (dt) =>
+    speed = @score / 2 + love.math.random(@score)
+    @center.map\addEntity(Plant.Seedling({position: @randomPoint(), speed: speed, dna: @evolution_kit\randomize(1)}))
+
+  randomPoint: =>
+    point = Point(love.math.random(@score), love.math.random(@score))
+    point\add(@center.point)
+    point.z = game.layers.plants
+    return point
+
+class Flora
   @matcher = game.matchers.flora
   requirements: {'Dirt'}
   recipes: {}
@@ -9,18 +25,11 @@ export class Flora
   score: =>
     return @\score(Flora.matcher, 0.3)
 
-  finish: (chunk) =>
+  apply: (center) =>
     score = Flora.score(@)
-    if game.debug
-      print('Flora: ' .. score)
-    if score < 0
-      return
 
-    position = _.extend(@position, {z: game.layers.plants})
-    @map\addEntity(Plant.Seedling({position: position, speed: score, dna: @randomize(1)}))
-
-  createImage: =>
-    table.insert(@entities, {drawable: game\image('images/entities/flora1.png')})
+    machine = Spawner(score, @, center)
+    @registerUpdateObject(machine)
 
 return Flora
 

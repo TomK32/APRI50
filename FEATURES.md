@@ -35,14 +35,15 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 * [0.4] Basic prospecting of map chunks to see what resources are there
 * [0.4] Workshop for mutating your EvoKits
 * [soon] Buildings (habitat, utilities, workshop, garden)
-* [soon] Workshop for building vehicles, machines, robots, harvester
-* Workshop to process resources
+* [soon] Workshop that processes recipes (e.g. for athmosphere or evo kits, build other units)
+  * Evo Kit Flora (spreads seedlings)
+  * Evo Kit factory
 * [0.4] Vehicles (extending Actor, car-controls)
 * [soon] Vehicles leaving tracks
 * [0.4] Athmosphere (CO, CO2, N2, O2, ...)
   * earth is 78% N2, 21% O2, 0.9% Ar, 0.0397% CO2 and 0.001% to 5% H20
   * mars is 96.0% CO2, 2.1% Ar, 1.9% N2, 0.145% O2, 0.056% CO
-  * [0.4] machine to consume and create certain elements and add them to the atmosphere
+  * [0.4] a machine to consume and create certain elements and add them to the atmosphere
   * daily log of the composition
   * chart
 * [soon] Cats

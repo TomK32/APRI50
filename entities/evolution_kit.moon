@@ -15,6 +15,10 @@ export class PlacedEvolutionKit extends Building
   new: (options) =>
     super _.extend({image: false}, options)
 
+  update: (dt) =>
+    super(dt)
+    @evolution_kit\update(dt)
+
 export class EvolutionKit
   placeable: true
 
@@ -28,6 +32,7 @@ export class EvolutionKit
 
   new: (dna, parent, position) =>
     @updateCallbacks = {} -- e.g. for methods to be called if the kit if growing over a longer time
+    @updateObjects = {}
     @dna = dna -- a table
     @dna_string = table.concat(@dna, '')
     @parent = parent
@@ -47,11 +52,13 @@ export class EvolutionKit
     @
 
   place: (map, position, center, success_callback) =>
-    success = (item) =>
-      success_callback(item)
-      map\addEntity(PlacedEvolutionKit({
+    success = (evolution_kit) =>
+      evolution_kit\apply(center)
+      kit = map\addEntity(PlacedEvolutionKit({
+        evolution_kit: evolution_kit,
         position: position, center: center,
         animation: game.createAnimation('images/entities/evolution_kit_placed.png', {64, 64}, {'loop', {1, '1-5'}, 1.4})
+      success_callback(evolution_kit)
       }))
     game.setState(State({name: 'Placing an evolution kit', view: require('views.evolution_kit.place_view')({evolution_kit: @, success_callback: success, center: center})}))
 
@@ -62,30 +69,31 @@ export class EvolutionKit
     assert(extension)
     table.insert(@extensions, extension)
 
-  apply: (position) =>
-    if not @center
-      return
-    @currentChunk = Chunk(@center, @)
-    @targetChunk = Chunk(@center, @)
+  apply: (center) =>
+    assert(center)
     -- Any extension might change the chunks is size and composition
     -- first pass
     for extension in *EvolutionKit.extensions
       if extension.apply
-        extension.apply(self, @targetChunk)
+        extension.apply(self, center)
     -- final pass
     for extension in *EvolutionKit.extensions
       if extension.finish
-        extension.finish(self, @targetChunk)
+        extension.finish(self, center)
     @
 
   update: (dt) =>
-    return if not @position
-    for i, callback in pairs(@updateCallbacks) do
+    for i, callback in pairs(@updateCallbacks)
       callback(@, dt)
+    for i, object in pairs(@updateObjects)
+      object\update(dt)
 
     if #@updateCallbacks == 0
       -- nothing else to do will be merged into the map
       @\merge()
+
+  registerUpdateObject: (obj) =>
+    table.insert(@updateObjects, obj)
 
   merge: =>
     for extension in *EvolutionKit.extensions
