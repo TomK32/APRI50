@@ -81,17 +81,23 @@ export class EvolutionKit
     @
 
   update: (dt) =>
-    for i, callback in pairs(@updateCallbacks)
+    for i, callback in ipairs(@updateCallbacks)
       callback(@, dt)
-    for i, object in pairs(@updateObjects)
+    for i, object in ipairs(@updateObjects)
       object\update(dt)
 
     if #@updateCallbacks == 0
       -- nothing else to do will be merged into the map
       @\merge()
 
-  registerUpdateObject: (obj) =>
-    table.insert(@updateObjects, obj)
+  registerUpdateObject: (object) =>
+    table.insert(@updateObjects, object)
+
+  removeUpdateObject: (object) =>
+    for i, obj in ipairs(@updateObjects)
+       if obj == object
+         table.remove(@updateObjects, i)
+         return true
 
   merge: =>
     for extension in *EvolutionKit.extensions

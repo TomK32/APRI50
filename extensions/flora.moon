@@ -8,18 +8,23 @@ class Spawner
     @dt_max = score * @center\diameter()
     @score = score
     @dt_timer = 0
+    @spawns = 0
+    @max_spawns = math.ceil(4 * (1 + @score))
 
   update: (dt) =>
+    if @max_spawns < @spawns
+      @evolution_kit\removeUpdateObject(@)
+      return false
     @dt_timer += dt
     if @dt_timer < @dt_max
-      return
+      return false
     @dt_timer = 0
+    @spawns += 1
     plant = Plant.seed({position: @randomPoint(), dna: @evolution_kit\randomize(1)}, @center.map)
     if plant
       @center.map\addEntity(plant)
 
   randomPoint: =>
-    print @score
     d = (1 + @score) * @center\diameter()
     point = Point(love.math.random(0, d), love.math.random(0, d))
     point\add(@center.point)
