@@ -1,19 +1,25 @@
 class Plant.Tree extends Plant
-  DNA_MATCHERS: _.map(_.range(1,10), -> game.randomDnaMatcher(3))
+  DNA_MATCHERS: game.randomDnaMatchers(10, 3)
   LSYSTEM:
-    start: 'FFX'
+    start: 'YX'
     rules:
-      X: 'F-[[X]+X]+F[+XC]-X'
+      X: 'F-[[YC]+X]+F[+XC]-X'
       Y: 'FF'
-    iterations: 3
+    iterations: 4
     rotation: 0.4
   forward:
     length: 10
   colors:
-    forward: {120,50,0,255}
-    circle: {0, 160, 0, 255}
+    F: {120,50,0,255}
+    C: {0, 160, 0, 255}
+
+  new: (options) =>
+    super(options)
+    @colors['C'][2] += (40 - love.math.random(0,80))
+    @colors['F'][1] = (250 + love.math.random(0, 50)) % 255
 
   update: (dt) =>
+    super(dt)
     -- a little bit of wind
     if math.random() > 0.9
       @l_rotationNeg += -@l_rotationNeg - math.abs((-@l_rotation + @l_rotationNeg) / 2) + (0.005 - math.random() / 100)

@@ -1,5 +1,5 @@
 class Plant.Grass extends Plant
-  DNA_MATCHERS: _.map(_.range(1,10), -> game.randomDnaMatcher(2))
+  DNA_MATCHERS: game.randomDnaMatchers(10, 2)
   LSYSTEM:
     start: 'YXX[X]'
     rules:
@@ -9,10 +9,11 @@ class Plant.Grass extends Plant
     rotation: 0.03
 
   colors:
-    forward: {20, 160, 20}
+    F: {20, 160, 20}
 
   new: (options) =>
     super(options)
+    @colors['F'][2] += (50 - love.math.random(0,100))
     @variations = {}
     @radius or= 20
     r = @radius / 2
@@ -26,9 +27,6 @@ class Plant.Grass extends Plant
 
   lineWidth: (iteration) =>
     1
-
-  forwardLength: (iteration) =>
-    (@iterations - iteration) / 4 * (@length_variation or 1)
 
   drawSystem: =>
     if not @variations

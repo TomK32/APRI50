@@ -9,17 +9,17 @@ class Spawner
     @score = score
     @dt_timer = 0
     @spawns = 0
-    @max_spawns = math.ceil(4 * (1 + @score))
+    @max_spawns = math.min(10, math.ceil(4 * (1 + @score)))
 
   update: (dt) =>
-    if @max_spawns < @spawns
+    if @max_spawns <= @spawns
       @evolution_kit\removeUpdateObject(@)
       return false
     @dt_timer += dt
     if @dt_timer < @dt_max
       return false
     @dt_timer = 0
-    plant = Plant.seed({position: @randomPoint(), dna: @evolution_kit\randomize(2)}, @center.map)
+    plant = Plant.spawn({position: @randomPoint(), dna: @evolution_kit\randomize(2)}, @center.map)
     if plant
       @spawns += 1
       @center.map\addEntity(plant)

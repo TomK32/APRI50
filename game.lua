@@ -58,6 +58,15 @@ function game.randomDnaMatcher(places)
   until places == 0
   return dna
 end
+
+function game.randomDnaMatchers(how_many, places)
+  local dna = {}
+  for i=1, how_many do
+    table.insert(dna, game.randomDnaMatcher(places))
+  end
+  return dna
+end
+
 function game.randomDnaMatcherString(places)
   return table.concat(game.randomDnaMatcher(places))
 end
