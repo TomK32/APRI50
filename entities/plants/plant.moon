@@ -27,8 +27,8 @@ export class Plant extends Entity
   setLsystem: (system) =>
     @lsystem = Lsystem(system)
     @iterations = @iterations or system.iterations
-    @rotation = (@rotation or system.rotation) + (math.random() / 10)
-    @rotationNeg = -@rotation
+    @l_rotation = (@l_rotation or system.rotation) + (math.random() / 10)
+    @l_rotationNeg = -@l_rotation
     @colors = system.colors or @@colors
     @createImage()
 
@@ -80,9 +80,9 @@ export class Plant extends Entity
         love.graphics.line(0, 0, 0, -l)
         love.graphics.translate(0, -l)
       else if state[i] == '+'
-        love.graphics.rotate(@rotationNeg)
+        love.graphics.rotate(@l_rotationNeg)
       else if state[i] == '-'
-        love.graphics.rotate(@rotation)
+        love.graphics.rotate(@l_rotation)
       else if state[i] == '['
         table.insert(forward_stack, forward_count)
         iteration += 1

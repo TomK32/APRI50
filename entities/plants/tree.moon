@@ -16,5 +16,5 @@ class Plant.Tree extends Plant
   update: (dt) =>
     -- a little bit of wind
     if math.random() > 0.9
-      @rotationNeg += -@rotationNeg - math.abs((-@rotation + @rotationNeg) / 2) + (0.005 - math.random() / 100)
+      @l_rotationNeg += -@l_rotationNeg - math.abs((-@l_rotation + @l_rotationNeg) / 2) + (0.005 - math.random() / 100)
       @dirty = true
