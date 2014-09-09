@@ -103,11 +103,16 @@ export class Plant extends Entity
     assert(options.position)
     assert(options.dna)
     assert(map)
+    max_score = 0
+    entity = 0
     for i, plant in ipairs(Plant.PLANTS)
       for i, matcher in ipairs(plant.DNA_MATCHERS)
         score = Scorable.scoresSum({dna: options.dna}, {matcher})
-        if score > 0
-          return map\addEntity(plant(options))
+        if score > 0 and score > max_score
+          entity = plant
+          max_score = score
+    if entity
+      map\addEntity(entity(options))
     return false
 
 Plant.PLANTS = _.collect({'grass', 'tree'}, (f) -> require('entities.plants.' .. f))
