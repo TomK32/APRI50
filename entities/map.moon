@@ -91,6 +91,7 @@ export class Map
   addEntity: (entity) =>
     entity.map = self
     entity.position.z = entity.position.z or entity.layer or 0
+    game.log('Adding entity ' .. (entity.name or entity.__class.__name or '???') .. ' at ' .. entity.position\toString())
     if not @layers[entity.position.z] then
       @layers[entity.position.z] = {}
       table.insert(@layer_indexes, entity.position.z)
