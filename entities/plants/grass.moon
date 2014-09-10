@@ -15,18 +15,25 @@ class Plant.Grass extends Plant
     super(options)
     @colors['F'][2] += (50 - love.math.random(0,100))
     @variations = {}
-    @radius or= 20
-    r = @radius / 2
-    r2 = r * 2
-    for i=1, @radius
-      table.insert(@variations, {
-        {r - math.random() * r2, math.random() * r},
-        1.25 - math.random() / 2
-      } )
+    @range or= @center\diameter()
+    @iterationIncremented()
     @dirty = true
 
+  iterationIncremented: =>
+    r = @range / 4
+    r2 = @range / 2
+    for i=1, 2 + @current_iteration
+      table.insert(@variations, {
+        {r - love.math.random() * r2, r - love.math.random() * r2},
+        love.math.random() + 0.5
+      } )
+    @createImage()
+
+  forwardLength: (iteration) =>
+    @forward.length * iteration / @iterations
+
   lineWidth: (iteration) =>
-    1
+    return 0.5
 
   drawSystem: =>
     if not @variations

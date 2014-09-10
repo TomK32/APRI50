@@ -19,7 +19,7 @@ class Spawner
     if @dt_timer < @dt_max
       return false
     @dt_timer = 0
-    plant = Plant.spawn({position: @randomPoint(), dna: @evolution_kit\randomize(2)}, @center.map)
+    plant = Plant.spawn({position: @randomPoint(), dna: @evolution_kit\randomize(2), center: @center}, @center.map)
     if plant
       @spawns += 1
       @center.map\addEntity(plant)

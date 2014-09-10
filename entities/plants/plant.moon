@@ -25,16 +25,22 @@ export class Plant extends Entity
     if not @lsystem
       @setLsystem(@@LSYSTEM)
 
+  -- callback to be overwriten in your subclass
+  iterationIncremented: () =>
+    true
+
   updateIteration: (dt) =>
     @dt_iteration += dt
     if @dt_iteration < 5 * @iterations
       return false
     @dt_iteration = 0
     @current_iteration += 1
+    @iterationIncremented()
+    return true
 
   update: (dt) =>
     if @current_iteration < @iterations and @updateIteration(dt)
-      @drawSystem()
+      @createImage()
     super(dt)
 
   setLsystem: (system) =>
@@ -80,6 +86,7 @@ export class Plant extends Entity
   drawSystem: =>
     state = @lsystem\getState(@current_iteration)
     forward_stack = {}
+    love.graphics.setLineStyle('rough')
     forward_count = 1
     -- not perfect but good enough for a few iterations
     forward_total = #_.select(@lsystem\getState(1), (c) -> c == 'F') * (@current_iteration - 1)
