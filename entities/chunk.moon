@@ -70,6 +70,9 @@ export class Chunk
             y1 = corner.point.y
 
     @polygons = {}
+    if not x0 or not y0
+      print 'no borders for ' .. center.point\toString()
+      return
     -- TODO Case where point is in a corner and has only two corners,
     -- we need at least three vertices
     for i, border in ipairs(center.borders)
