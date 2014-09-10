@@ -173,13 +173,13 @@ export class Chunk
     @center.biome = @center\getBiome()
     for i, extension in pairs @@extensions
       if extension.BIOME_COLORS and extension.BIOME_COLORS[@center.biome]
-        @colors = @randomizeColor(extension.BIOME_COLORS[@center.biome])
+        @colors = extension.BIOME_COLORS[@center.biome]
         return @colors
 
     if colors ~= nil
       @colors = colors
     else
-      @colors = @randomizeColor(Chunk.BIOME_COLORS[@center.biome])
+      @colors = Chunk.BIOME_COLORS[@center.biome]
     return @colors
 
   drawDebug: =>
