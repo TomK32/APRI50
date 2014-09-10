@@ -97,6 +97,7 @@ export class Map
       table.insert(@layer_indexes, entity.position.z)
       table.sort(@layer_indexes, (a,b) -> return a < b)
     table.insert(@layers[entity.position.z], entity)
+    table.sort(@layers[entity.position.z], (a,b) -> return a.position.y < b.position.y)
     if entity.update
       table.insert(@updateAble, entity)
     if entity.keypressed
