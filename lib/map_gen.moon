@@ -53,7 +53,7 @@ export class MapGen
     @edges = {}
 
   noise: (x, y) =>
-    math.floor(love.math.noise(x / @width, y / @height) * 10) / 10
+    math.floor(love.math.noise(x / @width, y / @height) * 1000) / 1000
 
   go: (first, last) =>
 
@@ -71,8 +71,6 @@ export class MapGen
     time('Improve corners', @improveCorners)
     time('Build graph', @buildGraph)
 
-    time('Assign corner Elevations', @assignCornerElevations)
-    time('Assign polygon Elevations', @assignPolygonElevations)
     time('Calculate downslopes', @calculateDownslopes)
     --time('Determine watersheds', @calculateWatersheds)
 
@@ -306,26 +304,12 @@ export class MapGen
     corner = Corner()
 
     corner.point = point
+    corner.point.z = @noise(corner.point.x, corner.point.y)
     corner.border = (point.x <= @bounds.x0 or point.x >= @bounds.x1 or point.y <= @bounds.y0 or point.y <= @bounds.y1)
     table.insert(@corners, corner)
     table.insert(@corner_map[bucket], corner)
     return corner
 
-  assignCornerElevations: =>
-    queue = {}
-    -- to avoid Lua table length madness we count manually
-    queue_count = 0
-    for i, corner in ipairs(@corners)
-      corner.point.z = @noise(corner.point.x, corner.point.y)
-
-
-  -- Polygon elevations are the average of the elevations of their corners.
-  assignPolygonElevations: =>
-    for i, center in ipairs(@centers)
-      sum_elevation = 0
-      for j, corner in ipairs(center.corners)
-        sum_elevation += corner.point.z
-      center.point.z = math.floor(100 * sum_elevation / #center.corners) / 100
 
   -- Calculate downslope pointers.  At every point, we point to the
   -- point downstream from it, or to itself.  This is used for

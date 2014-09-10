@@ -18,6 +18,9 @@ class Plant.Tree extends Plant
     @colors['C'][2] += (40 - love.math.random(0,80))
     @colors['F'][1] = (250 + love.math.random(0, 50)) % 255
 
+  forwardLength: (iteration) =>
+    @forward.length * (iteration + @dt_iteration / @dt_iteration_span) / @iterations
+
   update: (dt) =>
     super(dt)
     -- a little bit of wind

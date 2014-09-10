@@ -17,6 +17,7 @@ class Plant.Grass extends Plant
     @variations = {}
     @range or= @center\diameter()
     @iterationIncremented()
+    @dt_iteration_span = 10
     @dirty = true
 
   iterationIncremented: =>

@@ -20,8 +20,9 @@ export class Plant extends Entity
     super(options)
     @colors = _.deepcopy(@@colors)
     @forward = _.deepcopy(@@forward)
-    @dt_iteration = 0
     @canvas_size = 256
+    @dt_iteration = 0
+    @dt_iteration_span = 5 * @@LSYSTEM.iterations or 5 -- how long it takes from one iteration to the next
     if not @lsystem
       @setLsystem(@@LSYSTEM)
 
@@ -31,7 +32,7 @@ export class Plant extends Entity
 
   updateIteration: (dt) =>
     @dt_iteration += dt
-    if @dt_iteration < 5 * @iterations
+    if @dt_iteration < @dt_iteration_span
       return false
     @dt_iteration = 0
     @current_iteration += 1
