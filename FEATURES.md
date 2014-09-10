@@ -11,7 +11,7 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 ## Gameplay
 
 * [0.3] Player.resources (metal, energy, water, biomass)
-* [0.3] Placing evokit costs resources (1 each)
+* [0.3] Placing evokit costs resources (1 each) (dropped in 0.4)
 * Harvest to replentish resources
 * Loose condition when out of resources and actors (colonists)
 * Continuous terraforming?
@@ -40,17 +40,10 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
   * Evo Kit factory
 * [0.4] Vehicles (extending Actor, car-controls)
 * [soon] Vehicles leaving tracks
-* [0.4] Athmosphere (CO, CO2, N2, O2, ...)
-  * earth is 78% N2, 21% O2, 0.9% Ar, 0.0397% CO2 and 0.001% to 5% H20
-  * mars is 96.0% CO2, 2.1% Ar, 1.9% N2, 0.145% O2, 0.056% CO
-  * [0.4] a machine to consume and create certain elements and add them to the atmosphere
-  * daily log of the composition
-  * chart
 * [soon] Cats
 * [soon] info screen for machines (print out their recipies and sources/target inventories)
 * [0.4] Confirmation dialog when placing an evolution kit
 * [soon] Show map/chunk details in dialog when placing an evolution kit
-* Energy (generator and distribution, store it in inventories or directly on entities)
 * Recharge OxygenTank when placed in a OxygenGenerator output field
 * Automatically recharge OxygenTank when close to a generator
 * Harvest resources manually (progress animation)
@@ -74,8 +67,16 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 * [0.4] Streams (following downslope)
 * [0.4] Lakes (also moisturing neighbors)
 * [0.4] Store dynamically generated elements (like trees) as images or animations
-* [soon] Minerals in all the map chunks
-* [soon] Colour polygons depending on height
+* [0.4] Athmosphere (CO, CO2, N2, O2, ...)
+  * earth is 78% N2, 21% O2, 0.9% Ar, 0.0397% CO2 and 0.001% to 5% H20
+  * mars is 96.0% CO2, 2.1% Ar, 1.9% N2, 0.145% O2, 0.056% CO
+  * [0.4] a machine to consume and create certain elements and add them to the atmosphere
+  * daily log of the composition
+  * chart
+* [0.4] Minerals in (almost) all the map chunks
+* [soon] View mode: Colour polygons depending on height
+* [soon] Place cliffs and rocks where the land is very steep
+* Energy (generator and distribution, store it in inventories or directly on entities)
 * Don't always show minerals on the surface, makes prospecting more important
 * Put notes, landmarks and drawings (all on a sign) on the map
 * Generate new map chunks during exploration
@@ -84,6 +85,7 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 * Temperature
 * Clouds
 * Rain (water, acid, snow)
+
 
 ## EvolutionKits
 
@@ -98,8 +100,12 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 * [0.1] Flora
   * [0.4] Grass
   * [0.4] Trees (with L-System)
+  * [0.4] Growing over time
+  * [0.4] slight colour variation
+  * Use a generator to make the l-system rules
   * Crops
   * Flowers
+  * Self-propagating plants
 * Fauna
   * Bacteria
   * Re-apply for higher cells, upto animals
