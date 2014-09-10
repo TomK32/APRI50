@@ -95,8 +95,8 @@ export class MapGen
     n = 1
     for i=1, rows
       for j=1, cols
-        x = i + (i % 2) / 2 - @map_random\nextDouble() / 2
-        y = (j - 0.5) + (0.5 + (j % 2)) - @map_random\nextDouble() / 2
+        x = i + @map_random\nextDouble() / 2
+        y = j + (i % 3) / 2 - @map_random\nextDouble() / 2
         @points[n] = Point(x * distance, y * distance)
         @points[n].z = @noise(@points[n].x, @points[n].y)
         n += 1
