@@ -1,7 +1,7 @@
 
 Version 0.4
 
-* Sunlight for map
+* Sunlight for map (and fixed it!)
 * Add some shaders
 * A Colonist to move around
 * Inventories, exchange items between them
@@ -13,6 +13,8 @@ Version 0.4
 * Confirmation dialog when placing an EvoKit
 * More matter (minerals, rock, sand, anything really) for the map
 * Water sources that flow downhill and acutally form a lake
+* EvoKit with Flora feature does spawn plants
+* Plants (trees, grass) grow slowly over time
 
 Version 0.3
 

@@ -35,11 +35,10 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 * [0.4] Basic prospecting of map chunks to see what resources are there
 * [0.4] Workshop for mutating your EvoKits
 * [soon] Buildings (habitat, utilities, workshop, garden)
-* [soon] Workshop that processes recipes (e.g. for athmosphere or evo kits, build other units)
-  * Evo Kit Flora (spreads seedlings)
+* [0.4] Workshop that processes recipes (e.g. for athmosphere or evo kits, build other units)
   * Evo Kit factory
 * [0.4] Vehicles (extending Actor, car-controls)
-* [soon] Vehicles leaving tracks
+* Vehicles leaving tracks
 * [soon] Cats
 * [soon] info screen for machines (print out their recipies and sources/target inventories)
 * [0.4] Confirmation dialog when placing an evolution kit
@@ -103,7 +102,8 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
   * [0.4] Grass
   * [0.4] Trees (with L-System)
   * [0.4] Growing over time
-  * [0.4] slight colour variation
+  * [0.4] Slight colour variation
+  * [0.4] Spawn plants when placed on map
   * Use a generator to make the l-system rules
   * Crops
   * Flowers
