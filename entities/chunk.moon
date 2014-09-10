@@ -1,7 +1,10 @@
 -- A piece of landscape surrounding a Center
 -- This is for visual representation only
+require 'entities.cliff'
+
 export class Chunk
   @extensions: {}
+  @DRAW_CLIFFS: false
   @sun_angle = math.pi / 2
   @PASTEL_BIOME_COLORS:
     SNOW: {250, 250, 250}
@@ -98,6 +101,9 @@ export class Chunk
     @setColors()
     @sunlight = {}
     @sunlight_borders = {}
+
+    if @@DRAW_CLIFFS and @center\isSteep()
+      @image = Cliff({position: @center.point, rotation: @center\steepAngle() + 90})
 
     @
 
@@ -203,6 +209,11 @@ export class Chunk
 
   draw: () =>
     @fill()
+    if @image
+      love.graphics.push()
+      love.graphics.rotate(@image.rotation)
+      @image\draw()
+      love.graphics.pop()
 
   relativePoint: (other) =>
     return {x: other.x - @position.x, y: other.y - @position.y}

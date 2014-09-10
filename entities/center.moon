@@ -1,9 +1,11 @@
 require 'entities.other.deposit'
 require 'entities.corner'
 require 'entities.chunk'
+Vector = require 'lib.hump.vector'
 
 -- This is the logic representation, the Chunk is doing all things visual
 export class Center
+  @STEEPNESS = 0.15
   @extensions: {
     WaterSource: require 'extensions/water_source'
     MineralsDeposit: require 'extensions/minerals_deposit'
@@ -118,6 +120,19 @@ export class Center
       return 'GRASSLAND'
     else
       return 'SUBTROPICAL_DESERT'
+
+  isSteep: =>
+    -- look for highest and lowest corner points
+    min, max = @minMaxCorners()
+    return min and max and max.point.z - min.point.z > @@STEEPNESS
+
+  minMaxCorners: =>
+    return _.min(@corners, (corner) -> corner.point.z), _.max(@corners, (corner) -> corner.point.z)
+
+  steepAngle: =>
+    min, max = @minMaxCorners()
+    inspect {min.point\toString(), max.point\toString(), Vector(min.point.x, min.point.y)\angleTo(max.point) * 360}
+    return Vector(min.point.x, min.point.y)\angleTo(max.point)
 
   isLake: =>
     return @downslope == @
