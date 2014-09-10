@@ -74,8 +74,10 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
   * daily log of the composition
   * chart
 * [0.4] Minerals in (almost) all the map chunks
+* [soon] Replace randomized points with grid that's been slightly randomize, for now.
 * [soon] View mode: Colour polygons depending on height
 * [soon] Place cliffs and rocks where the land is very steep
+* Fix Lloyd iterations
 * Energy (generator and distribution, store it in inventories or directly on entities)
 * Don't always show minerals on the surface, makes prospecting more important
 * Put notes, landmarks and drawings (all on a sign) on the map

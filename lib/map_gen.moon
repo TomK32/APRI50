@@ -65,7 +65,8 @@ export class MapGen
       io.write(math.floor(1000 * (os.clock() - start)) .. "ms\n")
 
     time('Reset', @reset)
-    time('Placing random points', @generateRandomPoints)
+    time('Placing random points', @generateGridPoints)
+    --time('Placing random points', @generateRandomPoints)
     time('Improve points', @improvePoints)
     time('Improve corners', @improveCorners)
     time('Build graph', @buildGraph)
@@ -81,6 +82,26 @@ export class MapGen
     if force or not @_voronoi
       @_voronoi = Voronoi(@points, @bounds)
     return @_voronoi
+
+  generateGridPoints: =>
+    w = @bounds.x1 - @bounds.x0
+    h = @bounds.y1 - @bounds.y0
+
+    a = w * h
+    f = math.sqrt(@num_points / a)
+    rows = math.ceil(h * f)
+    cols = math.ceil(w * f)
+    distance = h / rows
+    n = 1
+    for i=1, rows
+      for j=1, cols
+        x = i + (i % 2) / 2 - @map_random\nextDouble() / 2
+        y = (j - 0.5) + (0.5 + (j % 2)) - @map_random\nextDouble() / 2
+        @points[n] = Point(x * distance, y * distance)
+        @points[n].z = @noise(@points[n].x, @points[n].y)
+        n += 1
+    @num_points = n
+    @
 
   generateRandomPoints: =>
     x = @bounds.x0
@@ -179,7 +200,7 @@ export class MapGen
   -- For boundary polygons, the Delaunay edge will have one null
   -- point, and the Voronoi edge may be null.
   buildGraph: =>
-    voronoi = @voronoi()
+    voronoi = @voronoi(true)
     center_lookup = {}
 
     -- Build Center objects for each of the points, and a lookup map
