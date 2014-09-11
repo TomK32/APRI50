@@ -121,13 +121,16 @@ export class Center
     else
       return 'SUBTROPICAL_DESERT'
 
-  isSteep: =>
-    -- look for highest and lowest corner points
-    min, max = @minMaxCorners()
-    return min and max and max.point.z - min.point.z > @@STEEPNESS
-
   minMaxCorners: =>
     return _.min(@corners, (corner) -> corner.point.z), _.max(@corners, (corner) -> corner.point.z)
+
+  steepness: =>
+    -- look for highest and lowest corner points
+    min, max = @minMaxCorners()
+    return min and max and max.point.z - min.point.z or 0
+
+  isSteep: =>
+    return @steepness() > @@STEEPNESS
 
   steepAngle: =>
     min, max = @minMaxCorners()
