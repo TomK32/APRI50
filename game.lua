@@ -5,7 +5,7 @@ gui = require 'lib.quickie'
 
 game = {
   title = 'APRI50',
-  seed = 122,
+  seed = 11,
   debug = false,
   graphics = {
     mode = { }

@@ -14,7 +14,7 @@ entities:
       name: 'April'
       active_control: true
     before_create: (state) =>
-      @args.position = state.start_position\offset(0, 60)
+      @args.position = state.start_position\offset(-70, -80)
       @args.camera = state.map_state.view.camera
 
   o2generator:
@@ -42,7 +42,7 @@ entities:
 
   vehicle1:
     class: Vehicle
-    map: true
+    map: false -- true
     before_create: (state) =>
       @args.position = state.start_position\offset(40, -120, game.layers.vehicles)
     args:
