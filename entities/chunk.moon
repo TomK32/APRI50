@@ -74,7 +74,7 @@ export class Chunk
 
     @polygons = {}
     if not x0 or not y0
-      print 'no borders for ' .. center.point\toString()
+      --print 'no borders for ' .. center.point\toString()
       return
     -- TODO Case where point is in a corner and has only two corners,
     -- we need at least three vertices
@@ -191,21 +191,13 @@ export class Chunk
   drawDebug: =>
     love.graphics.setColor(250,250,0, 255)
     @drawBorders()
-    for i, border in ipairs(@center.borders)
-      if border.v0
-        size = border.v0.point.z / @center.point.z * 3
-        if border.v0.point.z > @center.point.z
-          love.graphics.setColor(0,0,0,255)
-        else
-          love.graphics.setColor(200,200,200,255)
-        love.graphics.circle('fill', border.v0.point.x, border.v0.point.y, size)
-      if border.v1
-        size = border.v1.point.z / @center.point.z * 3
-        if border.v1.point.z > @center.point.z
-          love.graphics.setColor(0,0,0,255)
-        else
-          love.graphics.setColor(200,200,200,255)
-        love.graphics.circle('fill', border.v1.point.x, border.v1.point.y, size)
+    love.graphics.push()
+    min, max = @center\minMaxCorners()
+    love.graphics.setColor(0,0,0,255)
+    love.graphics.setLineWidth(@center\steepness() * 10)
+    love.graphics.line(min.point.x, min.point.y, max.point.x, max.point.y)
+    love.graphics.circle('fill', max.point.x, max.point.y, 3)
+    love.graphics.pop()
 
   draw: () =>
     @fill()
