@@ -41,7 +41,7 @@ class WorkshopView extends View
             draw: (s,t,x,y,w,h) ->
               game.renderer.draw(mutation.image, x, y)
               game.renderer.textInRectangle(dna, x + game.icon_size + 4, y, @item_options)
-              game.renderer.textInRectangle(mutation\extensionsToString('-'), 380, y, @item_options)
+              game.renderer.textInRectangle(mutation\extensionsToString('-'), game.dna_length * game.fonts.lineHeight * 0.9, y, @item_options)
           }
           @activateItem(@workshop.inventory\replace(@active_item, mutation))
       gui.group.pop()
