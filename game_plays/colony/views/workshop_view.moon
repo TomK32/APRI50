@@ -76,7 +76,7 @@ class WorkshopView extends View
       @y += 30
       game.renderer.draw(@active_item.image, 90, @y)
       game.renderer.textInRectangle(table.concat(@active_item.dna, ''), 90 + 4 + game.icon_size, @y, @item_options)
-      game.renderer.textInRectangle(@active_item\extensionsToString('-'), @y, @y, @item_options)
+      game.renderer.textInRectangle(@active_item\extensionsToString('-'), game.dna_length * game.fonts.lineHeight * 0.9, @y, @item_options)
       @y += 60
       game.renderer.textInRectangle("Now pick one mutation to replace your evo kit with.", 70, @y, @text_options)
 
