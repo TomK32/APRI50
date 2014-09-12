@@ -84,6 +84,9 @@ export class Plant extends Entity
     love.graphics.setCanvas(last_canvas)
     @dirty = false
 
+  circleSize: (iteration) =>
+    return 2
+
   drawSystem: =>
     state = @lsystem\getState(@current_iteration)
     forward_stack = {}
@@ -115,7 +118,7 @@ export class Plant extends Entity
       else if state[i] == 'C' -- circle
         love.graphics.setColor(unpack(@color('C', @current_iteration)))
         for i=1, @current_iteration
-          love.graphics.circle('fill', love.math.random(1, @current_iteration), love.math.random(1, @current_iteration), 2)
+          love.graphics.circle('fill', love.math.random(1, @current_iteration), love.math.random(1, @current_iteration), @circleSize(forward_count))
 
   toString: =>
     return @@__name .. ' ' .. @lsystem\toString()
@@ -136,4 +139,4 @@ export class Plant extends Entity
       return entity(options)
     return false
 
-Plant.PLANTS = _.collect({'grass', 'tree'}, (f) -> require('entities.plants.' .. f))
+Plant.PLANTS = _.collect({'grass', 'tree', 'flower'}, (f) -> require('entities.plants.' .. f))

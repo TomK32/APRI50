@@ -1,8 +1,11 @@
 export class Point
   new: (x, y, z) =>
-    @x = x
-    @y = y
-    @z = z
+    if type(x) == 'table'
+      @x, @y, @z = x.x, x.y, x.z
+    else
+      @x = x
+      @y = y
+      @z = z
     @
 
   interpolate: (a, b, strength) ->
