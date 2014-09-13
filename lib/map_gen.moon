@@ -95,7 +95,7 @@ export class MapGen
       for j=1, cols
         x = i + @map_random\nextDouble() / 2
         y = j + (i % 3) / 2 - @map_random\nextDouble() / 2
-        @points[n] = Point(x * distance, y * distance)
+        @points[n] = Point(math.ceil(x * distance), math.ceil(y * distance))
         @points[n].z = @noise(@points[n].x, @points[n].y)
         n += 1
     @num_points = n
