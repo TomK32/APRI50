@@ -4,7 +4,7 @@ class EvolutionKit.PlaceView extends View
     @gui = gui
     @background_image = 'images/views/evolution_kit_placement.png'
     super(options)
-    @offset = {x: 150, y: 250}
+    @offset = {x: 80, y: 150}
     assert(@evolution_kit)
     assert(@center)
     assert(@success_callback)
@@ -37,7 +37,7 @@ class EvolutionKit.PlaceView extends View
     @printLine('This is what your kit does once placed.', 0, 0)
     @printLine(@evolution_kit.dna_string, 0, 0)
     if not @suitable_ground
-      @printLine("The ground doesn't match the evokit's requirements")
+      @printLine("The ground is unsuitable.")
     else
       for i, extension in ipairs(@suitable_ground)
         @printLine(extension.__name .. ' (' .. extension.score(@evolution_kit) .. ') needs:', 0, 0)
@@ -47,7 +47,7 @@ class EvolutionKit.PlaceView extends View
 
     -- second column
     love.graphics.push()
-    love.graphics.translate(@offset.x + 500, @offset.y)
+    love.graphics.translate(@offset.x + game.graphics.mode.width/2, @offset.y)
     game.setFont('large')
     @printLine('The ground at ' .. @center.point.x .. ':' .. @center.point.y, 0, 0)
     game.setFont('regular')
