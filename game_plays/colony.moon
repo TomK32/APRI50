@@ -77,6 +77,9 @@ GamePlay.Colony = class Colony extends GamePlay
         if colonist\keypressed(key, unicode)
           return true
 
+    if key == 'u' or key == 'd'
+      return @map_state\raiseCenter(key == 'u')
+
     if shift_pressed and key == 'a'
       game.setState(State(game, 'Atmosphere Info', AtmosphereView({atmosphere: @atmosphere})))
 

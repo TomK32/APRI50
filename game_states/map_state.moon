@@ -148,3 +148,9 @@ export class MapState extends State
       @focused_entity\lostFocus()
     @focused_entity = entity
 
+  raiseCenter: (up) =>
+    x, y = @view\getMousePosition()
+    center = @map\findClosestCenter(x, y)
+    if not center
+      return false
+    return @map\raiseCenter(up, center)
