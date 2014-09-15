@@ -5,9 +5,10 @@ gui = require 'lib.quickie'
 
 game = {
   title = 'APRI50',
-  seed = 11,
+  seed = 13,
   debug = false,
   graphics = {
+    fullscreen = false,
     mode = { }
   },
   speed = 1,
@@ -147,7 +148,7 @@ end
 
 function game:setMode(mode)
   self.graphics.mode = mode
-  love.window.setMode(mode.width, mode.height, mode.fullscreen or self.graphics.fullscreen)
+  love.window.setMode(mode.width, mode.height, {fullscreen = mode.fullscreen or self.graphics.fullscreen})
   if self.graphics.mode.height < 600 then
     self:createFonts(-2)
   else
