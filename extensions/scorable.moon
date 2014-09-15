@@ -1,6 +1,9 @@
 
 
 export class Scorable
+  new: (dna) =>
+    mixin(@, Scorable)
+    @dna = dna
 
   -- dna_matcher is a table of letters from the genes or spaces.
   -- For every gene the EvolutionKit matches the value is increased,
