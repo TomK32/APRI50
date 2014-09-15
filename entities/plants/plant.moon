@@ -48,7 +48,9 @@ export class Plant extends Entity
     @lsystem = Lsystem(system)
     @iterations = @iterations or system.iterations
     @current_iteration = 1
-    @l_rotation = (@l_rotation or system.rotation) + (math.random() / 10)
+    @l_rotation = @l_rotation or system.rotation
+    if type(@l_rotation) == 'function'
+      @l_rotation = @l_rotation()
     @l_rotationNeg = -@l_rotation
     @colors = system.colors or @colors
     @createImage()

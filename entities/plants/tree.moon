@@ -6,7 +6,7 @@ class Plant.Tree extends Plant
       X: 'F-[[YC]+X]+F[+XC]-X'
       Y: 'FF'
     iterations: 4
-    rotation: 0.4
+    rotation: -> return love.math.random(200, 800) / 1000
   forward:
     length: 10
   colors:
