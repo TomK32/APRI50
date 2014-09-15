@@ -9,7 +9,6 @@ export class Corner
     @touches = {} -- Center
     @adjacent = {} -- Corner
     @protrudes = {} -- Edge
-    @river = 0 -- 0... volume of liquid in the river
     @downslope = nil -- adjacent corner that is most downhill, or self
     @watershed = nil -- coastal corner or nil
     @watershed_size = 0 -- int
