@@ -105,7 +105,7 @@ export class Plant extends Entity
         l = @forwardLength(@current_iteration)
         love.graphics.setLineWidth(@lineWidth(forward_total, forward_count))
         love.graphics.line(0, 0, 0, -l)
-        love.graphics.translate(0, -l)
+        love.graphics.translate(0, -math.floor(l))
       else if state[i] == '+'
         love.graphics.rotate(@l_rotationNeg)
       else if state[i] == '-'

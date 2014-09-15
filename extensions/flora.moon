@@ -26,7 +26,7 @@ class Spawner
 
 
   randomPoint: =>
-    d = (1 + @score) * @center\diameter()
+    d = (1 + @score) * (@center\diameter() + 2)
     point = Point(love.math.random(0, d), love.math.random(0, d))
     point\add(@center.point)
     point.z = game.layers.plants
