@@ -190,3 +190,21 @@ export class Center
 
     @bounding_box = {x: x0, y: y0, width: x1 - x0, height: y1 - y1}
     return @bounding_box
+
+  -- Calculate downslope pointers.  At every point, we point to the
+  -- point downstream from it, or to itself.  This is used for
+  -- generating rivers and watersheds.
+  calculateDownslopes: =>
+    for i, corner in ipairs(@corners)
+      r = corner
+      for j, adjacent in ipairs(corner.adjacent)
+        if adjacent.point.z < r.point.z
+          r = adjacent
+      corner.downslope = r
+    r = @
+    for j, neighbor in ipairs(@neighbors)
+      if neighbor.point.z < r.point.z
+        r = neighbor
+    if @chunk
+      @chunk.dirty = true
+    @downslope = r

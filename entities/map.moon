@@ -147,3 +147,6 @@ export class Map
     center.point.z += up and 0.1 or -0.1
     for i, corner in pairs(center.corners)
       corner.point.z += up and 0.05 or -0.05
+    center\calculateDownslopes()
+    for i, n in pairs center.neighbors
+      n\calculateDownslopes()
