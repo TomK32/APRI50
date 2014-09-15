@@ -48,6 +48,8 @@ export class Center
     for i, matter in pairs(@matter())
       if matter.update
         matter\update(dt)
+      if matter.delete
+        @matter()[i] = nil
 
   relativeXY: =>
     return {@point.x / @map.width, @point.y / @map.height}
@@ -69,6 +71,8 @@ export class Center
     if not m
       return
     m\removeAmount(amount)
+    if m.amount <= 0
+      @matter()[matter.sort] = nil
 
   addParticleSystem: (system) =>
     @chunk\addParticleSystem(system)

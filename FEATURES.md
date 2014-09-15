@@ -73,10 +73,10 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
   * daily log of the composition
   * chart
 * [0.4] Minerals in (almost) all the map chunks
+* [0.4] Raise and lower terrain (`d` and `u`)
 * [soon] Replace randomized points with grid that's been slightly randomize, for now.
 * [soon] View mode: Colour polygons depending on height
 * [soon] Place cliffs and rocks where the land is very steep
-* Fix Lloyd iterations
 * Energy (generator and distribution, store it in inventories or directly on entities)
 * Don't always show minerals on the surface, makes prospecting more important
 * Put notes, landmarks and drawings (all on a sign) on the map
@@ -92,7 +92,6 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 
 * Move from chunk to center, use parent in the extensions
 * Water source for moisture, rivers, and lakes
-* Re-apply evo kit for higher level. e.g from grass to plants to trees or flowers
 * Consuming: How good is it at absorbing the ground
 * [0.3] Place and apply to Chunk
 * Hardening:
@@ -106,7 +105,7 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
   * [0.4] Spawn plants when placed on map
   * Use a generator to make the l-system rules
   * Crops
-  * Flowers
+  * [0.4] Flowers
   * Self-propagating plants
 * Fauna
   * Bacteria

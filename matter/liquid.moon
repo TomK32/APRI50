@@ -6,6 +6,9 @@ export class Liquid extends Matter
 
   new: (...) =>
     super(...)
+    @resetTimer()
+
+  resetTimer: =>
     @delay_dt = game.dt * 10
 
   update: (dt) =>
@@ -21,9 +24,10 @@ export class Liquid extends Matter
           neighbor.moisture += dt
     else
       -- liquid flowing downhill
-      drainingAmount = @amount * dt * (@center.point.z / math.max(0.001, @center.downslope.point.z))
+      drainingAmount = @amount * dt * (@center.point.z / math.max(0.1, @center.downslope.point.z))
       @center.downslope\addMatter(Liquid(@sort, drainingAmount))
       @removeAmount(drainingAmount)
+      @resetTimer()
 
   drawStyle: =>
     -- TODO Return a class here

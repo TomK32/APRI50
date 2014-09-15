@@ -15,6 +15,8 @@ export class Matter
     return @amount
 
   removeAmount: (amount) =>
+    if @amount <= 0.001
+      @delete = true
     if amount > @amount
       return false
     @amount -= amount
