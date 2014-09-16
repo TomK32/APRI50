@@ -144,9 +144,9 @@ export class Map
 
   raiseCenter: (up, center) =>
     assert(center)
-    center.point.z += up and 0.1 or -0.1
+    center.point.z += up and 0.01 or -0.01
     for i, corner in pairs(center.corners)
-      corner.point.z += up and 0.05 or -0.05
+      corner.point.z += up and 0.005 or -0.005
     center\calculateDownslopes()
     for i, n in pairs center.neighbors
       n\calculateDownslopes()
