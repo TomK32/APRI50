@@ -1,3 +1,8 @@
+Concept Art:
+
+* Landed spaceship
+* A digger
+* Geodesic dome from the outside
 
 Colonists:
 
