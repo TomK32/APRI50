@@ -9,11 +9,11 @@ export class Point
     @
 
   interpolate: (a, b, strength) ->
-    strength = strength or 0.5
+    strength = strength or 1
     z = nil
     if a.z and b.z
-      z = (a.z + b.z) * strength
-    return Point((a.x + b.x) * strength, (a.y + b.y) * strength, z)
+      z = a.z + (b.z - a.z) * strength
+    return Point(a.x + (b.x - a.x) * strength, a.y + (b.y - a.y) * strength, z)
 
   add: (other) =>
     assert(other)

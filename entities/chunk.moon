@@ -49,6 +49,7 @@ export class Chunk
 
   new: (center, evolution_kit) =>
     -- evolution_kit can be nil
+    mixin(@, require('lib.contourline'))
     @canvas = nil
     @center = center
     @center.chunk = @
@@ -200,6 +201,9 @@ export class Chunk
     love.graphics.pop()
 
   draw: () =>
+    if @dirty
+      @_contourlines = nil
+      @dirty = false
     @fill()
     if @image
       love.graphics.push()
