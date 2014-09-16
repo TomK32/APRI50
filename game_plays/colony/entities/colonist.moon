@@ -18,7 +18,7 @@ return class Colonist extends MovableActor
     @name = options.name or @@names[(@id % #@@names) + 1] .. @id
     @inventory = Inventory(@, @name, @inventoryChanged)
     @inventory.background_image = 'game_plays/colony/images/colonist_landscape.png'
-    for i=1, 3
+    for i=1, 8
       @inventory\add(EvolutionKit.random(game.dna_length))
     @inventory\add(GamePlay.Colony.OxygenTank(20000))
     @current_oxygen_tank = nil

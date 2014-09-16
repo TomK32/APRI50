@@ -50,4 +50,16 @@ entities:
       name: 'Vehicle #1'
       inventory: Inventory()
 
+  evokit_lab:
+    class: GamePlay.Colony.Workshop
+    map: true
+    args:
+      completed: true
+      name: 'Evolution Kit Laboratory'
+    before_create: (self, state) ->
+      @args.inventory = Inventory()
+      for i=1, 8
+        @args.inventory\add(EvolutionKit.random(game.dna_length))
+      @args.position = state.start_position\offset(150, -90)
+
 

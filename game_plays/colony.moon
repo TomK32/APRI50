@@ -22,13 +22,6 @@ GamePlay.Colony = class Colony extends GamePlay
     @start_position = Point(@map_state.map.width / 2, @map_state.map.height / 2, game.layers.buildings)
     @map_state.view.camera\lookAt(@start_position.x, @start_position.y)
 
-    inventory = Inventory()
-    inventory\add(EvolutionKit.random(game.dna_length))
-    inventory\add(EvolutionKit.random(game.dna_length))
-    inventory\add(EvolutionKit.random(game.dna_length))
-    workshop = GamePlay.Colony.Workshop({completed: true, position: @start_position\offset(150, -90), name: 'Evolution Kit Laboratory', inventory: inventory})
-    @map_state.map\addEntity(workshop)
-
     --@actors_view = InventoryView(game.player.colonists, {30, 30, 200, 100}, 'press <shift> + <0-9>')
     --@map_state\addView(@actors_view)
 
