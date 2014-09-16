@@ -14,7 +14,9 @@ export class ContourlinesOverlay extends View
         center.chunk = Chunk(center)
       if center.chunk\contourlines()
         for i, line in pairs center.chunk\contourlines()
-          love.graphics.setLineWidth(i)
+          love.graphics.setLineWidth(1)
+          c = 255 * center.point.z
+          love.graphics.setColor(c, c, c, 100)
           love.graphics.line(unpack(line))
       --love.graphics.translate(x, y)
 

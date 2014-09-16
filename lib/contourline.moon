@@ -1,16 +1,16 @@
 return class Contourline
   @contourlines: (step) =>
     return @_contourlines if @_contourlines
-    step or= 0.1
+    step or= 0.0125
     contours = {}
     for i, border in ipairs @center.borders
-      difference = border.d0.point.z - border.d1.point.z
+      difference = math.ceil((border.d0.point.z - border.d1.point.z) / step) * step
       if border.d1 == @center
         difference = -difference
       if math.abs(difference) > step
         -- in case it is very steep we add more than one contour line
         steps = math.floor(difference / step)
-        start = math.floor(math.min(border.d0.point.z, border.d1.point.z) * 10)
+        start = math.floor(math.min(border.d0.point.z, border.d1.point.z) / steps)
         for i = start, math.abs(steps)
           contours[i] or= {}
           table.insert(contours[i], border)
@@ -36,7 +36,6 @@ return class Contourline
           while hit == true
             hit = false
             for i, border in pairs contour
-              print i, border, hit, #contour
               if border.v0 and border.v0 == right.v1
                 points = _.flatten({points, @borderToPoints(border)})
                 right = border.v0
