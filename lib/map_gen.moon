@@ -153,6 +153,9 @@ export class MapGen
     addToTable = (tbl, element) ->
       if element ~= nil
         for i, el in ipairs(tbl)
+          if el.point and element.point
+            if el.point.x == element.point.x and el.point.y == el.point.y
+              return
           if el == element
             return -- already in the table
         table.insert(tbl, element)
