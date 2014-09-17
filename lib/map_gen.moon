@@ -66,15 +66,9 @@ export class MapGen
 
     time('Reset', @reset)
     time('Placing random points', @generateGridPoints)
-    --time('Placing random points', @generateRandomPoints)
-    time('Improve points', @improvePoints)
-    time('Improve corners', @improveCorners)
     time('Build graph', @buildGraph)
 
     time('Calculate downslopes', @calculateDownslopes)
-    --time('Determine watersheds', @calculateWatersheds)
-
-    -- NOTE: The original had these six in one timer
 
   voronoi: (force) =>
     if force or not @_voronoi
@@ -112,74 +106,6 @@ export class MapGen
       @points[i].z = @noise(@points[i].x, @points[i].y)
     @
 
-  -- Improve the random set of points with Lloyd Relaxation.
-  improvePoints: =>
-    -- We'd really like to generate "blue noise". Algorithms:
-    -- 1. Poisson dart throwing: check each new point against all
-    --     existing points, and reject it if it's too close.
-    -- 2. Start with a hexagonal grid and randomly perturb points.
-    -- 3. Lloyd Relaxation: move each point to the centroid of the
-    --     generated Voronoi polygon, then generate Voronoi again.
-    -- 4. Use force-based layout algorithms to push points away.
-    -- 5. More at http://www.cs.virginia.edu/~gfx/pubs/antimony/
-    -- Option 3 is implemented here. If it's run for too many iterations,
-    -- it will turn into a grid, but convergence is very slow, and we only
-    -- run it a few times.
-    for iteration = 1, @num_lloyd_iterations
-      voronoi = @voronoi(true)
-      bad = 0
-
-      for i, point in ipairs(@points)
-        region = voronoi\region(point)
-        region_count = 0
-        point.x = 0.0
-        point.y = 0.0
-        for j, other_point in ipairs(region)
-          point.x += other_point.x
-          point.y += other_point.y
-          region_count += 1
-        if region_count == 0
-          print 'Removing a point', i
-          table.remove(@points, i)
-          @voronoi(true)
-        else
-          point.x = point.x / region_count
-          point.y = point.y / region_count
-      voronoi = nil
-      for i, p in pairs(@points)
-        assert(p.x == p.x and p.y == p.y, 'point is nan')
-    @voronoi(true)
-    @
-
-  -- Although Lloyd relaxation improves the uniformity of polygon
-  -- sizes, it doesn't help with the edge lengths. Short edges can
-  -- be bad for some games, and lead to weird artifacts on
-  -- rivers. We can easily lengthen short edges by moving the
-  -- corners, but **we lose the Voronoi property**.  The corners are
-  -- moved to the average of the polygon centers around them. Short
-  -- edges become longer. Long edges tend to become shorter. The
-  -- polygons tend to be more uniform after this step.
-  improveCorners: =>
-    -- First we compute the average of the centers next to each corner.
-    -- We create a new array to not distort this averaging
-    new_corners = {}
-    for i, corner in ipairs(@corners)
-      if corner.border
-        new_corners[i] = corner.point
-      else
-        point = Point(0.0, 0.0)
-        corner_count = 0
-        for j, other_corner in ipairs(corner.touches)
-          point.x += other_corner.point.x
-          point.y += other_corner.point.y
-          corner_count += 1
-        point.x = point.x / corner_count
-        point.y = point.y / corner_count
-        new_corners[i] = point
-
-    -- Move the corners to the new locations.
-    for i, point in pairs(new_corners)
-      @corners[i].point = point
 
   -- Create a graph structure from the Voronoi edge list. The
   -- methods in the Voronoi object are somewhat inconvenient for
@@ -327,36 +253,6 @@ export class MapGen
         if neighbor.point.z < r.point.z
           r = neighbor
       center.downslope = r
-
-  -- Calculate the watershed of every land point. The watershed is
-  -- the last downstream land point in the downslope graph.
-  -- TODO:
-  -- watersheds are currently calculated on corners, but it'd be
-  -- more useful to compute them on polygon centers so that every
-  -- polygon can be marked as being in one watershed.
-  calculateWatersheds: =>
-    for i, point in ipairs(@corners)
-      point.watershed = point
-      if not point.ocean and not point.coast
-        point.watershed = point.downslope
-
-    -- Follow the downslope pointers to the coast. Limit to SIZE / 5
-    -- iterations although most of the time with NUM_POINTS=2000 it
-    -- only takes 20 iterations because most points are not far from
-    -- a coast.  TODO: can run faster by looking at
-    -- p.watershed.watershed instead of p.downslope.watershed.
-    for i=0, math.floor(@width + @height / 5)
-      changed = false
-      for j, corner in ipairs(@corners)
-        if not corner.watershed.coast
-          r = corner.downslope.watershed
-          corner.watershed = r
-          changed = true
-      if not changed
-        break
-    -- How long is each watershed?
-    for i, corner in ipairs(@corners)
-      corner.watershed_size = 1 + (corner.watershed_size or 0)
 
   -- Look up a Voronoi Edge object given two adjacent Voronoi
   -- polygons, or two adjacent Voronoi corners
