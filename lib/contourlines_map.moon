@@ -10,7 +10,8 @@ export class ContourlinesMap
       for c, center in pairs centers
         for i, border in pairs center.borders
           if border.d0 and border.d1 and border.v0 and border.v1
-            if border.v0.point.z > current and border.v1.point.z < current + step
+            difference = math.floor(border.v0.point.z/step) - math.floor(border.v1.point.z/step)
+            if difference ~= 0
               centers_queue[border.d0] or= {}
               table.insert(centers_queue[border.d0], border)
               centers_queue[border.d1] or= {}
