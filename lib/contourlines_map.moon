@@ -27,7 +27,6 @@ export class ContourlinesMap
             border_right = border
             c = 0
             while (left or right) and right ~= center and right ~= left and c < 1
-              --print c
               c += 1
               if left
                 left, border_left = @__contourlineNextNeighbour(border_left, left, centers_queue)

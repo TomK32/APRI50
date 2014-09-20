@@ -22,11 +22,11 @@ export class ContourlinesOverlay extends View
   drawContentCenters: => -- centers version, not to most beautiful one.
     centers = @map_view\centersInRect()
     for i, center in ipairs centers
+      center\contourpoints()
       love.graphics.push()
-      if not center.chunk
-        center.chunk = Chunk(center)
-      if center.chunk\contourlines()
-        for i, line in pairs center.chunk\contourlines()
+      if center\contourlines()
+        for i, line in pairs center\contourlines()
+          --love.graphics.translate(5,5)
           love.graphics.setLineWidth(1)
           c = 255 * center.point.z
           love.graphics.setColor(c, c, c, 100)
