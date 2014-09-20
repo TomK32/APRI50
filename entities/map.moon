@@ -3,9 +3,11 @@
 -- and update and draw functions
 
 require 'lib.map_gen'
+require 'lib.contourlines_map'
 
 export class Map
   new: (width, height, seed, number_of_points) =>
+    mixin(@, ContourlinesMap)
     @layers = {} -- here the entities are stuffed into
     @layer_indexes = {}
     @tiles = {}
@@ -146,7 +148,7 @@ export class Map
     assert(center)
     center.point.z += up and 0.01 or -0.01
     for i, corner in pairs(center.corners)
-      corner.point.z += up and 0.005 or -0.005
+      corner.point.z += up and 0.01 or -0.01
     center\calculateDownslopes()
     for i, n in pairs center.neighbors
       n\calculateDownslopes()
