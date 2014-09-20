@@ -21,3 +21,9 @@ function mixin(klass, mixin)
   if type(mixin.included)=="function" then mixin:included(klass) end
 end
 
+table.merge = function(this, other)
+  for i, v in pairs(other) do
+    table.insert(this,v)
+  end
+  return this
+end
