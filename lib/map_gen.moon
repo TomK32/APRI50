@@ -223,7 +223,7 @@ export class MapGen
       for i, corner in ipairs(@corner_map[bucket] or {})
         dx = point.x - corner.point.x
         dy = point.y - corner.point.y
-        if dx * dx + dy * dy < 0.000001
+        if dx * dx + dy * dy < 1
           return corner
 
     -- NOTE: We are keeping track of the number of buckets
