@@ -146,6 +146,9 @@ export class Chunk
         love.graphics.setColor(255,255,255,100)
         x0, y0 = border.v0.point.x, border.v0.point.y
         x1, y1 = border.v1.point.x, border.v1.point.y
+        z0, z1 = border.v0.point.z, border.v1.point.z
+        if math.floor(z0/0.1) ~= math.floor(z1/0.1)
+          love.graphics.setColor(0,0,0,100)
         love.graphics.setLineWidth(1)
         love.graphics.line(x0, y0, x1, y1)
         love.graphics.pop()
