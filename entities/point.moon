@@ -8,8 +8,12 @@ export class Point
       @z = z
     @
 
+  __eq: (other) =>
+    return @x == other.x and @y == other.y
+
+
   interpolate: (a, b, strength) ->
-    strength = strength or 1
+    strength = strength or 0.5
     z = nil
     if a.z and b.z
       z = a.z + (b.z - a.z) * strength
@@ -22,7 +26,7 @@ export class Point
     return @
 
   toString: =>
-    return 'x: ' .. @round(@x) .. ', y: ' .. @round(@y) .. ', z: ' .. @round(@z) or '-'
+    return 'x: ' .. @round(@x) .. ', y: ' .. @round(@y) .. ', z: ' .. @round(@z or 0) or '-'
 
   offset: (x, y) =>
     return @@(@x + x, @y + y)
@@ -30,7 +34,7 @@ export class Point
   round: (x) =>
     if not x
       return nil
-    math.floor(x * 10) / 10
+    math.floor(x * 100) / 100
 
   distance: (other) =>
     a = @x - other.x

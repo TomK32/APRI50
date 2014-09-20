@@ -48,8 +48,8 @@ export class Chunk
     TROPICAL_SEASONAL_FOREST: {0x55, 0x99, 0x44}
 
   new: (center, evolution_kit) =>
+
     -- evolution_kit can be nil
-    mixin(@, require('lib.contourline'))
     @canvas = nil
     @center = center
     @center.chunk = @

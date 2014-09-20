@@ -12,6 +12,7 @@ export class Center
   }
 
   new: (map, point) =>
+    mixin(@, require('lib.contourline'))
     @map, @point = map, point
     @index = 0
 
