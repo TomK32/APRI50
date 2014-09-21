@@ -1,6 +1,6 @@
 export class ContourlinesMap
   @contourlines: (step, centers) =>
-    --if @_contourlines return @_contourlines
+    if @_contourlines return @_contourlines
     @_contourlines = {}
     centers_queue = {}
     current = 0
@@ -42,17 +42,25 @@ export class ContourlinesMap
     return @_contourlines
 
   @__contourlineNextNeighbour: (border, center, queue) =>
-    return if queue[center] == nil
+    return false if queue[center] == nil
     queue[center] = _.reject(queue[center], (b) -> b == border)
-    b = queue[center]
-    if #b == 0
+    if #queue[center] == 0
       queue[center] = nil
       return false
-    elseif #b == 1
-      return b[1].d0 == center and b[1].d1 or b[1].d0, b[1]
+    elseif #queue[center] == 1
+      b = queue[center][1]
+      queue[center] = nil
+      return b.d0 == center and b.d1 or b.d0, b
     else -- l > 1
-      -- special case where contour line does split up?
-      --print 'split?'
-      return b[1].d0 == center and b[1].d1 or b[1].d0, b[1]
+      -- special case where contour line does split up
+      -- or two run through one polygone
+
+      -- case 1: prefer as border that is adjacent
+      for i, b in pairs(queue[center])
+        if b ~= border and (b.v0.point == border.v1.point or b.v1.point == border.v0.point)
+          queue[center][i] = nil
+          return b.d0 == center and b.d1 or b.d0, b
+      b = _.pop(queue[center])
+      return b.d0 == center and b.d1 or b.d0, b
 
 
