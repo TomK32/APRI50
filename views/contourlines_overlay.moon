@@ -4,6 +4,7 @@ export class ContourlinesOverlay extends View
   new: (map_view) =>
     super()
     @map_view = map_view
+    @map_view.map\contourlines(0.1, @map_view.map\centers())
     @camera = map_view.camera
 
   drawContent: => -- map version
