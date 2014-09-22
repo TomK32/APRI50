@@ -149,6 +149,7 @@ export class Map
     center.point.z += up and 0.01 or -0.01
     for i, corner in pairs(center.corners)
       corner.point.z += up and 0.01 or -0.01
+    @_contourlines = false
     center\calculateDownslopes()
     for i, n in pairs center.neighbors
       n\calculateDownslopes()
