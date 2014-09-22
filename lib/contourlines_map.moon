@@ -1,6 +1,8 @@
 export class ContourlinesMap
-  @contourlines: (step, centers) =>
-    if @_contourlines return @_contourlines
+  @contourlines: (step, centers, force) =>
+    force or= false
+    if @_contourlines and force ~= true
+      return @_contourlines
     @_contourlines = {}
     current = 0
     while current <= 1.0
@@ -12,7 +14,7 @@ export class ContourlinesMap
           if border.d0 and border.d1 and border.v0 and border.v1
             v0 = border.v0.point.z
             v1 = border.v1.point.z
-            if (v0 < current and v1 > current) or (v0 > current and v1 < current)
+            if (v0 <= current and v1 > current) or (v0 > current and v1 <= current)
               if not centers_queue[border.d0]
                 centers_queue[border.d0] = {border}
               elseif not _.include(centers_queue[border.d0], border)
@@ -25,7 +27,7 @@ export class ContourlinesMap
       for center, center_borders in pairs centers_queue
         for i, border in pairs center_borders
           if border.midpoint
-            points = {border.midpoint.x, border.midpoint.y}
+            points = @__contourlineFindWeightedMidpoint(border, step, current)
             left = center
             border_left = border
             right = border.d0 == center and border.d1 or border.d0
@@ -36,15 +38,27 @@ export class ContourlinesMap
               if left
                 left, border_left = @__contourlineNextNeighbour(border_left, left, centers_queue)
                 if border_left and border_left.midpoint
-                  points = _.flatten({points, border_left.midpoint.x, border_left.midpoint.y})
+                  points = _.flatten({points, @__contourlineFindWeightedMidpoint(border_left, step, current)})
               if right
                 right, border_right = @__contourlineNextNeighbour(border_right, right, centers_queue)
                 if border_right and border_right.midpoint
-                  points = _.flatten({border_right.midpoint.x, border_right.midpoint.y, points})
+                  points = _.flatten({@__contourlineFindWeightedMidpoint(border_right, step, current), points})
 
             if #points > 2
               table.insert(@_contourlines[current], love.math.newBezierCurve(unpack(points))\render(5))
     return @_contourlines
+
+
+  @__contourlineFindWeightedMidpoint: (border, step, current) =>
+    min = border.v0.point.z < border.v1.point.z and border.v0.point or border.v1.point
+    max = min == border.v0.point and border.v1.point or border.v0.point
+    distance = border.v0.point\distance(border.v1.point)
+    z_difference = math.abs(border.v0.point.z - border.v1.point.z)
+    difference = current - math.min(border.v0.point.z, border.v1.point.z)
+    strength = difference / z_difference
+    -- pull the curve towards the lower edge
+    mid = min\interpolate(max, strength)
+    return {mid.x, mid.y}
 
   @__contourlineNextNeighbour: (border, center, queue) =>
     return false if queue[center] == nil

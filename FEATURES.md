@@ -74,6 +74,7 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
   * chart
 * [0.4] Minerals in (almost) all the map chunks
 * [0.4] Raise and lower terrain (`d` and `u`)
+* [0.4] Contourlines to indicate slopes and valleys
 * [soon] Replace randomized points with grid that's been slightly randomize, for now.
 * [soon] View mode: Colour polygons depending on height
 * [soon] Place cliffs and rocks where the land is very steep

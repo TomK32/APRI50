@@ -208,3 +208,10 @@ export class Center
     if @chunk
       @chunk.dirty = true
     @downslope = r
+
+  bordersNextToBorderPoint: (border, point) =>
+    result = {}
+    for i, b in pairs @borders
+      if b ~= border and b.v1 and b.v0 and (point == b.v1.point or point == b.v1.point)
+        return b
+    return false
