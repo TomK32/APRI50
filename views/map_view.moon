@@ -98,6 +98,24 @@ export class MapView extends View
 
   mousepressed: (x, y) =>
     x, y = @getMousePosition()
+
+    focused_center = @focusedCenter()
+    if focused_center
+      for k, v in pairs {borders: focused_center.borders}
+        print k, v
+        if type(v) == 'table'
+          for i, j in pairs v
+            print '  ', i, j
+            if type(j) == 'table'
+              for l, m in pairs j
+                x_ = tostring(m)
+                if l == 'v0' or l == 'v1'
+                  print ' ', ' ', l, m.point\toString()
+      corners = _.pluck(table.merge(_.pluck(focused_center.borders, 'v1'), _.pluck(focused_center.borders, 'v0')), 'point')
+      for i, point in pairs _.pluck(focused_center.borders, 'midpoint')
+        print i, point\toString()
+      for i, point in pairs corners
+        print i, point\toString()
     if @clicked_entity
       if @clicked_entity\hitInteractionIcon(x - @clicked_entity.position.x, y - @clicked_entity.position.y)
         @clicked_entity = nil
