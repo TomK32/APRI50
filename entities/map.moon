@@ -149,7 +149,7 @@ export class Map
     @center_update_dt += dt
     if @center_update_dt > @center_update_duration
       @center_update_dt = 0
-      for i, center in ipairs(@map\centers())
+      for i, center in ipairs(@centers())
         center\update(dt)
 
   raiseCenter: (up, center) =>
