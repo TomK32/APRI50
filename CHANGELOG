@@ -1,7 +1,9 @@
 
-Version 0.4
+Version 0.4 (2014-09-22)
 
 * Sunlight for map (and fixed it!)
+* Contourlines for map
+* Allow raising/lowering terrain
 * Add some shaders
 * A Colonist to move around
 * Inventories, exchange items between them
@@ -15,6 +17,7 @@ Version 0.4
 * Water sources that flow downhill and acutally form a lake
 * EvoKit with Flora feature does spawn plants
 * Plants (trees, grass) grow slowly over time
+* Integrate a few pieces of concept art
 
 Version 0.3
 
