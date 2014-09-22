@@ -53,7 +53,12 @@ export class MapGen
     @edges = {}
 
   noise: (x, y) =>
-    math.floor(love.math.noise(x / @width, y / @height) * 1000) / 1000
+    n = love.math.noise(y/1000, x/1000) * love.math.noise(y / @width, x / @height) + love.math.noise(x / @width, y / @height)
+    if n > 1
+      n = math.sqrt(n)
+    if n < 0
+      n = math.abs(n * n)
+    return math.floor(n*100)/100
 
   go: (first, last) =>
 
