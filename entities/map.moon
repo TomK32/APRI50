@@ -18,6 +18,8 @@ export class Map
     @map_gen = MapGen(@, width, height, seed, number_of_points)
     @bucket_size = 32
     @createCenterBuckets()
+    @center_update_dt = 0
+    @center_update_duration = game.dt * 30
 
     @
 
@@ -143,6 +145,12 @@ export class Map
         entity\update(dt)
       if entity.deleted
         table.remove(@updateAble, i)
+
+    @center_update_dt += dt
+    if @center_update_dt > @center_update_duration
+      @center_update_dt = 0
+      for i, center in ipairs(@map\centers())
+        center\update(dt)
 
   raiseCenter: (up, center) =>
     assert(center)

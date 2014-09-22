@@ -26,8 +26,6 @@ export class MapView extends View
     @noiseLineShaderDuration = 0.4
     @canvas = love.graphics.newCanvas(@map.width + 2 * @display.x, @map.height + 2 * @display.y)
     game\shader('noise')\send('scale', 32 / game.map.size)
-    @center_update_dt = 0
-    @center_update_duration = game.dt * 30
 
   setDisplay: (display) =>
     View.setDisplay(@, display)
@@ -141,12 +139,6 @@ export class MapView extends View
 
   update: (dt) =>
     @drawCanvas()
-    -- TODO possibly run this less often for a better performance
-    @center_update_dt += dt
-    if @center_update_dt > @center_update_duration
-      @center_update_dt = 0
-      for i, center in ipairs(@centersInRect())
-        center\update(dt)
 
   updateLight: (dt) =>
     for i, sun in pairs @suns
