@@ -25,7 +25,7 @@ export class MapView extends View
     @noiseLineShaderDt = 0.0
     @noiseLineShaderDuration = 0.4
     @canvas = love.graphics.newCanvas(@map.width + 2 * @display.x, @map.height + 2 * @display.y)
-    game\shader('noise')
+    game\shader('noise')\send('scale', 32 / game.map.size)
     @center_update_dt = 0
     @center_update_duration = game.dt * 30
 
