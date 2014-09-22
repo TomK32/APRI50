@@ -80,6 +80,7 @@ export class MapView extends View
 
   centersInRect: =>
     w, h = @cameraWH()
+    w, h = w * 2, h * 2
     x, y = @camera.x - w/2 + 2 * @display.x, @camera.y - h/2 + 2 * @display.y
     if @last_centers_in_rect and _.is_equal(@last_centers_in_rect_bucket, @map\rectToBucket(x, y, w, h))
       return @last_centers_in_rect
