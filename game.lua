@@ -11,6 +11,9 @@ game = {
     fullscreen = false,
     mode = { }
   },
+  map = {
+    size = 3000
+  },
   speed = 1,
   speed_text = '>',
   map_debug = 0,

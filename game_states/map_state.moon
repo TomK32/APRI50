@@ -18,8 +18,7 @@ export class MapState extends State
     super(@)
     @scores = {}
     @compute_scores = false
-
-    @map = Map(3000, 2000, game.seed, 800)
+    @map = Map(game.map.size, game.map.size, game.seed, game.map.size * game.map.size / 10000)
     game.log('Started game with seed ' .. game.seed)
     @view = MapView(@map)
 
