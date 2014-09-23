@@ -87,14 +87,6 @@ export class MapView extends View
     @last_centers_in_rect = @map\centersInRect(x, y, w, h)
     return @last_centers_in_rect
 
-  entitiesInRectOnLayer: (layer) =>
-    w, h = @cameraWH()
-    @map\entitiesInRectOnLayer(@camera.x - w + 2 * @display.x, @camera.y - h + 2 * @display.y, w * 4, h * 4, layer)
-
-  entitiesInRect: () =>
-    w, h = @cameraWH()
-    @map\entitiesInRect(@camera.x - w + 2 * @display.x, @camera.y - h + 2 * @display.y, w * 4, h * 4)
-
   mousepressed: (x, y) =>
     x, y = @getMousePosition()
 
@@ -115,27 +107,6 @@ export class MapView extends View
         print i, point\toString()
       for i, point in pairs corners
         print i, point\toString()
-    if @clicked_entity
-      if @clicked_entity\hitInteractionIcon(x - @clicked_entity.position.x, y - @clicked_entity.position.y)
-        @clicked_entity = nil
-        return true
-      else
-        @clicked_entity\lostFocus()
-
-    entities = @map\entitiesNear(x, y, game.icon_size / @camera.scale)
-    if #entities == 0
-      @clicked_entity = nil
-      return false
-    p = Point(x, y)
-    @clicked_entity = entities[1]
-    clicked_distance = p\distance(@clicked_entity.position)
-    for i, entity in pairs(entities)
-      d = p\distance(entity.position)
-      if d < clicked_distance
-        @clicked_entity = entity
-        clicked_distance = d
-    return true
-
 
   update: (dt) =>
     @drawCanvas()
@@ -184,19 +155,6 @@ export class MapView extends View
       center.chunk\drawParticles()
       love.graphics.pop()
 
-
-    -- entities
-    for l, layer in ipairs(@map.layer_indexes) do
-      entities = @entitiesInRect()
-      for i,entity in ipairs(entities) do
-        @\drawEntity(entity)
-
-    if @clicked_entity
-      love.graphics.push()
-      love.graphics.translate(@clicked_entity.position.x, @clicked_entity.position.y)
-      love.graphics.setColor(255, 255, 255, 200)
-      @clicked_entity\drawInteractionIcons(@getMousePosition(@clicked_entity.position))
-      love.graphics.pop()
     if game.use_shaders
       love.graphics.setShader()
 
@@ -300,29 +258,6 @@ export class MapView extends View
         i += 1
     @debug_mouse_window.height += (i - 1) * lh
     @debug_mouse_window.width *= lh / 2
-    love.graphics.pop()
-
-  drawEntity: (entity) =>
-    love.graphics.push()
-    love.graphics.translate(entity.position.x, entity.position.y)
-    love.graphics.push()
-    entity\transform()
-    if entity == @clicked_entity
-      love.graphics.setColor(255, 100, 0, 150)
-      love.graphics.circle('line', entity.width/2, entity.height/2, entity.diameter/2)
-    if entity.active and entity.drawActive
-      entity\drawActive({240, 240, 0, 200})
-
-    if entity\includesPoint(@getMousePoint())
-      love.graphics.setColor(255, 200, 0, 50)
-      love.graphics.circle('line', entity.width/2, entity.height/2, entity.diameter/2)
-
-    if entity.draw or entity.drawable
-      if entity.draw
-        entity\draw()
-      else
-        love.graphics.draw(entity.drawable)
-    love.graphics.pop()
     love.graphics.pop()
 
   debugCenter: (center) =>

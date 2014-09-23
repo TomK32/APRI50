@@ -4,6 +4,7 @@ require 'views/map_view'
 require 'views/inventory_view'
 require 'views/scores_view'
 require 'views.contourlines_overlay'
+require 'views.map_entities_overlay'
 require 'game_plays/game_play'
 
 export class MapState extends State
@@ -40,6 +41,7 @@ export class MapState extends State
       @update(0.25)
     @view.camera.scale = scale
     @addView(ContourlinesOverlay(@view, @map))
+    @addView(MapEntitiesOverlay(@view, @map))
 
     return @
 
