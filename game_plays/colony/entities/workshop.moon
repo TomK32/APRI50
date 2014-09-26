@@ -4,6 +4,7 @@ return class Workshop extends Building
     super(options)
     @completed or= false
     @inventory or= Inventory(@, @name)
+    @inventory.background_image = 'game_plays/colony/images/evolution_kit_lab.jpg'
 
   controllable: =>
     @completed
