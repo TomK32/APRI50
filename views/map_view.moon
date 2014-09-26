@@ -86,27 +86,6 @@ export class MapView extends View
     @last_centers_in_rect = @map\centersInRect(x, y, w, h)
     return @last_centers_in_rect
 
-  mousepressed: (x, y) =>
-    x, y = @getMousePosition()
-
-    focused_center = @focusedCenter()
-    if focused_center
-      for k, v in pairs {borders: focused_center.borders}
-        print k, v
-        if type(v) == 'table'
-          for i, j in pairs v
-            print '  ', i, j
-            if type(j) == 'table'
-              for l, m in pairs j
-                x_ = tostring(m)
-                if l == 'v0' or l == 'v1'
-                  print ' ', ' ', l, m.point\toString()
-      corners = _.pluck(table.merge(_.pluck(focused_center.borders, 'v1'), _.pluck(focused_center.borders, 'v0')), 'point')
-      for i, point in pairs _.pluck(focused_center.borders, 'midpoint')
-        print i, point\toString()
-      for i, point in pairs corners
-        print i, point\toString()
-
   update: (dt) =>
     @drawCanvas()
 
