@@ -8,6 +8,7 @@ export class MapEntitiesOverlay extends View
     @map_view, @map = map_view, map
 
   mousepressed: (x, y) =>
+    x, y = @map_view\coordsForXY(x, y)
     if @clicked_entity
       if @clicked_entity\hitInteractionIcon(x - @clicked_entity.position.x, y - @clicked_entity.position.y)
         @clicked_entity = nil
