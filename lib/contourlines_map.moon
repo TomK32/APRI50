@@ -33,7 +33,8 @@ export class ContourlinesMap
             right = border.d0 == center and border.d1 or border.d0
             border_right = border
             c = 0
-            while (left or right) and right ~= center and right ~= left and c < 1
+            -- c should be a lot higher here but lines are behaving nasty then
+            while (left or right) and right ~= center and right ~= left and c < 3
               c += 1
               if left
                 left, border_left = @__contourlineNextNeighbour(border_left, left, centers_queue)
@@ -43,7 +44,8 @@ export class ContourlinesMap
                 right, border_right = @__contourlineNextNeighbour(border_right, right, centers_queue)
                 if border_right and border_right.midpoint
                   points = _.flatten({@__contourlineFindWeightedMidpoint(border_right, step, current), points})
-
+            -- if #points > 6 and right == left
+            --   closing the circle, but how?
             if #points > 2
               table.insert(@_contourlines[current], love.math.newBezierCurve(unpack(points))\render(5))
     return @_contourlines
