@@ -16,6 +16,7 @@ GamePlay.Colony = class Colony extends GamePlay
 
   new: (map_state) =>
     super(map_state)
+    @map = map_state.map
 
     @map_state.compute_scores = true
     game.player.colonists = Inventory()
@@ -40,7 +41,7 @@ GamePlay.Colony = class Colony extends GamePlay
       if entity.map
         e.position or= @start_position
         @map_state.map\addEntity(e)
-      game.log('Addeded ' .. name)
+      game.log('Added ' .. name)
 
     @inventory_view = InventoryView(nil, {30, 200, 30, 100}, 'press <0-9>')
     @inventory_view.display.x = (@map_state.view.display.width - @inventory_view.display.width) / 2

@@ -21,7 +21,7 @@ entities:
     class: Machine
     map: true
     before_create: (self, state) ->
-      @args.position = state.start_position\offset(200, 100)
+      @args.position = state.map\findClosestCenter(state.start_position\offset(200, 100)).point
       @args.source_inventories = {state.atmosphere}
       @args.target_inventory = state.atmosphere
     args:
@@ -36,7 +36,7 @@ entities:
     class: GamePlay.Colony.SpaceShip
     map: true
     before_create: (state) =>
-      @args.position = @start_position
+      @args.position = state.map\findClosestCenter(state.start_position).point
     args:
       name: 'Colony Ship APRI50'
 
@@ -44,7 +44,7 @@ entities:
     class: Vehicle
     map: false -- true
     before_create: (state) =>
-      @args.position = state.start_position\offset(40, -120, game.layers.vehicles)
+      @args.position = state.map\findClosestCenter(state.start_position\offset(40, -120)).point
     args:
       rotation: 20,
       name: 'Vehicle #1'
@@ -60,6 +60,6 @@ entities:
       @args.inventory = Inventory()
       for i=1, 8
         @args.inventory\add(EvolutionKit.random(game.dna_length))
-      @args.position = state.start_position\offset(150, -90)
+      @args.position = state.map\findClosestCenter(state.start_position\offset(250, -90)).point
 
 

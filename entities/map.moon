@@ -131,8 +131,10 @@ export class Map
 
   findClosestCenter: (x, y) =>
     point = Point(x, y)
-    centers = @centersNearPoint(x, y)
-    closest_center = centers[1]
+    if type(x) == 'table'
+      point = x
+    centers = @centersNearPoint(point.x, point.y)
+    closest_center = _.pop(centers)
     if not closest_center
       return nil
     closest_distance = closest_center.point\distance(point)
