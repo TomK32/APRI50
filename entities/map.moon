@@ -46,8 +46,12 @@ export class Map
 
     return bucket[x][y]
 
-  centersNearPoint: (x, y) =>
-    return @centersInRect(x - @bucket_size, y - @bucket_size, 2 * @bucket_size, 2 * @bucket_size)
+  centersNearPoint: (x, y, range) =>
+    range or= @bucket_size * 2
+    centers = @centersInRect(x - range, y - range, 2 * range, 2 * range)
+    if #centers == 0
+      return centersNearPoint(x, y, range * 2)
+    return centers
 
   rectToBucket: (x0, y0, w, h) =>
     x0 = math.ceil(x0 / @bucket_size)
