@@ -3,6 +3,13 @@
 
 export class Recipe
   @recipes = {}
+  @load: (file) ->
+    recipes = {}
+    for name, args in pairs(require(file))
+      args.name or= name
+      recipes[name] = Recipe(args)
+    return recipes
+
   new: (options) =>
     @name = options.name
     assert(@name)

@@ -26,7 +26,7 @@ entities:
       @args.target_inventory = state.atmosphere
     args:
       name: 'O2 Generator'
-      recipes: {Recipe.recipes.co2_o2}
+      recipes: Recipe.load('data.recipes.atmosphere')
       interactions:
         atmosphere:
           icon: Entity.interactions_icons.controls_machine
