@@ -55,7 +55,7 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 * Advanced level prospecting with an automatic machine
 * Flood water from one center onto others, forming larger lakes
 
-## Map
+## Map and environment
 
 * [0.3] Change grid to graph by porting mapgen2
 * [0.4] Scrollable
@@ -75,9 +75,10 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 * [0.4] Minerals in (almost) all the map chunks
 * [0.4] Raise and lower terrain (`d` and `u`)
 * [0.4] Contourlines to indicate slopes and valleys
-* [soon] Replace randomized points with grid that's been slightly randomize, for now.
-* [soon] View mode: Colour polygons depending on height
+* [0.4] Replace randomized points with grid that's been slightly randomize, for now.
+* River object to draw bezier curves rather than lines from center to center
 * [soon] Place cliffs and rocks where the land is very steep
+* View mode: Colour polygons depending on height
 * Energy (generator and distribution, store it in inventories or directly on entities)
 * Don't always show minerals on the surface, makes prospecting more important
 * Put notes, landmarks and drawings (all on a sign) on the map
