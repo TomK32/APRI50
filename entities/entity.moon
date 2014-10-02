@@ -170,4 +170,8 @@ export class Entity
       return true
 
   toString: =>
-    @@name
+    @name or @@__name
+
+  -- for hovering in inventories
+  iconTitle: =>
+    @name or @@__name

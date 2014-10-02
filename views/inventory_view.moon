@@ -61,6 +61,9 @@ export class InventoryView extends View
 
     -- render the grid of items
     item_counter = 0
+    x,y = love.mouse.getPosition()
+    hovered_item = @clickedItemNumber(x, y)
+
     for row = 0, @rows - 1
       love.graphics.push()
       for column = 1, @columns
@@ -72,7 +75,7 @@ export class InventoryView extends View
         if @inventory.items and @inventory.items[item_counter]
           love.graphics.push()
           love.graphics.translate(@padding, @padding)
-          @drawItem(@inventory.items[item_counter])
+          @drawItem(@inventory.items[item_counter], item_counter == hovered_item)
           love.graphics.pop()
         else
           love.graphics.setColor(255, 255, 255, 255)
@@ -93,11 +96,17 @@ export class InventoryView extends View
         love.graphics.setColor(255, 255, 255, 255)
         love.graphics.print(description, 2, 0)
 
-  drawItem: (item) =>
+  drawItem: (item, active) =>
     if item.image or item.quad
+      love.graphics.push()
       if @icon_size ~= item.image\getHeight() or @icon_size ~= item.image\getWidth()
         love.graphics.scale(@icon_size / item.image\getHeight())
       if item.quad
         love.graphics.draw(item.image, item.quad, 0, 0)
       elseif item.image
         love.graphics.draw(item.image, 0, 0)
+      love.graphics.pop()
+      if active
+        love.graphics.rectangle('line', 0, 0, @icon_size, @icon_size)
+        if item.iconTitle
+          game.renderer.textInRectangle(item\iconTitle() or '?', @icon_size, 0)
