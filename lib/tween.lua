@@ -111,7 +111,7 @@ end
 
 local function finishTween(self)
   copyTables(self.subject, self.target)
-  if self.callback then self.callback(unpack(self.args)) end
+  if self.callback then self.callback(self, unpack(self.args)) end
   tween.stop(self)
 end
 
