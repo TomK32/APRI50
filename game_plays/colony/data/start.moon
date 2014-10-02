@@ -19,7 +19,7 @@ entities:
 
   o2generator:
     class: Machine
-    map: true
+    --map: true
     before_create: (self, state) ->
       @args.position = state.map\findClosestCenter(state.start_position\offset(200, 100)).point
       @args.source_inventories = {state.atmosphere}
@@ -39,10 +39,14 @@ entities:
       @args.position = state.map\findClosestCenter(state.start_position).point
     args:
       name: 'Colony Ship APRI50'
+    after_create: (state) =>
+      for k, v  in pairs @
+        print k, v
+      @inventory\add(GamePlay.Colony.OxygenGenerator(1, 1000))
 
   vehicle1:
     class: Vehicle
-    map: false -- true
+    --map: true
     before_create: (state) =>
       @args.position = state.map\findClosestCenter(state.start_position\offset(40, -120)).point
     args:
@@ -61,5 +65,18 @@ entities:
       for i=1, 8
         @args.inventory\add(EvolutionKit.random(game.dna_length))
       @args.position = state.map\findClosestCenter(state.start_position\offset(250, -90)).point
+
+  factory:
+    class: Machine
+    map: true
+    before_create: (self, state) ->
+      @args.position = state.map\findClosestCenter(state.start_position\offset(50, 130)).point
+      @args.source_inventories = {Inventory()}
+      @args.target_inventory = Inventory()
+    args:
+      name: 'Factory'
+      recipes: Recipe.load('data.recipes.factory')
+      controllable: true
+      game_state: () => return State({view: require('views.factory_view')()})
 
 

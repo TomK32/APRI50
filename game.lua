@@ -21,7 +21,7 @@ game = {
   show_sun = true,
   dt = 0.05,
   gravity = 9.8,
-  time = 0, -- counts dt. 1 (about 50 ticks)is 1 hour
+  time = 0, -- counts dt. 1 (about 50 ticks) is 1 hour
   time_minutes = 15 * 0.075,
   time_hours = 4 * 15 * 0.075,
   time_days = 24 * 4 * 15 * 0.075,
@@ -161,6 +161,7 @@ end
 
 function game.setState(state)
   assert(state, 'game state missing')
+  game.log('Switching to state ' .. (state.name or '??'))
   state.last_state = state.last_state or game.current_state
   game.current_state = state
 end

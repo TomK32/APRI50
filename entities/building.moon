@@ -11,8 +11,10 @@ export class Building extends Entity
         e.controllable and (e.controllable == true or e\controllable())
       clicked: (e) ->
         if e.game_state
-          game_state = e\game_state()(e, game.current_state)
+          game_state = e\game_state()
           if game_state
+            if type(game_state) == 'function'
+              game_state = game_state(e, game.current_state)
             return game.setState(game_state)
         print "No game state has been implemented yet"
 

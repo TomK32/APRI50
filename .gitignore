@@ -26,3 +26,4 @@ data/*.lua
 views/evolution_kit/*lua
 entities/other/*lua
 lib/pm_prng.lua
+data/recipes/*lua

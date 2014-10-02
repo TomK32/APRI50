@@ -41,6 +41,8 @@ GamePlay.Colony = class Colony extends GamePlay
       if entity.map
         e.position or= @start_position
         @map_state.map\addEntity(e)
+      if entity.after_create
+        entity.after_create(e, @)
       game.log('Added ' .. name)
 
     @inventory_view = InventoryView(nil, {30, 200, 30, 100}, 'press <0-9>')
