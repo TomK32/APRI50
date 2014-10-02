@@ -52,12 +52,12 @@ export class MapGen
     @corners = {}
     @edges = {}
 
-  noise: (x, y) =>
+  noiseElevation: (x, y) =>
     n = love.math.noise(y/1000, x/1000) * love.math.noise(y / @width, x / @height) + love.math.noise(x / @width, y / @height)
     if n > 1
-      n = math.sqrt(n)
+      n = math.sqrt(n, 4)
     if n < 0
-      n = math.abs(n * n)
+      n = math.abs(n * n * n)
     return math.floor(n*100)/100
 
   go: (first, last) =>
@@ -95,7 +95,7 @@ export class MapGen
         x = i + @map_random\nextDouble() / 2
         y = j + (i % 3) / 2 - @map_random\nextDouble() / 2
         @points[n] = Point(math.ceil(x * distance), math.ceil(y * distance))
-        @points[n].z = @noise(@points[n].x, @points[n].y)
+        @points[n].z = @noiseElevation(@points[n].x, @points[n].y)
         n += 1
     @num_points = n
     @
@@ -108,7 +108,7 @@ export class MapGen
 
     for i=1, @num_points
       @points[i] = Point(@map_random\nextDoubleRange(x, w), @map_random\nextDoubleRange(y, h))
-      @points[i].z = @noise(@points[i].x, @points[i].y)
+      @points[i].z = @noiseElevation(@points[i].x, @points[i].y)
     @
 
 
@@ -238,7 +238,7 @@ export class MapGen
     corner = Corner()
 
     corner.point = point
-    corner.point.z = @noise(corner.point.x, corner.point.y)
+    corner.point.z = @noiseElevation(corner.point.x, corner.point.y)
     corner.border = (point.x <= @bounds.x0 or point.x >= @bounds.x1 or point.y <= @bounds.y0 or point.y <= @bounds.y1)
     table.insert(@corners, corner)
     table.insert(@corner_map[bucket], corner)
