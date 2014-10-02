@@ -16,13 +16,11 @@ export class MapView extends View
     @max_y = @map.height - @display.height / 2
     @m_x, @m_y = 0, 0
     @suns = {
-      Sun(5, 0.7, {255, 230, 10}, {x: Sun.max_x / 2, y: 0.2, z: 1}, 'Jebol')
-      Sun(3, 0.3, {200, 20, 0}, {x: Sun.max_x * -0.6 , y: -20, z: 1}, 'Minmol')
-      Sun(6, 0.7, {10, 20, 250}, {x: Sun.max_x * -0.3, y: 10, z: 1}, 'Hanol')
+      Sun({speed: 0.3, brightness: 1.3, start: 0.5, name: 'Minmol', color: {200, 20, 0}, offset:  0.5})
+      Sun({speed: 2, brightness: 0.4, start: 0.5, name: 'Hanol', color: {10, 20, 250}}, offset: 1.2)
+      Sun({speed: 5, brightness: 0.7, start: 0.5, name: 'Jebol'})
     }
     @noiseShaderOffset = {math.random(10), 0}
-    @noiseLineShaderDt = 0.0
-    @noiseLineShaderDuration = 0.4
     @canvas = love.graphics.newCanvas(@map.width + 2 * @display.x, @map.height + 2 * @display.y)
     game\shader('noise')\send('scale', 32 / game.map.size)
 
@@ -147,17 +145,19 @@ export class MapView extends View
     love.graphics.print(game\timeInWords(), 10, @display.height - 20)
     if game.show_sun
       width = 300
-      x, y = 420, 30
+      x, y = 40, 40
       factor = width / Sun.max_x
 
       love.graphics.setColor(0,0,0,255)
-      love.graphics.rectangle('fill', x - 5, y - 10, 310, 20)
+      love.graphics.rectangle('fill', x - 20, y - 20, 40, 30)
       for i, sun in ipairs @suns
-        if sun.point.x > 0
+        if sun.shining
+          x_ = x + sun.point.x * (10 + i*3)
+          y_ = y + sun.point.y * (10 + i*3)
           love.graphics.setColor(unpack(sun.color))
-          love.graphics.circle("fill", x + sun.point.x * factor, y + sun.point.y/3, 10 * sun.brightness)
+          love.graphics.circle("fill", x_, y_, 10 * sun.brightness)
           love.graphics.setColor(255,255,255,255)
-          love.graphics.print(sun.name, x + sun.point.x * factor + 10, y - 3)
+          game.renderer.textInRectangle(sun.name, x_ + 5, y_ - 20, {padding: {x: 0, y: 0}})
 
   getMousePoint: (offset) =>
     x, y = love.mouse.getPosition()

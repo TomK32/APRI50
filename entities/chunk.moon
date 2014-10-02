@@ -133,11 +133,16 @@ export class Chunk
       love.graphics.setColor(unpack(@colors))
       love.graphics.polygon('fill', unpack(polygon.shape))
       if game.show_sun and polygon.light
-        love.graphics.setBlendMode('additive')
-        for j, color in pairs polygon.light
-          love.graphics.setColor(unpack(color))
+        if #polygon.light == 0
+          love.graphics.setBlendMode('alpha')
+          love.graphics.setColor({20, 20, 20, 200})
           love.graphics.polygon('fill', unpack(polygon.shape))
-        love.graphics.setBlendMode('alpha')
+        else
+          love.graphics.setBlendMode('additive')
+          for j, color in pairs polygon.light
+            love.graphics.setColor(unpack(color))
+            love.graphics.polygon('fill', unpack(polygon.shape))
+          love.graphics.setBlendMode('alpha')
 
   drawBorders: =>
     for i, border in pairs @center.borders

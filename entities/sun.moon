@@ -9,29 +9,39 @@ export class Sun
   norms: {}
   elevationScale: 1000000 -- we keep the elevation at 0..1 but for the sunshine we need to scale up
 
-  new: (speed, brightness, color, point, name) =>
-    @speed, @brightness, @color, @point, @name = speed, brightness, color, point, name
+  new: (options) =>
+    for k, v in pairs options
+      @[k] = v
+    @speed or= 1
+    @brightness or= 1
+    @color or= {255, 230, 10}
+    assert(@speed)
+    assert(@brightness)
+    assert(@name)
+    @point = Point(-0.1, 10, @offset or 1)
+    @dt_timer = 0
     @shining = true
 
     Sun.index += 1
     @id = Sun.index
 
-    if #color ~= 3
+    if #@color ~= 3
       error('Sun must have 3 values for colour')
-    @r, @g, @b = unpack(color)
+    @dt_timer = 0
     @update(0, true)
 
   update: (dt, force) =>
-    @point.x += dt * @speed * Sun.max_x / 10
-    if @point.x > Sun.max_x
-      @point.x = -Sun.max_x + (@point.x % Sun.max_x)
-    if not force and @point.x < 0 -- won't shine, won't calculate
+    --force = true
+    @dt_timer += dt * @speed * dt*game.time_hours
+    if @dt_timer > math.pi
+      @dt_timer = -math.pi
+    @point.y = math.cos(@dt_timer)
+    @point.x = math.sin(@dt_timer)
+    if not force and @point.y > 0 -- won't shine, won't calculate
       @shining = false
       return
     @shining = true
-    sin_x = math.sin(@point.x / Sun.max_x * math.pi)
-    @point.z = sin_x
-    @normPoint = Sun.normVector(@point)
+    @normPoint = Sun.normVector({x: @point.x, y: @point.y, z: @point.z})
     true
 
   -- move into a Vector3D
@@ -53,7 +63,7 @@ export class Sun
     ba.x = pointB.x - pointA.x
     ba.y = pointB.y - pointA.y
     ba.z = (pointB.z - pointA.z) * Sun.elevationScale
-    
+
     ca = {}
     ca.x = pointC.x - pointA.x
     ca.y = pointC.y - pointA.y
@@ -65,6 +75,12 @@ export class Sun
     norm = Sun.normVector(cross)
 
     light = @brightness * Sun.dotProduct(norm, @normPoint) * math.sqrt(@point.z)
+    dotProd = Sun.dotProduct(norm, @point)
+    normMag = Sun.normMag(norm)
+    lightMag = Sun.normMag(@point)
+    light = math.sqrt((math.acos(dotProd / (normMag * lightMag)) / math.pi) * @brightness)
+
+
     if light > 0
       return light
     else
@@ -73,8 +89,8 @@ export class Sun
   colorForTriangle: (pointA, pointB, pointC) =>
     factor = @getLightFactor(pointA, pointB, pointC)
     if factor > 0
-      r = math.floor(@r * factor)
-      g = math.floor(@g * factor)
-      b = math.floor(@b * factor)
+      r = math.floor(@color[1] * factor)
+      g = math.floor(@color[2] * factor)
+      b = math.floor(@color[3] * factor)
       a = math.floor(100 * math.sqrt(factor))
       return {r, g, b, a}
