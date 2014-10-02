@@ -77,6 +77,6 @@ entities:
       name: 'Factory'
       recipes: Recipe.load('data.recipes.factory')
       controllable: true
-      game_state: () => return State({view: require('views.factory_view')()})
+      game_state: () => return State({name: 'Factory control', view: require('views.factory_view')(@)})
 
 
