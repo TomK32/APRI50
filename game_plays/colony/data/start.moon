@@ -73,6 +73,7 @@ entities:
       @args.position = state.map\findClosestCenter(state.start_position\offset(50, 130)).point
       @args.source_inventories = {Inventory()}
       @args.target_inventory = Inventory()
+      @args.inventory = @args.target_inventory
     args:
       name: 'Factory'
       recipes: Recipe.load('data.recipes.factory')
