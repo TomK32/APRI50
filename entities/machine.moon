@@ -16,6 +16,9 @@ export class Machine extends Building
 
   update: (dt) =>
     super(dt)
-    for name, recipe in pairs(@recipes)
-      recipe\produce(@source_inventories, @target_inventory, dt)
+    if @active_recipe and @recipes[@active_recipe]
+      @recipes[@active_recipe]\produce(@source_inventories, @target_inventory, dt)
+    else
+      for name, recipe in pairs(@recipes)
+        recipe\produce(@source_inventories, @target_inventory, dt)
 
