@@ -4,7 +4,7 @@ return {
       Copper: 5
       Iron: 1
       Oil: 5
-      Enegery: 20
+      Energy: 20
     products:
       Electronics: 1
       Waste: 10
