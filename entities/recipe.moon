@@ -16,9 +16,8 @@ export class Recipe
     @ingredients = options.ingredients or {}
     @products = options.products or {}
     @duration = options.duration or 0
-    @duration_passed or= 0
 
-  produce: (sources, target, dt) =>
+  produce: (machine, sources, target, dt) =>
     ingredients_unmatched = {}
     -- see if we got all we need
     for ingredient, amount in pairs(@ingredients)
@@ -28,7 +27,7 @@ export class Recipe
       if ingredients_unmatched[ingredient] <= 0
         ingredients_unmatched[ingredient] = nil
     if not _.is_empty(ingredients_unmatched)
-      return false
+      return {}
 
     -- actually remove them from the inventories
     for ingredient, amount in pairs(@ingredients)
@@ -38,13 +37,14 @@ export class Recipe
       assert(amount_left == 0, 'error when consuming ' .. ingredient)
 
     -- and add the resulting products
+    produced = {}
     for product, amount in pairs(@products)
-      if @duration > @duration_passed
-        @duration_passed += dt
-        return false
-      else
-        game.log('Completed a ' .. product)
-        @duration_passed = 0
-      if not target\addAmount(product, dt * amount)
-        true
+      machine.duration_passed[product] or= 0
+      if @duration > machine.duration_passed[product]
+        machine.duration_passed[product] += dt
+      elseif not target\addAmount(product, amount)
+        game.log(machine\toString() .. ' completed a ' .. product)
+        machine.duration_passed[product] = 0
+        table.insert(produced, product)
         -- goes to waste?
+    return produced

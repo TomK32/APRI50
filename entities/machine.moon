@@ -14,14 +14,16 @@ export class Machine extends Building
     assert(@source_inventories, 'sources')
     assert(@target_inventory, 'target') -- needs add method
     @active_recipe = @@ANY
+    @duration_passed or= {}
 
   update: (dt) =>
     super(dt)
     if @activeRecipe()
-      @activeRecipe()\produce(@source_inventories, @target_inventory, dt)
+      @activeRecipe()\produce(@, @source_inventories, @target_inventory, dt)
     elseif @active_recipe == @@ANY
       for name, recipe in pairs(@recipes)
-        recipe\produce(@source_inventories, @target_inventory, dt)
+        recipe\produce(@, @source_inventories, @target_inventory, dt)
+
 
   activeRecipe: =>
     if @active_recipe and @recipes[@active_recipe]
