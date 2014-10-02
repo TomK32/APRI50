@@ -80,7 +80,7 @@ export class View
   -- if you don't need it, set @guiReturnButton to nil in you subsclass
   guiReturnButton: =>
     gui.group.push{grow: "right", pos: {20, 20}}
-    if gui.Button({text: 'return', draw: (s,t,x,y,w,h) -> game.renderer\print(t, game.colors.text2, x, y)})
+    if gui.Button({text: 'return', draw: (s,t,x,y,w,h) -> game.renderer.textInRectangle(t, x, y)})
       @state\leaveState()
     gui.group.pop()
 
