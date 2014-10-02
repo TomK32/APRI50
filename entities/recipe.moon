@@ -15,6 +15,8 @@ export class Recipe
     assert(@name)
     @ingredients = options.ingredients or {}
     @products = options.products or {}
+    @duration = options.duration or 0
+    @duration_passed or= 0
 
   produce: (sources, target, dt) =>
     ingredients_unmatched = {}
@@ -37,6 +39,12 @@ export class Recipe
 
     -- and add the resulting products
     for product, amount in pairs(@products)
+      if @duration > @duration_passed
+        @duration_passed += dt
+        return false
+      else
+        game.log('Completed a ' .. product)
+        @duration_passed = 0
       if not target\addAmount(product, dt * amount)
         true
         -- goes to waste?

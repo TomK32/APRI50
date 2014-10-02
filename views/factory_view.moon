@@ -15,7 +15,7 @@ return class FactoryView extends View
     for name, recipe in pairs @factory.recipes
       if @gui.Button({text: name, id: name})
         @factory.active_recipe = name
-    if @factory.active_recipe
+    if @factory\activeRecipe()
       @gui.keyboard.setFocus(@factory.active_recipe)
     @gui.group.pop()
 
@@ -26,10 +26,10 @@ return class FactoryView extends View
     love.graphics.push()
     love.graphics.translate(@offset.x, @offset.y)
     love.graphics.pop()
-    if @factory.active_recipe
-      @drawActiveRecipe()
+    if @factory\activeRecipe()
+      @drawRecipe(@factory\activeRecipe())
 
-  drawActiveRecipe: =>
+  drawRecipe: (recipe) =>
     love.graphics.push()
     love.graphics.translate(@offset.x + 200, @offset.y)
     col_x = game.fonts.lineHeight * 3
@@ -37,13 +37,13 @@ return class FactoryView extends View
     @printLine('', 0, 0)
     love.graphics.push()
     @printLine('Input', col_x, 0)
-    for ingredient, amount in pairs @factory.recipes[@factory.active_recipe].ingredients
+    for ingredient, amount in pairs recipe.ingredients
       love.graphics.printf(amount, 0, 0, col_x - game.fonts.lineHeight, 'right')
       @printLine(ingredient, col_x, 0)
     love.graphics.pop()
     love.graphics.translate(200, 0)
     @printLine('Output', col_x, 0)
-    for product, amount in pairs @factory.recipes[@factory.active_recipe].products
+    for product, amount in pairs recipe.products
       love.graphics.printf(amount, 0, 0, col_x - game.fonts.lineHeight, 'right')
       @printLine(product, col_x, 0)
     love.graphics.pop()

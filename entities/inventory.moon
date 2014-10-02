@@ -39,7 +39,8 @@ export class Inventory
         item.amount += amount
         return true
     @add(element)
-    element.amount = amount
+    if type(element) == 'table'
+      element.amount = amount
 
   add: (item, position) =>
     if not position
