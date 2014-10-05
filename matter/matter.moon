@@ -1,7 +1,7 @@
 export class Matter
-  new: (sort, amount) =>
+  new: (name, amount) =>
     @center = nil
-    @sort, @amount = sort, amount
+    @name, @amount = name, amount
 
   add: (amount) =>
     @amount += amount
@@ -10,7 +10,7 @@ export class Matter
     @amount -= amount
 
   merge: (matter) =>
-    return false if matter.sort ~= @sort
+    return false if matter.name ~= @name
     @amount += matter.amount
     return @amount
 
@@ -26,4 +26,4 @@ export class Matter
     false
 
   toString: =>
-    return @sort .. ' (' .. @__class.__name .. '): ' .. math.floor(@amount * 10) / 10
+    return @name .. ' (' .. @__class.__name .. '): ' .. math.floor(@amount * 10) / 10

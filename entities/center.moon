@@ -55,7 +55,7 @@ export class Center
     return {@point.x / @map.width, @point.y / @map.height}
 
   findMatter: (matter) =>
-    return @matter()[matter.sort]
+    return @matter()[matter.name]
 
   addMatter: (matter) =>
     m = @findMatter(matter)
@@ -63,7 +63,7 @@ export class Center
       m\merge(matter)
     else
       matter.center = @
-      @deposit\addElement(matter.sort, matter)
+      @deposit\addElement(matter.name, matter)
       @setMatterForChunk()
 
   removeMatter: (matter, amount) =>
@@ -72,7 +72,7 @@ export class Center
       return
     m\removeAmount(amount)
     if m.amount <= 0
-      @matter()[matter.sort] = nil
+      @matter()[matter.name] = nil
 
   addParticleSystem: (system) =>
     @chunk\addParticleSystem(system)

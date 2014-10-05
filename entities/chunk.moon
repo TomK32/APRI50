@@ -235,7 +235,7 @@ export class Chunk
           love.graphics.draw(drawable, 0, 0)
         if style == 'downslopeLine' and @center.downslope
           love.graphics.setLineWidth(3)
-          --love.graphics.setColor(@@MATTER_COLORS[matter.__class.__name][matter.sort])
+          --love.graphics.setColor(@@MATTER_COLORS[matter.__class.__name][matter.name])
           love.graphics.setColor(0,0,255,255)
           c = @relativePoint(@center.point)
           n = nil

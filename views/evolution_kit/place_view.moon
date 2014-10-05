@@ -59,7 +59,7 @@ class EvolutionKit.PlaceView extends View
     for i, matter in pairs(@center\matter())
       hit = true
       love.graphics.printf(string.format("%i", matter.amount), game.fonts.lineHeight * 3, 0, game.fonts.lineHeight * 3, 'right')
-      @printLine(matter.sort, 0, 0)
+      @printLine(matter.name, 0, 0)
     if not hit
       @printLine("There's nothing note-worthy in this ground.", 0, 0)
 

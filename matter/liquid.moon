@@ -25,13 +25,13 @@ export class Liquid extends Matter
     else
       -- liquid flowing downhill
       drainingAmount = @amount * dt * (@center.point.z / math.max(0.1, @center.downslope.point.z))
-      @center.downslope\addMatter(Liquid(@sort, drainingAmount))
+      @center.downslope\addMatter(Liquid(@name, drainingAmount))
       @removeAmount(drainingAmount)
       @resetTimer()
 
   drawStyle: =>
     -- TODO Return a class here
-    return 'downslopeLine', @@SORTS[@sort].color
+    return 'downslopeLine', @@SORTS[@name].color
 
   isFilling: =>
     return @center\isLake()
