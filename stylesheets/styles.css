@@ -101,7 +101,6 @@ img {
 }
 
 .sidebar ul {
-  list-style:none;
   padding-left: 1em;
 }
 
@@ -141,6 +140,10 @@ hr {
   background:#e5e5e5;
   height:1px;
   margin:0 0 20px;
+}
+
+footer {
+  clear: both;
 }
 
 
