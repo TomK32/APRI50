@@ -42,7 +42,7 @@ export class Recipe
       machine.duration_passed[product] or= 0
       if @duration > machine.duration_passed[product]
         machine.duration_passed[product] += dt
-      elseif not target\addAmount(product, amount)
+      elseif target\addAmount(Matter(product), amount)
         game.log(machine\toString() .. ' completed a ' .. product)
         machine.duration_passed[product] = 0
         table.insert(produced, product)

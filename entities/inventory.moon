@@ -23,7 +23,7 @@ export class Inventory
   -- and if it fails to remove all the amount that wasn't
   -- removed will be returned
   extractAmount: (element, amount) =>
-    for i, item in *@items
+    for i, item in ipairs @items
       if item == element
         if item.amount >= amount
           item.amount -= amount
@@ -41,6 +41,7 @@ export class Inventory
     @add(element)
     if type(element) == 'table'
       element.amount = amount
+    return true
 
   add: (item, position) =>
     if not position

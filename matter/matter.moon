@@ -25,5 +25,11 @@ export class Matter
   isFilling: =>
     false
 
+  __eq: (other) =>
+    return @name == other.name
+
+  iconTitle: =>
+    @amount .. ' ' .. @name
+
   toString: =>
     return @name .. ' (' .. @__class.__name .. '): ' .. math.floor(@amount * 10) / 10
