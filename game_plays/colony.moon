@@ -33,6 +33,7 @@ GamePlay.Colony = class Colony extends GamePlay
     game.log('Initializing Colony')
 
     for name, entity in pairs(start_data.entities)
+      entity.args or= {}
       if entity.before_create
         entity.before_create(entity, @)
       e = entity.class(entity.args)

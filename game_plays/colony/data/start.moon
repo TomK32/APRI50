@@ -1,4 +1,5 @@
 require 'entities.machine'
+require 'entities.miner'
 entities:
   atmosphere:
     class: Atmosphere
@@ -43,6 +44,14 @@ entities:
       for k, v  in pairs @
         print k, v
       @inventory\add(GamePlay.Colony.OxygenGenerator(1, 1000))
+
+  miner:
+    class: Miner
+    map: true
+    after_create: (state) =>
+      @\place(state.map\findClosestCenter(state.start_position\offset(-170, -30)))
+    args:
+      name: 'Miner'
 
   vehicle1:
     class: Vehicle
