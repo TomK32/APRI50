@@ -90,7 +90,8 @@ GamePlay.Colony = class Colony extends GamePlay
 
     -- select items on the two inventory views
     if not shift_pressed and not alt_pressed and colonist and key\match("[0-9]")
-      if not colonist.inventory\activate(tonumber(key))
+      k = key == '0' and '10' or key
+      if not colonist.inventory\activate(tonumber(k))
         colonist.inventory.active = nil
 
     -- prospect
