@@ -38,14 +38,13 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 * [0.4] Workshop that processes recipes (e.g. for athmosphere or evo kits, build other units)
   * Evo Kit factory
 * [0.4] Vehicles (extending Actor, car-controls)
-* Vehicles leaving tracks
+* [0.4] Factory with recipe selection screen
+* [0.4] Miner machine
 * [soon] Cats
-* [soon] info screen for machines (print out their recipies and sources/target inventories)
 * [0.4] Confirmation dialog when placing an evolution kit
 * [0.4] Show map/chunk details in dialog when placing an evolution kit
 * Recharge OxygenTank when placed in a OxygenGenerator output field
 * Automatically recharge OxygenTank when close to a generator
-* Harvest resources manually (progress animation)
 * Colonist Leader
 * Athmospheric bubbles with breathable or toxic athmosphere
 * Tools, small machines
@@ -76,10 +75,11 @@ Bugs go to http://github.com/TomK32/APRI50/issues/
 * [0.4] Raise and lower terrain (`d` and `u`)
 * [0.4] Contourlines to indicate slopes and valleys
 * [0.4] Replace randomized points with grid that's been slightly randomize, for now.
+* Energy (generator and distribution, store it in inventories or directly on entities)
 * River object to draw bezier curves rather than lines from center to center
 * [soon] Place cliffs and rocks where the land is very steep
+* Vehicles leaving tracks
 * View mode: Colour polygons depending on height
-* Energy (generator and distribution, store it in inventories or directly on entities)
 * Don't always show minerals on the surface, makes prospecting more important
 * Put notes, landmarks and drawings (all on a sign) on the map
 * Generate new map chunks during exploration
