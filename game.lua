@@ -161,7 +161,7 @@ end
 
 function game.setState(state)
   assert(state, 'game state missing')
-  game.log('Switching to state ' .. (state.name or '??'))
+  game.log('Switching to state ' .. (state.name or state.__class.__name))
   state.last_state = state.last_state or game.current_state
   game.current_state = state
 end
