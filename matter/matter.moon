@@ -2,6 +2,7 @@ export class Matter
   new: (name, amount) =>
     @center = nil
     @name, @amount = name, amount
+    pcall -> @image = game\image('images/matter/minerals/' .. string.lower(@name) .. '.png')
 
   add: (amount) =>
     @amount += amount
