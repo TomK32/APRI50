@@ -19,7 +19,7 @@ export class Building extends Entity
         print "No game state has been implemented yet"
 
   new: (options) =>
-    if options.image != false
+    if options.image
       @image or= game\image('images/entities/building.png')
     super(options)
 

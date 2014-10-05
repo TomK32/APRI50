@@ -9,9 +9,7 @@ return class Colonist extends MovableActor
     @speed = 10
     @dead = false
     @health = 10 * game.dt
-    @scale = 0.5
-    @image = game\image('game_plays/colony/images/colonist.png')
-    @setDimensions()
+    @createAnimation('game_plays/colony/images/april.png')
     @reach = @diameter / 2 -- how far the arms stretch
     @id = @@index + 1
     @@index += 1

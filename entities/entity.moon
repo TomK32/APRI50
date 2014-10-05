@@ -29,26 +29,33 @@ export class Entity
     if @inventory and not @inventory.owner
       @inventory.owner = @
       @inventory.name = @.name
-    @setDimensions()
+    if not (@width and @height)
+      @setDimensions()
     -- as we try to render all icons but have to skip some,
     -- we need to keep book about those icons we did draw
     -- so we hightlight and activate the correct one.
     @drawn_interactions = {}
     @interactions or= @@interactions
 
-  setDimensions: =>
+  setDimensions: (width, height) =>
     if not @scale
       @scale = 1
-    @width = 1
-    @height = 1
-    @diameter = 1
+    @width = width or 1
+    @height = height or 1
     if @image
-      @width = @image\getWidth() * @scale
-      @height = @image\getHeight() * @scale
-      @diameter = math.max(@width, @height)
+      @width = (width or @image\getWidth()) * @scale
+      @height = (height or @image\getHeight()) * @scale
+    @diameter = math.max(@width, @height)
     @interactions_offset =
       x: -@width/2
       y: -(@height/2 + @@interactions_width/2)
+
+  createAnimation: (image) =>
+    @animation_image = game\image(image)
+    min = math.min(@animation_image\getHeight(), @animation_image\getWidth())
+    max = math.max(@animation_image\getHeight(), @animation_image\getWidth())
+    @setDimensions(min, min)
+    @animation = game.createAnimation(image, {min, min}, {'loop', {1, '1-' .. max/min}, 1.4})
 
   transform: =>
     if @rotation
@@ -127,9 +134,9 @@ export class Entity
 
 
   drawActive: (highlightColour) =>
-    if @image and not (@width or @height)
+    if @image and not (@width and @height)
       @setDimensions()
-    if not (@width or @height)
+    if not (@width and @height)
       return
     love.graphics.push()
     love.graphics.setColor(highlightColour)
@@ -137,13 +144,14 @@ export class Entity
     love.graphics.pop()
 
   drawContent: =>
-    if @image
+    love.graphics.setColor(255,255,255, 255)
+    if @animation
+      @animation\draw()
+    elseif @image
       if @quad
         love.graphics.draw(@image, @quad, 0, 0)
       else
         love.graphics.draw(@image, 0, 0)
-    if @animation
-      @animation\draw()
 
   lostFocus: =>
     true

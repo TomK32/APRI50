@@ -7,10 +7,8 @@ export class Machine extends Building
   -- and place things into target_inventory that provide an add method (element, amount)
   @ANY = {build: 'anything'}
   new: (options) =>
-    @animation = game.createAnimation(options.animation_image or 'images/entities/machine.png', {48, 48}, {'loop', {1, '1-3'}, 1.4})
-    super(options, image: nil)
-    @image = nil
-    @width, @height = 48, 48
+    @createAnimation(options.animation_image or 'images/entities/factory.png')
+    super(_.extend({image: nil}, options))
     assert(@recipes, 'recipes')
     assert(@source_inventories, 'sources')
     assert(@target_inventory, 'target') -- needs add method

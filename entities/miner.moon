@@ -6,7 +6,7 @@ export class Miner extends Machine
     @target_inventory or= Inventory()
     @inventory = @target_inventory
     @recipes = {}
-    super(_.extend({animation_image: 'images/entities/miner.png'}, options or {}))
+    super(_.extend({animation_image: 'images/entities/miner.png', image: false}, options or {}))
 
   place: (map, center, success_callback) =>
     super(map, center, success_callback)
