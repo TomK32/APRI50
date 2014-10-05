@@ -17,6 +17,8 @@ entities:
     before_create: (state) =>
       @args.position = state.start_position\offset(-70, -80)
       @args.camera = state.map_state.view.camera
+    after_create: =>
+      @inventory\add(Miner())
 
   o2generator:
     class: Machine
@@ -43,13 +45,14 @@ entities:
     after_create: (state) =>
       for k, v  in pairs @
         print k, v
+      @inventory\add(Miner())
       @inventory\add(GamePlay.Colony.OxygenGenerator(1, 1000))
 
   miner:
     class: Miner
     map: true
     after_create: (state) =>
-      @\place(state.map\findClosestCenter(state.start_position\offset(-170, -30)))
+      @\place(state.map, state.map\findClosestCenter(state.start_position\offset(-170, -30)))
     args:
       name: 'Miner'
 

@@ -22,3 +22,14 @@ export class Building extends Entity
     if options.image != false
       @image or= game\image('images/entities/building.png')
     super(options)
+
+  placeable: =>
+    true
+
+  place: (map, center, success_callback) =>
+    @position = center.point
+    @center = center
+    @map = map
+    @map\addEntity(@)
+    if success_callback
+      success_callback(@)

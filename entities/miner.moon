@@ -8,8 +8,8 @@ export class Miner extends Machine
     @recipes = {}
     super(_.extend({animation_image: 'images/entities/miner.png'}, options or {}))
 
-  place: (center) =>
-    @position = center.point
+  place: (map, center, success_callback) =>
+    super(map, center, success_callback)
     @source_inventories = {center\matter()}
     -- create recipes from the matter in the center
     for matter, amount in pairs center\matter()
