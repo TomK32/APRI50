@@ -34,7 +34,7 @@ export class Inventory
     return amount
 
   addAmount: (element, amount) =>
-    for i, item in *@items
+    for i, item in ipairs @items
       if item == element
         item.amount += amount
         return true

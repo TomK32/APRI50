@@ -26,11 +26,12 @@ export class InventoryView extends View
     })
 
   mousepressed: (x, y) =>
-    item_number = @clickedItemNumber(x, y)
+    item_number = @hoveredItemNumber()
     if item_number
       @inventory.active = item_number
 
-  clickedItemNumber: (x, y) =>
+  hoveredItemNumber: () =>
+    x,y = love.mouse.getPosition()
     if not @inventory
       return nil
     if not @\pointInRect(x, y)
@@ -39,8 +40,8 @@ export class InventoryView extends View
     y -= (@display.y + @padding)
     return math.ceil(x / (@icon_size + 3 * @padding)) + math.floor(y / (@icon_size + @padding * 3)) * @columns
 
-  clickedItem: (x, y) =>
-    return @inventory.items[@clickedItemNumber(x, y)]
+  hoveredItem: () =>
+    return @inventory.items[@hoveredItemNumber()]
 
   active: =>
     return @inventory ~= nil
@@ -61,8 +62,7 @@ export class InventoryView extends View
 
     -- render the grid of items
     item_counter = 0
-    x,y = love.mouse.getPosition()
-    hovered_item = @clickedItemNumber(x, y)
+    hovered_item = @hoveredItemNumber()
 
     for row = 0, @rows - 1
       love.graphics.push()
@@ -106,7 +106,12 @@ export class InventoryView extends View
       elseif item.image
         love.graphics.draw(item.image, 0, 0)
       love.graphics.pop()
-      if active
-        love.graphics.rectangle('line', 0, 0, @icon_size, @icon_size)
-        if item.iconTitle
-          game.renderer.textInRectangle(item\iconTitle() or '?', @icon_size, 0)
+    if active
+      love.graphics.rectangle('line', 0, 0, @icon_size, @icon_size)
+
+  drawGUI: () =>
+    hovered_item = @hoveredItem()
+    if hovered_item
+      x,y = love.mouse.getPosition()
+      title = hovered_item.iconTitle and hovered_item\iconTitle() or '?'
+      game.renderer.textInRectangle(title, x + 5, y - game.fonts.lineHeight * 1.2)
