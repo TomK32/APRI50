@@ -50,12 +50,12 @@ export class EvolutionKit
     @toImage()
     @
 
-  place: (map, position, center, success_callback) =>
+  place: (map, center, success_callback) =>
     success = (evolution_kit) =>
       evolution_kit\apply(center)
       map\addEntity(PlacedEvolutionKit({
         evolution_kit: evolution_kit,
-        position: position, center: center,
+        position: center.point, center: center,
         animation: game.createAnimation('images/entities/evolution_kit_placed.png', {64, 64}, {'loop', {1, '1-5'}, 1.4})
       }))
       success_callback(evolution_kit)

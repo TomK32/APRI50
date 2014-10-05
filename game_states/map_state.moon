@@ -128,7 +128,7 @@ export class MapState extends State
       return false
     point = Point(center.point.x, center.point.y)
     if item.place
-      item\place @map, point, center, success_callback
+      item\place @map, center, success_callback
     else
       item.position = point
       @map\addEntity(item)
