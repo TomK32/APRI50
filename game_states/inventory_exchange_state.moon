@@ -20,14 +20,14 @@ export class InventoryExchangeState extends State
   mousepressed: (x, y, button) =>
     if button ~= "l"
       return
-    @dragged_item, @dragged_inventory = @clickedItemAndInventory(x, y)
+    @dragged_item, @dragged_inventory = @hoveredItemAndInventory(x, y)
 
   mousereleased: (x, y, button) =>
     if button ~= "l"
       return
     if not @dragged_item
       return
-    other_item, other_inventory = @clickedItemAndInventory(x, y)
+    other_item, other_inventory = @hoveredItemAndInventory(x, y)
     dragged_position = @dragged_inventory\position(@dragged_item)
     if other_item -- swap them
       other_position = other_inventory\position(other_item)
@@ -43,17 +43,17 @@ export class InventoryExchangeState extends State
   clickedPositionAndInventory:(x, y) =>
     x -= @view.display.x
     y -= @view.display.y
-    position = @character_view\clickedItemNumber(x, y)
+    position = @character_view\hoveredItemNumber(x, y)
     if position
       return position, @inventory
 
     if @left_inventory_view
-      position = @left_inventory_view\clickedItemNumber(x, y)
+      position = @left_inventory_view\hoveredItemNumber(x, y)
       if position
         return position, @left_inventory
     return nil
 
-  clickedItemAndInventory: (x, y) =>
+  hoveredItemAndInventory: (x, y) =>
     position, inventory = @clickedPositionAndInventory(x, y)
     if inventory
       return inventory.items[position], inventory
