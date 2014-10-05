@@ -2,7 +2,7 @@
 export class InventoryView extends View
   new: (inventory, color, title) =>
     @color = color or {0, 200, 0, 100}
-    @title = 'Inventory of ' .. title
+    @title = 'Inventory of ' .. (title or inventory\toString())
     super(@)
     @padding = 2
     @rows = 1
