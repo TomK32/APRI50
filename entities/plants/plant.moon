@@ -74,6 +74,9 @@ export class Plant extends Entity
     love.graphics.translate(-@canvas_size / 2, -@canvas_size / 2)
     love.graphics.draw(@canvas, 0, 0)
 
+  selectable: =>
+    false
+
   createImage: =>
     last_canvas = love.graphics.getCanvas()
     @canvas = love.graphics.newCanvas(@canvas_size, @canvas_size)

@@ -24,10 +24,11 @@ export class MapEntitiesOverlay extends View
     @clicked_entity = entities[1]
     clicked_distance = p\distance(@clicked_entity.position)
     for i, entity in pairs(entities)
-      d = p\distance(entity.position)
-      if d < clicked_distance
-        @clicked_entity = entity
-        clicked_distance = d
+      if entity\selectable()
+        d = p\distance(entity.position)
+        if d < clicked_distance
+          @clicked_entity = entity
+          clicked_distance = d
     return true
 
   entitiesInRectOnLayer: (layer) =>
@@ -66,7 +67,7 @@ export class MapEntitiesOverlay extends View
     if entity.active and entity.drawActive
       entity\drawActive({240, 240, 0, 200})
 
-    if entity\includesPoint(@map_view\getMousePoint())
+    if entity\selectable() and entity\includesPoint(@map_view\getMousePoint())
       love.graphics.setColor(255, 200, 0, 50)
       love.graphics.circle('line', entity.width/2, entity.height/2, entity.diameter/2)
 

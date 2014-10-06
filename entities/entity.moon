@@ -160,6 +160,9 @@ export class Entity
   lostFocus: =>
     true
 
+  selectable: =>
+    true
+
   update: (dt) =>
     if @particles and @particles.update
       @particles\update(dt)
