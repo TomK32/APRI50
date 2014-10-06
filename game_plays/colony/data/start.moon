@@ -41,7 +41,7 @@ entities:
     before_create: (state) =>
       @args.position = state.map\findClosestCenter(state.start_position).point
     args:
-      name: 'Colony Ship APRI50'
+      name: 'Landed Ship'
     after_create: (state) =>
       for k, v  in pairs @
         print k, v
@@ -52,9 +52,7 @@ entities:
     class: Miner
     map: true
     after_create: (state) =>
-      @\place(state.map, state.map\findClosestCenter(state.start_position\offset(-170, -30)))
-    args:
-      name: 'Miner'
+      @\place(state.map, state.map\findClosestCenter(state.start_position\offset(-270, -30)))
 
   vehicle1:
     class: Vehicle
