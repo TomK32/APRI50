@@ -11,7 +11,8 @@ require 'entities/building'
 
 export class PlacedEvolutionKit extends Building
   new: (options) =>
-    super _.extend({image: false}, options)
+    @createAnimation('images/entities/evolution_kit_placed.png')
+    super _.extend({image: nil}, options)
     assert(@evolution_kit)
 
   update: (dt) =>
@@ -55,8 +56,7 @@ export class EvolutionKit
       evolution_kit\apply(center)
       map\addEntity(PlacedEvolutionKit({
         evolution_kit: evolution_kit,
-        position: center.point, center: center,
-        animation: game.createAnimation('images/entities/evolution_kit_placed.png', {64, 64}, {'loop', {1, '1-5'}, 1.4})
+        position: center.point, center: center
       }))
       success_callback(evolution_kit)
     game.setState(State({name: 'Placing an evolution kit', view: require('views.evolution_kit.place_view')({evolution_kit: @, success_callback: success, center: center})}))
