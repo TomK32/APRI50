@@ -84,7 +84,7 @@ export class Entity
     if game.debug
       love.graphics.setColor(255,255,255,255)
       love.graphics.print(@position\toString(), 0, 0)
-      game.renderer.textInRectangle("w: " .. @width .. ", h: " .. @height, 0, game.fonts.lineHeight)
+      game.renderer.textInRectangle("w: " .. @width .. ", h: " .. @height .. ", s: " .. @scale, 0, game.fonts.lineHeight)
     love.graphics.pop()
 
   drawInteractionIcons: (x, y) =>
