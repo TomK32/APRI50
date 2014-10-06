@@ -20,6 +20,8 @@ export class Plant extends Entity
     super(options)
     @colors = _.deepcopy(@@colors)
     @forward = _.deepcopy(@@forward)
+    @setDimensions(256, 256)
+    @diameter = 48
     @canvas_size = 256
     @dt_iteration = 0
     @dt_iteration_span = 5 * @@LSYSTEM.iterations or 5 -- how long it takes from one iteration to the next
@@ -71,8 +73,8 @@ export class Plant extends Entity
     if @dirty
       @createImage()
 
-    love.graphics.translate(-@canvas_size / 2, -@canvas_size / 2)
     love.graphics.draw(@canvas, 0, 0)
+    super()
 
   selectable: =>
     false
