@@ -2,6 +2,7 @@ export class InventoryExchangeView extends View
   new: (state, inventory, others) =>
     super(self)
 
+    @gui = gui
     @state = state
     @inventory, @others = inventory, others
     if @inventory.background_image
@@ -22,14 +23,16 @@ export class InventoryExchangeView extends View
     gui.core.draw()
     love.graphics.pop()
 
-  update: =>
+  update: (dt) =>
+    super(dt)
     gui.group.push({grow: 'right', pos: {@display.width / 2, 5} })
 
     for i, inventory in ipairs(@others)
       button_state = nil
       if inventory == @state.left_inventory
         button_state = 'hot'
-      if gui.Button({text: inventory\toString()\sub(0, 20), state: button_state})
+      if gui.Button({text: inventory\toString()\sub(0, 20), state: button_state, id: i})
+        gui.keyboard.setFocus(i)
         @state\setLeftInventory(inventory)
 
   drawAfterSubViews: =>

@@ -36,6 +36,10 @@ export class Entity
     -- so we hightlight and activate the correct one.
     @drawn_interactions = {}
     @interactions or= @@interactions
+    @name or= @@.__name
+    if @inventory
+      @inventory.owner or= @
+      @inventory.name or= @name
 
   setDimensions: (width, height) =>
     if not @scale

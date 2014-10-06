@@ -10,7 +10,7 @@ return class Colonist extends MovableActor
     @dead = false
     @health = 10 * game.dt
     @createAnimation('game_plays/colony/images/april.png')
-    @reach = @diameter / 2 -- how far the arms stretch
+    @reach = @diameter * 4
     @id = @@index + 1
     @@index += 1
     @name = options.name or @@names[(@id % #@@names) + 1] .. @id
