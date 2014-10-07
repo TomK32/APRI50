@@ -42,9 +42,15 @@ export class State
     else
       game.log("Tried to exit from " .. @@name .. ", but no @last_state defined")
 
-  addView: (view) =>
+  prependView: (view) =>
+    @addView(view, 1)
+  appendView: (view) =>
+    @addView(view, #@sub_views + 1)
+
+  addView: (view, priority) =>
+    priority or= 1
     view.game_state = @
-    table.insert(@sub_views, view)
+    table.insert(@sub_views, priority, view)
     return @
 
   removeView: (view) =>

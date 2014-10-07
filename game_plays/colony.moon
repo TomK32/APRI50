@@ -49,7 +49,7 @@ GamePlay.Colony = class Colony extends GamePlay
     @inventory_view = InventoryView(nil, {30, 200, 30, 100}, 'press <0-9>')
     @inventory_view.display.x = (@map_state.view.display.width - @inventory_view.display.width) / 2
     @inventory_view.display.y = @map_state.view.display.height - @inventory_view.display.height - 20
-    @map_state\addView(@inventory_view)
+    @map_state\appendView(@inventory_view)
     @inventory_view.inventory = @colonist.inventory
 
     @dt = 0

@@ -40,9 +40,9 @@ export class MapState extends State
     for i = 1, 20
       @update(0.25)
     @view.camera.scale = scale
-    @addView(ContourlinesOverlay(@view, @map))
-    @addView(MapEntitiesOverlay(@view, @map))
-    @addView(require('views.map_debug_overlay')(@view))
+    @prependView(require('views.map_debug_overlay')(@view))
+    @prependView(MapEntitiesOverlay(@view, @map))
+    @prependView(ContourlinesOverlay(@view, @map))
 
     return @
 
