@@ -201,6 +201,9 @@ export class EvolutionKit
         return false
     return true
 
+  iconTitle: =>
+    @extensionsToString('dysfunc Evolution Kit')
+
 EvolutionKit\registerExtension('liquifying')
 EvolutionKit\registerExtension('flora')
 EvolutionKit\registerExtension('hardening')
