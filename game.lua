@@ -20,6 +20,7 @@ game = {
   use_shaders = true,
   show_sun = true,
   dt = 0.05,
+  map_density = 1 / 15000,
   gravity = 9.8,
   time = 0, -- counts dt. 1 (about 50 ticks) is 1 hour
   time_minutes = 15 * 0.075,
