@@ -1,8 +1,7 @@
 require 'matter/matter'
 
 export class Liquid extends Matter
-  @SORTS:
-    Water: { color: {0, 0, 200, 255} }
+  @SORTS: require('data.liquids')
 
   new: (...) =>
     super(...)
