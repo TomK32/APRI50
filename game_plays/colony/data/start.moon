@@ -1,5 +1,5 @@
-require 'entities.machine'
-require 'entities.miner'
+require 'entities.machines.machine'
+require 'entities.machines.miner'
 entities:
   atmosphere:
     class: Atmosphere
