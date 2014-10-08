@@ -1,5 +1,6 @@
 require 'entities.machines.machine'
 require 'entities.machines.miner'
+require 'entities.machines.pump'
 entities:
   atmosphere:
     class: Atmosphere
@@ -46,6 +47,7 @@ entities:
       for k, v  in pairs @
         print k, v
       @inventory\add(Miner())
+      @inventory\add(Pump())
       @inventory\add(GamePlay.Colony.OxygenGenerator(1, 1000))
 
   miner:
