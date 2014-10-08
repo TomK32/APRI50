@@ -13,7 +13,7 @@ export class Miner extends Machine
     @source_inventories = {center\matter()}
     -- create recipes from the matter in the center
     for matter, amount in pairs center\matter()
-      if Mineral.SORTS[matter]
+      if Mineral.SORTS[matter] and Mineral.SORTS[matter].mining
         products = {}
         products[matter] = 1
         table.insert(@recipes, Recipe(_.extend({products: products, name: matter, duration: Mineral.SORTS[matter].mining}, Mineral.SORTS[matter])))
