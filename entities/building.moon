@@ -17,6 +17,7 @@ export class Building extends Entity
               game_state = game_state(e, game.current_state)
             return game.setState(game_state)
         print "No game state has been implemented yet"
+    destructible: Entity.interactions.destructible
 
   new: (options) =>
     if options.image
@@ -24,6 +25,8 @@ export class Building extends Entity
     super(options)
 
   placeable: =>
+    true
+  destructible: =>
     true
 
   place: (map, center, success_callback) =>

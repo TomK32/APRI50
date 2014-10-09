@@ -52,7 +52,6 @@ entities:
 
   miner:
     class: Miner
-    map: true
     after_create: (state) =>
       @\place(state.map, state.map\findClosestCenter(state.start_position\offset(-270, -30)))
 

@@ -5,12 +5,20 @@ export class Entity
     inventory: {game\quadFromImage('images/entities/interaction.png', 2)}
     controls_person: {game\quadFromImage('images/entities/interaction.png', 3)}
     controls_machine: {game\quadFromImage('images/entities/interaction.png', 4)}
+    destructible: {game\quadFromImage('images/entities/interaction.png', 5)}
 
+  -- needs to be a class
   @interactions: {
     inventory:
       icon: @@interactions_icons.inventory
       match: (e) -> e.inventory
       clicked: (e) -> game.current_state\openInventory(e)
+    destructible:
+      icon: @@interactions_icons.destructible
+      match: (e) ->
+        e.destructible and (e.destructible == true or e\destructible())
+      clicked: (e) ->
+        e.map\removeEntity(e)
     controls:
       icon: @@interactions_icons.controls
       match: (e) ->

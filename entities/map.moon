@@ -89,17 +89,19 @@ export class Map
       table.insert(@pointToBucket(center.point, @center_buckets), center)
 
   removeEntity: (entity) =>
-    for l, layer in pairs(@layers[entity.position.z])
+    for l, layer in pairs(@layers)
       for i, other in ipairs(layer)
         if entity == other
+          game.log('Removing entity ' .. entity\iconTitle() .. ' at ' .. entity.position\toString())
           table.remove(layer, i)
           return true
+    game.log('Failed to remove entity ' .. entity\iconTitle() .. ' at ' .. entity.position\toString())
     return false
 
   addEntity: (entity) =>
     entity.map = self
     entity.position.z = entity.position.z or entity.layer or 0
-    game.log('Adding entity ' .. (entity.name or entity.__class.__name or '???') .. ' at ' .. entity.position\toString())
+    game.log('Adding entity ' .. entity\iconTitle() .. ' at ' .. entity.position\toString())
     if not @layers[entity.position.z] then
       @layers[entity.position.z] = {}
       table.insert(@layer_indexes, entity.position.z)
