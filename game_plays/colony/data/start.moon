@@ -49,6 +49,7 @@ entities:
       @inventory\add(Miner())
       @inventory\add(Pump())
       @inventory\add(GamePlay.Colony.OxygenGenerator(1, 1000))
+      @inventory.background_image = 'game_plays/colony/images/spaceship_landed.jpg'
 
   miner:
     class: Miner
