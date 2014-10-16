@@ -10,16 +10,24 @@ class Plant.Tree extends Plant
   forward:
     length: 10
   colors:
-    F: {120,50,0,255}
-    C: {0, 160, 0, 255}
+    F: {{120,50,0}, {106,64,0}, {160,118,44}}
+    C: {{0, 160, 0}, {175,185,124}, {126,157,116}, {230,188,188}}
 
   new: (options) =>
     super(options)
-    @colors['C'][2] += (40 - love.math.random(0,80))
-    @colors['F'][1] = (250 + love.math.random(0, 50)) % 255
+    @colors['C'] = @colors['C'][(@dna\scoresSum(@DNA_MATCHERS) % #@colors['C']) + 1]
+    @colors['F'] = @colors['F'][(@dna\scoresSum(@DNA_MATCHERS) % #@colors['F']) + 1]
 
   forwardLength: (iteration) =>
     math.floor(@forward.length * (iteration + @dt_iteration / @dt_iteration_span) / @iterations)
+
+  color: (what, iteration) =>
+    color = super(what, iteration)
+    if what == 'C'
+      print 'C'
+      inspect color
+      color = game.colors.husl(color, (h, s, l) -> return h, s + iteration / 10, l)
+    return color
 
   update: (dt) =>
     super(dt)
