@@ -58,6 +58,8 @@ export class MapState extends State
     @scores_view\draw()
 
   update: (dt) =>
+    if game.speed == 0
+      return
     game.tickTime(dt)
     if @focus and @focus.update
       @focus\update(dt)
