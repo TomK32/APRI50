@@ -18,6 +18,8 @@ export class Plant extends Entity
 
   new: (options) =>
     super(options)
+    @dna = Scorable(@dna)
+    @dirty = true
     @colors = _.deepcopy(@@colors)
     @forward = _.deepcopy(@@forward)
     @setDimensions(256, 256)
@@ -55,7 +57,6 @@ export class Plant extends Entity
       @l_rotation = @l_rotation()
     @l_rotationNeg = -@l_rotation
     @colors = system.colors or @colors
-    @createImage()
 
   color: (what, iteration) =>
     if @colors[what]
@@ -129,6 +130,9 @@ export class Plant extends Entity
 
   toString: =>
     return @@__name .. ' ' .. @lsystem\toString()
+
+  iconTitle: =>
+    @@__name .. ' ' .. table.concat(@dna.dna, '')
 
   @spawn: (options, map) ->
     assert(options.position)
