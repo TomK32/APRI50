@@ -13,6 +13,16 @@ class Plant.Tree extends Plant
     F: {120,50,0}
     C: {15,185,25}
 
+  @interactions: {
+    axe:
+      icon: @@interactions_icons.axe
+      match: (e) -> return true
+      clicked: (e) ->
+        e.map\removeEntity(e)
+  }
+
+  selectable: => return true
+
   new: (args) =>
     super(args)
     seed = math.abs(1 / @dna\scoresSum(@DNA_MATCHERS) + math.sin(@dna\scoresSum(@DNA_MATCHERS)))

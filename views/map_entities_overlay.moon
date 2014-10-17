@@ -14,10 +14,8 @@ export class MapEntitiesOverlay extends View
       if @clicked_entity\hitInteractionIcon(x - @clicked_entity.position.x, y - @clicked_entity.position.y)
         @clicked_entity = nil
         return true
-      else
-        @clicked_entity\lostFocus()
 
-    entities = @map\entitiesNear(x, y, game.icon_size / @map_view.camera.scale)
+    entities = _.select(@map\entitiesNear(x, y, game.icon_size / @map_view.camera.scale), (e) -> e\selectable())
     if #entities == 0
       @clicked_entity = nil
       return false
@@ -25,11 +23,10 @@ export class MapEntitiesOverlay extends View
     @clicked_entity = entities[1]
     clicked_distance = p\distance(@clicked_entity.position)
     for i, entity in pairs(entities)
-      if entity\selectable()
-        d = p\distance(entity.position)
-        if d < clicked_distance
-          @clicked_entity = entity
-          clicked_distance = d
+      d = p\distance(entity.position)
+      if d < clicked_distance
+        @clicked_entity = entity
+        clicked_distance = d
     return true
 
   entitiesInRectOnLayer: (layer) =>

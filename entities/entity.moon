@@ -6,6 +6,7 @@ export class Entity
     controls_person: {game\quadFromImage('images/entities/interaction.png', 3)}
     controls_machine: {game\quadFromImage('images/entities/interaction.png', 4)}
     destructible: {game\quadFromImage('images/entities/interaction.png', 5)}
+    axe: {game\quadFromImage('images/entities/interaction.png', 6)}
 
   -- needs to be a class
   @interactions: {
