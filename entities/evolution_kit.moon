@@ -73,11 +73,11 @@ export class EvolutionKit
     assert(center)
     -- first pass
     for extension in *EvolutionKit.extensions
-      if extension.apply
+      if extension.apply and extension.score(@) > 0
         extension.apply(self, center)
     -- final pass
     for extension in *EvolutionKit.extensions
-      if extension.finish
+      if extension.finish and extension.score(@) > 0
         extension.finish(self, center)
     @
 
