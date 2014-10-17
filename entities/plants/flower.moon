@@ -27,15 +27,19 @@ class Plant.Flower extends Plant
     @dt_iteration_span = 10
     @dirty = true
     @dt_blossom = false
+    @dt_welk = false
 
   update: (dt) =>
     super(dt)
+    if @dt_welk
+      @dt_welk -= dt
+      if @dt_welk < 0
+        @dt_welk = nil
+        @map\removeEntity(@)
     if @dt_blossom
       @dt_blossom -= dt
       if @dt_blossom < 0
-        @blossom = true
         @dt_blossom = nil
-        @map\removeEntity(@)
         @map\addEntity(@@({position: Point(@position)\add({x: love.math.random(-20, 20), y: love.math.random(-20, 20)}), center: @center, evolution_kit: @evolution_kit, dna: @evolution_kit\randomize(1)}))
 
   iterationIncremented: =>
@@ -48,6 +52,7 @@ class Plant.Flower extends Plant
       } )
     if @current_iteration == @iterations
       @dt_blossom = @iterations
+      @dt_welk = @iterations / (2 + @dna\scoresSum(@DNA_MATCHERS[1]))
     @createImage()
 
   forwardLength: (iteration) =>
