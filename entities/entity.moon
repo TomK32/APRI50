@@ -96,6 +96,8 @@ export class Entity
     love.graphics.pop()
 
   drawInteractionIcons: (x, y) =>
+    @interactions_offset.x = x + 5
+    @interactions_offset.y = y - @@interactions_width - 5
     if not @interactions
       return
     love.graphics.push()

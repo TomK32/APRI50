@@ -9,6 +9,7 @@ export class MapEntitiesOverlay extends View
 
   mousepressed: (x, y) =>
     x, y = @map_view\coordsForXY(x, y)
+    @last_clicked_at = {x, y}
     if @clicked_entity
       if @clicked_entity\hitInteractionIcon(x - @clicked_entity.position.x, y - @clicked_entity.position.y)
         @clicked_entity = nil
@@ -52,7 +53,7 @@ export class MapEntitiesOverlay extends View
       love.graphics.push()
       love.graphics.translate(@clicked_entity.position.x, @clicked_entity.position.y)
       love.graphics.setColor(255, 255, 255, 200)
-      @clicked_entity\drawInteractionIcons(@map_view\getMousePosition(@clicked_entity.position))
+      @clicked_entity\drawInteractionIcons(@last_clicked_at[1] - @clicked_entity.position.x, @last_clicked_at[2] - @clicked_entity.position.y)
       love.graphics.pop()
     love.graphics.pop()
 
