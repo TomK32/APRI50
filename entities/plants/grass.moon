@@ -7,6 +7,8 @@ class Plant.Grass extends Plant
       Y: 'FF'
     iterations: 8
     rotation: 0.03
+  forward:
+    length: 4
 
   colors:
     F: {20, 160, 20}

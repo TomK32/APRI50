@@ -19,6 +19,7 @@ class Spawner
     if @dt_timer < @dt_max
       return false
     @dt_timer = 0
+    -- TODO Keep evo_kit out of Plant
     plant = Plant.spawn({position: @randomPoint(), evolution_kit: @evolution_kit, dna: @evolution_kit\randomize(5), center: @center}, @center.map)
     if plant
       @spawns += 1
