@@ -94,6 +94,12 @@ export class Map
         if entity == other
           game.log('Removing entity ' .. entity\iconTitle() .. ' at ' .. entity.position\toString())
           table.remove(layer, i)
+          for i, e in pairs @updateAble
+            if entity == e
+              table.remove(@updateAble, i)
+          for i, e in pairs @controlAble
+            if entity == e
+              table.remove(@controlAble, i)
           return true
     game.log('Failed to remove entity ' .. entity\iconTitle() .. ' at ' .. entity.position\toString())
     return false

@@ -17,7 +17,8 @@ export class PlacedEvolutionKit extends Building
 
   update: (dt) =>
     super(dt)
-    @evolution_kit\update(dt)
+    if not @evolution_kit\update(dt)
+      @map\removeEntity(@)
 
 export class EvolutionKit
   placeable: true
@@ -86,9 +87,10 @@ export class EvolutionKit
     for i, object in ipairs(@updateObjects)
       object\update(dt)
 
-    if #@updateCallbacks == 0
+    if #@updateCallbacks == 0 and #@updateObjects == 0
       -- nothing else to do will be merged into the map
-      @\merge()
+      return false
+    return true
 
   registerUpdateObject: (object) =>
     table.insert(@updateObjects, object)
@@ -98,17 +100,6 @@ export class EvolutionKit
        if obj == object
          table.remove(@updateObjects, i)
          return true
-
-  merge: =>
-    for extension in *EvolutionKit.extensions
-      if extension.onMerge
-        extension.onMerge(self)
-    for i, entity in pairs(@entities)
-      if not entity.position
-        entity.position = @position
-      @map\addEntity(entity)
-    @deleted = true
-    @ = nil
 
   -- if dna_matcher is given it will mutate upto 10 times until
   -- the score for the new mutation is higher than for the parent
