@@ -5,7 +5,7 @@ gui = require 'lib.quickie'
 
 game = {
   title = 'APRI50',
-  seed = 13,
+  seed = 14,
   debug = false,
   graphics = {
     fullscreen = false,
@@ -38,6 +38,7 @@ game = {
   layers = {
     buildings = 20,
     plants = 30,
+    animals = 35,
     machines = 40,
     vehicles = 41,
     player = 50

@@ -197,4 +197,5 @@ export class EvolutionKit
 
 EvolutionKit\registerExtension('liquifying')
 EvolutionKit\registerExtension('flora')
-EvolutionKit\registerExtension('hardening')
+EvolutionKit\registerExtension('fauna')
+--EvolutionKit\registerExtension('hardening')

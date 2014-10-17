@@ -137,6 +137,13 @@ export class Map
   entitiesNear: (x, y, r) =>
     return @entitiesInRect(x - r, y - r, r * 2, r * 2)
 
+  entitiesNearMatching: (x, y, r, callback) =>
+    return _.select(@entitiesNear(x, y, r), callback)
+
+  nearestEntityMatching: (x, y, r, callback) =>
+    point = Point(x, y)
+    return _.min(@entitiesNearMatching(x, y, r, callback), (e) -> e.position\distance(point))
+
   findClosestCenter: (x, y) =>
     point = Point(x, y)
     if type(x) == 'table'
