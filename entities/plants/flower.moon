@@ -3,7 +3,7 @@ class Plant.Flower extends Plant
   LSYSTEM:
     start: 'YX'
     rules:
-      X: '-F[-F]B'
+      X: '-F[+F]B'
       Y: 'FF'
       B: '[C]-[FC]+[FC]'
     iterations: 5
@@ -17,10 +17,9 @@ class Plant.Flower extends Plant
 
   new: (options) =>
     super(options)
-    @dna = Scorable(@dna)
     @colors['C'] = @colors['C'][(@dna\scoresSum(@DNA_MATCHERS) % #@colors['C']) + 1]
-    @colors['C'][1] += (@dna\scoresSum(@DNA_MATCHERS) % 3) * 20
-    @colors['C'][2] -= (@dna\scoresSum(@DNA_MATCHERS) % 3) * 10
+    seed = @dna\scoresSum(@DNA_MATCHERS)
+    @colors['C'] = game.colors.husl(@colors['C'], (h, s, l) -> return h * 2/(2+seed), s + seed, l)
     @variations = {}
     @range or= @center\diameter()
     @iterationIncremented()
@@ -38,8 +37,10 @@ class Plant.Flower extends Plant
         @map\removeEntity(@)
     if @dt_blossom
       @dt_blossom -= dt
-      if @dt_blossom < 0
+      if @dt_blossom <= 0
+        @dt_welk = math.abs(@dna\scoresSum(@DNA_MATCHERS)) + 2
         @dt_blossom = nil
+        game.log(@iconTitle() .. ' is spawning a new Flower')
         @map\addEntity(@@({position: Point(@position)\add({x: love.math.random(-20, 20), y: love.math.random(-20, 20)}), center: @center, evolution_kit: @evolution_kit, dna: @evolution_kit\randomize(1)}))
 
   iterationIncremented: =>
@@ -52,11 +53,7 @@ class Plant.Flower extends Plant
       } )
     if @current_iteration == @iterations
       @dt_blossom = @iterations
-      @dt_welk = @iterations / (2 + @dna\scoresSum(@DNA_MATCHERS[1]))
     @createImage()
-
-  forwardLength: (iteration) =>
-    @forward.length * iteration / @iterations
 
   circleSize: (iteration) =>
     return iteration / @current_iteration
@@ -73,4 +70,3 @@ class Plant.Flower extends Plant
       love.graphics.translate(unpack(position[1]))
       Plant.drawSystem(@)
       love.graphics.pop()
-
