@@ -30,6 +30,9 @@ export class Entity
   }
   @interactions_width: 32 -- equals height
 
+  @addInteractions: (other) ->
+    return _.extend(@interactions, other)
+
   new: (options) =>
     @active = false
     if options

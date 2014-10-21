@@ -138,7 +138,6 @@ export class Center
 
   steepAngle: =>
     min, max = @minMaxCorners()
-    inspect {min.point\toString(), max.point\toString(), Vector(min.point.x, min.point.y)\angleTo(max.point) * 360}
     return Vector(min.point.x, min.point.y)\angleTo(max.point)
 
   isLake: =>

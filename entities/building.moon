@@ -1,10 +1,6 @@
 require 'entities.entity'
 export class Building extends Entity
-  @interactions:
-    inventory:
-      icon: @@interactions_icons.inventory
-      match: (e) -> e.inventory
-      clicked: (e) -> game.current_state\openInventory(e)
+  @interactions: Entity.addInteractions{
     building_control:
       icon: @@interactions_icons.controls_machine
       match: (e) ->
@@ -17,7 +13,7 @@ export class Building extends Entity
               game_state = game_state(e, game.current_state)
             return game.setState(game_state)
         print "No game state has been implemented yet"
-    destructible: Entity.interactions.destructible
+    }
 
   new: (options) =>
     if options.image
