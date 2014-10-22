@@ -97,7 +97,7 @@ end
 
 function love.update(dt)
   dt = game.dt -- we ignore the real dt and use our 0.5
-  tween.update(dt)
+  tween.update(dt * game.speed)
   if not game.current_state then return end
   game.current_state:update(dt * game.speed)
 end
