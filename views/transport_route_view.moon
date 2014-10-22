@@ -35,6 +35,7 @@ export class TransportRouteView extends View
       if @gui.Button({text: text})
         @setActiveRoute(route)
         @show_targets = false
+        return
       elseif @active_route == route
         -- remove route
         if @gui.Button({text: 'Remove', draw: (s,t,x,y,w,h) -> game.renderer.textInRectangle('x', x, y, {text_color: game.colors.warning_text, rect_color: game.colors.warning_background})})
@@ -51,10 +52,16 @@ export class TransportRouteView extends View
       -- open targets select menu
       if @gui.Button({text: @target_text})
         @show_targets = not @show_targets
+        @show_source_resources = false
+        @show_target_resources = false
 
       -- open resources select menu
-      if @gui.Button({text: @resource_text})
-        @show_resources = not @show_resources
+      if @gui.Button({text: 'Deliver'})
+        @show_source_resources = not @show_source_resources
+        @show_target_resources = false
+      if @gui.Button({text: 'Pick up'})
+        @show_target_resources = not @show_target_resources
+        @show_source_resources = false
       @gui.group.pop()
 
       -- select target
@@ -70,6 +77,17 @@ export class TransportRouteView extends View
 
         @gui.group.pop()
 
+      -- resources selection, one list for both directions
+      if @show_source_resources or @show_target_resources
+        @show_targets = false
+        dir = @show_target_resources and 'target' or 'source'
+        resources = @active_route[dir .. '_resources']
+        @gui.group.push({grow: "down", pos: {@offset.x + 200, @offset.y + 5 * game.fonts.lineHeight}})
+        for name, resource in pairs @state.resources
+          if gui.Checkbox({checked: resources[name], text: name})
+            @active_route\toggleResource(name, dir)
+        @gui.group.pop()
+
   drawContent: =>
     love.graphics.push()
     @gui.core.draw()
@@ -77,6 +95,18 @@ export class TransportRouteView extends View
     love.graphics.push()
     love.graphics.translate(@offset.x, @offset.y)
     @printLine('From: ' .. @state.entity\iconTitle())
+
+    if @active_route and not @show_target_resources and not @show_source_resources and not @show_targets
+      love.graphics.translate(200, 120)
+      love.graphics.push()
+      @printLine 'Deliver'
+      for resource, weight in pairs(@active_route.source_resources)
+        @printLine resource
+      love.graphics.pop()
+      love.graphics.translate(100, 0)
+      @printLine 'Return with'
+      for resource, weight in pairs(@active_route.target_resources)
+        @printLine resource
 
     love.graphics.pop()
 

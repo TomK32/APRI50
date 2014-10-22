@@ -14,6 +14,8 @@ export class TransportRoute
     if options.target
       @setTarget(options.target)
     @bidirectional = false
+    @target_resources or= {}
+    @source_resources or= {}
     @assigned = {} -- vehicles, pipes, etc.
     for k, v in pairs options
       @k = v
@@ -40,7 +42,15 @@ export class TransportRoute
     table.insert(entity.routes, @)
 
   isValid: =>
-    return @source and @target --and @target_resources and @source_resource
+    return @source and @target and @target_resources and @source_resources
+
+  toggleResource: (resource, what) =>
+    resources = @[what .. '_resources']
+    assert resources, what .. '_resources'
+    if resources[resource]
+      resources[resource] = nil
+    else
+      resources[resource] = 1
 
   destroy: =>
     @setTarget(nil)

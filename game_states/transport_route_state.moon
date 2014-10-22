@@ -7,6 +7,7 @@ export class TransportRouteState extends State
     @map = map
     target_entities = @map\entities( => @inventory ~= nil and not @controllable)
     @view = TransportRouteView(@, target_entities)
+    @resources = require('data.minerals')
 
   newRoute: =>
     return TransportRoute({source: @entity})
