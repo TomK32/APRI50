@@ -119,6 +119,18 @@ export class Map
     if entity.keypressed
       table.insert(@controlAble, entity)
 
+  entities: (func) =>
+    ret = {}
+    all = 1
+    for l, layer in pairs(@layers)
+      for i, entity in pairs(layer)
+        ret[all] = entity
+        all += 1
+
+    if func
+      return _.select(ret, func)
+    return ret
+
   entitiesInRect: (x0, y0, w, h, layers) =>
     x1, y1 = x0 + w, y0 + w
     entities = {}

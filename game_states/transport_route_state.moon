@@ -5,9 +5,22 @@ export class TransportRouteState extends State
   new: (entity, map) =>
     @entity = entity -- the one that we set the route up for
     @map = map
-    @view = TransportRouteView(@)
+    target_entities = @map\entities( => @inventory ~= nil and not @controllable)
+    @view = TransportRouteView(@, target_entities)
 
   newRoute: =>
-    @view\setActiveRoute(TransportRoute({source: @entity}))
-    @entity.routes or= {}
-    table.insert(@entity.routes, @view.active_route)
+    route = TransportRoute({source: @entity})
+    @view\setActiveRoute(route)
+    return route
+
+  outgoingRoutes: =>
+    return _.select(@entity.routes or {}, (r) -> r.source == @entity)
+
+  incomingRoutes: =>
+    return _.select(@entity.routes or {}, (r) -> r.target == @entity)
+
+  leaveState: =>
+    for i, r in ipairs(@entity.routes)
+      if not r\isValid()
+        table.remove(@entity.routes, i)
+    super()

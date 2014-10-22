@@ -1,19 +1,40 @@
 Entity.interactions.routes = {
   icon: {game\quadFromImage('images/entities/interaction.png', 7)}
-  match: (e) ->
-    e.inventory ~= nil and not e.controllable
-  clicked: (e) ->
-    game.setState(State(view: TransportRouteView(e.routes, e)))
+  iconText: => #@routes
+  match: => @inventory ~= nil and not @controllable
+  clicked: => game.setState(TransportRouteState(@, @map))
 }
-inspect(Building.interactions, {depth: 1})
--- chained routes that have a source and target and also define what to transport
+
+-- routes that have a source and target and also define what to transport
 export class TransportRoute
+  _save: {'target', 'source', 'target_resources', 'source_resource', 'bidirectional'}
   new: (options) =>
+    if options.source
+      @setSource(options.source)
+    if options.target
+      @setTarget(options.target)
     @bidirectional = false
-    @next_route = nil
     @assigned = {} -- vehicles, pipes, etc.
     for k, v in pairs options
       @k = v
-    assert(@source)
-    assert(@target)
-    assert(@resources)
+
+  -- help with all teh denormalisation
+  setSource: (entity) =>
+    if @source and @source.routes
+      _.reject(@source.routes, (r) -> r == @)
+    if not entity.routes
+      entity.routes or= {}
+    @source = entity
+    table.insert(entity.routes, @)
+
+  setTarget: (entity) =>
+    if @target and @target.routes
+      _.reject(@target.routes, (r) -> r == @)
+    if not entity.routes
+      entity.routes or= {}
+    @target = entity
+    table.insert(entity.routes, @)
+
+  isValid: =>
+    return @source and @target --and @target_resources and @source_resource
+

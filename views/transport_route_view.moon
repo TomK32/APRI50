@@ -1,14 +1,14 @@
 export class TransportRouteView extends View
-  new: (state) =>
+  new: (state, target_entities) =>
     super()
     @state = state
     @gui = gui
+    @target_entities = target_entities
     @offset = {x: 120, y: 80}
 
     @show_targets = false
     @show_pickup_resources = false
     @show_deliver_resources = false
-    @target_entities = @state.map\entities() --entities(e) -> e.inventory ~= nil and not e.controllable)
     @target_text = 'Target'
 
   update: (dt) =>
@@ -21,8 +21,13 @@ export class TransportRouteView extends View
     if not @state.entity.routes
       return
 
-    for i, route in ipairs @state.entity.routes
-      if @gui.Button({text: route.target and route.target\iconTitle() or 'Route ' .. i})
+    for i, route in ipairs @state\outgoingRoutes()
+      if route.source ~= @state.entity
+        next
+      text = route.target and route.target\iconTitle() or 'Route ' .. i
+      if not route\isValid()
+        text ..= '*'
+      if @gui.Button({text: text})
         @setActiveRoute(route)
     @gui.group.pop()
 
@@ -36,7 +41,7 @@ export class TransportRouteView extends View
         for i, entity in ipairs @target_entities
           if entity ~= @state.entity
             if gui.Button({text: entity\iconTitle(), id: entity})
-              @active_route.target = entity
+              @active_route\setTarget(entity)
               @setActiveRoute(@active_route)
               @show_targets = false
 
