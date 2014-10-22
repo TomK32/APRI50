@@ -23,7 +23,7 @@ export class TransportRouteState extends State
     return _.select(@entity.routes or {}, (r) -> r.target == @entity)
 
   leaveState: =>
-    for i, r in ipairs(@entity.routes)
-      if not r\isValid()
-        table.remove(@entity.routes, i)
+    for i, route in ipairs(@entity.routes)
+      if not route\isValid()
+        route\destroy()
     super()

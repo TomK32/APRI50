@@ -5,6 +5,7 @@ Version 0.5
 * Added HSUL to have much better colour generation
 * Show entity interaction menu by the mouse pointer, solved a lot of problems
 * Started with animals, muching away trees
+* Set up transport routes and assign vehicles to them
 
 Version 0.4 (2014-09-22)
 

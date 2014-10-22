@@ -34,8 +34,9 @@ export class TransportRoute
 
   -- help with all teh denormalisation
   setSource: (entity) =>
+    -- remove from the old one first
     if @source and @source.routes
-      _.reject(@source.routes, (r) -> r == @)
+      @source.routes = _.reject(@source.routes, (r) -> r == @)
     @source = entity
     if not entity
       return
@@ -44,8 +45,9 @@ export class TransportRoute
     table.insert(entity.routes, @)
 
   setTarget: (entity) =>
+    -- remove from the old one first
     if @target and @target.routes
-      _.reject(@target.routes, (r) -> r == @)
+      @target.routes = _.reject(@target.routes, (r) -> r == @)
     @target = entity
     if not entity
       return
