@@ -30,21 +30,31 @@ export class TransportRouteView extends View
       text = route.target and route.target\iconTitle() or 'Route ' .. i
       if not route\isValid()
         text ..= '*'
+      if @active_route == route
+        @gui.group.push({grow: 'right', pos: {0, 0}})
       if @gui.Button({text: text})
         @setActiveRoute(route)
         @show_targets = false
+      elseif @active_route == route
+        -- remove route
+        if @gui.Button({text: 'Remove', draw: (s,t,x,y,w,h) -> game.renderer.textInRectangle('x', x, y, {text_color: game.colors.warning_text, rect_color: game.colors.warning_background})})
+          @state\removeRoute(@active_route)
+          @setActiveRoute(nil)
+        @gui.group.pop()
+
     @gui.group.pop()
 
     -- the selected route
-    @gui.group.push({grow: "right", pos: {@offset.x + 200, @offset.y + 3 * game.fonts.lineHeight}})
     if @active_route
+      @gui.group.push({grow: "right", pos: {@offset.x + 200, @offset.y + 3 * game.fonts.lineHeight}})
+
+      -- open targets select menu
       if @gui.Button({text: @target_text})
         @show_targets = not @show_targets
 
-      -- remove route
-      if @gui.Button({text: 'Remove'})
-        @state\removeRoute(@active_route)
-        @setActiveRoute(nil)
+      -- open resources select menu
+      if @gui.Button({text: @resource_text})
+        @show_resources = not @show_resources
       @gui.group.pop()
 
       -- select target
