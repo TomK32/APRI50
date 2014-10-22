@@ -22,19 +22,26 @@ export class TransportRoute
   setSource: (entity) =>
     if @source and @source.routes
       _.reject(@source.routes, (r) -> r == @)
+    @source = entity
+    if not entity
+      return
     if not entity.routes
       entity.routes or= {}
-    @source = entity
     table.insert(entity.routes, @)
 
   setTarget: (entity) =>
     if @target and @target.routes
       _.reject(@target.routes, (r) -> r == @)
+    @target = entity
+    if not entity
+      return
     if not entity.routes
       entity.routes or= {}
-    @target = entity
     table.insert(entity.routes, @)
 
   isValid: =>
     return @source and @target --and @target_resources and @source_resource
 
+  destroy: =>
+    @setTarget(nil)
+    @setSource(nil)

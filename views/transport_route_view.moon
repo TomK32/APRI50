@@ -17,10 +17,13 @@ export class TransportRouteView extends View
       return
     @gui.group.push({grow: "down", pos: {@offset.x, @offset.y + 3 * game.fonts.lineHeight}})
     if @gui.Button({text: 'New route'})
-      @state\newRoute()
+      @setActiveRoute(@state\newRoute())
     if not @state.entity.routes
       return
 
+    @gui.group.pop()
+    @gui.group.push({grow: "down", pos: {@offset.x, @offset.y + 5 * game.fonts.lineHeight}})
+    -- list all routes
     for i, route in ipairs @state\outgoingRoutes()
       if route.source ~= @state.entity
         next
@@ -29,14 +32,24 @@ export class TransportRouteView extends View
         text ..= '*'
       if @gui.Button({text: text})
         @setActiveRoute(route)
+        @show_targets = false
     @gui.group.pop()
 
-    @gui.group.push({grow: "down", pos: {@offset.x + 200, @offset.y + 3 * game.fonts.lineHeight}})
+    -- the selected route
+    @gui.group.push({grow: "right", pos: {@offset.x + 200, @offset.y + 3 * game.fonts.lineHeight}})
     if @active_route
       if @gui.Button({text: @target_text})
         @show_targets = not @show_targets
+
+      -- remove route
+      if @gui.Button({text: 'Remove'})
+        @state\removeRoute(@active_route)
+        @setActiveRoute(nil)
+      @gui.group.pop()
+
+      -- select target
       if @show_targets
-        @gui.group.push({grow: "down", pos: {0, 2 * game.fonts.lineHeight}})
+        @gui.group.push({grow: "down", pos: {@offset.x + 200, @offset.y + 5 * game.fonts.lineHeight}})
         @gui.keyboard.setFocus(@active_route.target)
         for i, entity in ipairs @target_entities
           if entity ~= @state.entity
@@ -59,4 +72,4 @@ export class TransportRouteView extends View
 
   setActiveRoute: (route) =>
     @active_route = route
-    @target_text = route.target and route.target\iconTitle() or 'Target'
+    @target_text = (route and route.target) and route.target\iconTitle() or 'Target'

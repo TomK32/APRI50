@@ -9,9 +9,10 @@ export class TransportRouteState extends State
     @view = TransportRouteView(@, target_entities)
 
   newRoute: =>
-    route = TransportRoute({source: @entity})
-    @view\setActiveRoute(route)
-    return route
+    return TransportRoute({source: @entity})
+
+  removeRoute: (route) =>
+    route\destroy()
 
   outgoingRoutes: =>
     return _.select(@entity.routes or {}, (r) -> r.source == @entity)
