@@ -2,6 +2,7 @@ require 'entities.machines.machine'
 require 'entities.machines.miner'
 require 'entities.machines.pump'
 require 'game_states.transport_route_state'
+require 'game_states.transport_route_selection_state'
 
 entities:
   atmosphere:
@@ -60,7 +61,7 @@ entities:
 
   vehicle1:
     class: Vehicle
-    --map: true
+    map: true
     before_create: (state) =>
       @args.position = state.map\findClosestCenter(state.start_position\offset(40, -120)).point
     args:

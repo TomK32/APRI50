@@ -4,11 +4,18 @@ Entity.interactions.routes = {
   match: => @inventory ~= nil and not @controllable
   clicked: => game.setState(TransportRouteState(@, @map))
 }
-
+Entity.interactions.assign_to_route = {
+  icon: {game\quadFromImage('images/entities/interaction.png', 7)}
+  iconText: => #@routes
+  match: => @inventory ~= nil and @controllable
+  clicked: => game.setState(TransportRouteSelectionState(@, @map))
+}
 -- routes that have a source and target and also define what to transport
 export class TransportRoute
-  _save: {'target', 'source', 'target_resources', 'source_resource', 'bidirectional'}
+  @routes: {}
+  _save: {'target', 'source', 'target_resources', 'source_resources', 'bidirectional'}
   new: (options) =>
+    table.insert(@@routes, @)
     if options.source
       @setSource(options.source)
     if options.target
@@ -52,6 +59,22 @@ export class TransportRoute
     else
       resources[resource] = 1
 
+  description: =>
+    text = ''
+    if @source
+      text ..= @source.name .. ' '
+    if #_.keys(@source_resources) > 0
+      text ..= '(' .. table.concat(_.keys(@source_resources) or {}, ', ') .. ') '
+    if @target
+      text ..= ' to ' .. @target.name .. ' '
+    if #_.keys(@target_resources) > 0
+      text ..= '(' .. table.concat(_.keys(@target_resources) or {}, ', ') .. ')'
+    return text
+
   destroy: =>
     @setTarget(nil)
     @setSource(nil)
+    for i, route in ipairs @@routes
+      if route == @
+        table.remove(@@routes, i)
+        return

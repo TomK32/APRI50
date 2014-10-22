@@ -8,6 +8,8 @@ export class TransportRouteState extends State
     target_entities = @map\entities( => @inventory ~= nil and not @controllable)
     @view = TransportRouteView(@, target_entities)
     @resources = require('data.minerals')
+    if not @entity.routes or #@entity.routes == 0
+      @view\setActiveRoute(@newRoute())
 
   newRoute: =>
     return TransportRoute({source: @entity})
