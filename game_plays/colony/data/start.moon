@@ -1,8 +1,7 @@
 require 'entities.machines.machine'
 require 'entities.machines.miner'
 require 'entities.machines.pump'
-require 'game_states.transport_route_state'
-require 'game_states.transport_route_selection_state'
+require 'components.transport_route'
 
 entities:
   atmosphere:

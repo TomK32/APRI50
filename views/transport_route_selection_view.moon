@@ -19,9 +19,9 @@ export class TransportRouteSelectionView extends View
           checked_index = i
       if @gui.Checkbox({checked: checked_index, text: route\description()})
         if checked_index
-          table.remove(@state.entity.routes, checked_index)
+          route\unassign(@state.entity)
         else
-          table.insert(@state.entity.routes, route)
+          route\assign(@state.entity)
 
         @show_targets = false
 

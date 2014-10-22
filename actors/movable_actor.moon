@@ -19,6 +19,7 @@ export class MovableActor extends Actor
     super(options)
 
   update: (dt) =>
+    super(dt)
     if not @active_control
       return
     dir = {x: 0, y: 0}
@@ -27,6 +28,5 @@ export class MovableActor extends Actor
         dir.x += direction.x
         dir.y += direction.y
     @move(dir, dt * 10)
-    super\update(dt)
 
 

@@ -1,4 +1,3 @@
-require 'entities.transport_route'
 require 'views.transport_route_view'
 
 export class TransportRouteState extends State

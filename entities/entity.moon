@@ -49,6 +49,7 @@ export class Entity
     @drawn_interactions = {}
     @interactions or= @@interactions
     @name or= @@.__name
+    @components or= {}
     if @inventory
       @inventory.owner or= @
       @inventory.name or= @name
@@ -150,7 +151,6 @@ export class Entity
       return _.values(@interactions)[1]
     return nil
 
-
   drawActive: (highlightColour) =>
     if @image and not (@width and @height)
       @setDimensions()
@@ -182,6 +182,9 @@ export class Entity
       @particles\update(dt)
     if @animation
       @animation.animation\update(dt)
+    for i, component in pairs @components
+      if component.update
+        component\update(dt, @)
 
   includesPoint: (point) =>
     point = {x: point.x + @width / 2, y: point.y + @height / 2}
