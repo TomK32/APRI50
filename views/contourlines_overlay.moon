@@ -18,6 +18,7 @@ export class ContourlinesOverlay extends View
       @refreshContourlines()
     --centers = _.select(centers, (c) -> _.include({712, 746, 676, 780, 816}, c.index))
     love.graphics.push()
+    love.graphics.setLineStyle('smooth')
     for step, lines in pairs @map_view.map\contourlines()
       line_width = 0.5
       alpha = 55
@@ -32,6 +33,7 @@ export class ContourlinesOverlay extends View
 
     love.graphics.pop()
   drawContentCenters: => -- centers version, not to most beautiful one.
+    love.graphics.setLineStyle('smooth')
     centers = @map_view\centersInRect()
     for i, center in ipairs centers
       center\contourpoints()
