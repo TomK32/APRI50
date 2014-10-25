@@ -3,7 +3,7 @@ return class Workshop extends Building
   new: (options) =>
     super(options)
     @completed or= false
-    @inventory or= Inventory(@, @name)
+    @inventory or= Inventory({owner: @, name: @name})
     @inventory.background_image = 'game_plays/colony/images/evolution_kit_lab.jpg'
 
   controllable: =>

@@ -1,11 +1,11 @@
 
 export class Inventory
 
-  new: (owner, name, changed_callback) =>
+  new: (options) =>
+    for k, v in pairs options or {}
+      @[k] = v
     @items = {}
     @active = true
-    @owner, @name = owner, name
-    @changed_callback = changed_callback
 
   changed: () =>
     if @changed_callback

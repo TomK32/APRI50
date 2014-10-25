@@ -11,7 +11,7 @@ return class OxygenGenerator extends require 'oxygen_tank'
     @active = false -- only runs when placed on map
     @layer = game.layers.machines
     @animation  = game.createAnimation('game_plays/colony/images/oxygen_generator_animation.png', {@image\getWidth()/3, @image\getHeight()}, {'loop', {"1-3", 1}, 1.4})
-    @inventory = Inventory(@, 'OxygenGenerator')
+    @inventory = Inventory({owner: @, name: 'OxygenGenerator', restrictions: {sorts: {O2: 1000000}}})
     for i=1, 5
       @inventory\add(GamePlay.Colony.OxygenTank(nil, 0))
 
