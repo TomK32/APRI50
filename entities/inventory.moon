@@ -6,6 +6,9 @@ export class Inventory
       @[k] = v
     @items = {}
     @active = true
+    -- restrictions: {sorts: {Gold: 4, Sand: -1, Liquids: 0}, max_amount: 10}
+    @restrictions or= {}
+    @restrictions.sorts or= false
 
   changed: () =>
     if @changed_callback
@@ -34,16 +37,20 @@ export class Inventory
     return amount
 
   addAmount: (element, amount) =>
+    if not @canReceive(element.name, amount)
+      return false
     for i, item in ipairs @items
       if item == element
         item.amount += amount
         return true
-    @add(element)
+    @add(element, 1, true)
     if type(element) == 'table'
       element.amount = amount
     return true
 
-  add: (item, position) =>
+  add: (item, position, skip_receive) =>
+    if not skip_receive and not @canReceive(item, item.amount or 1)
+      return false
     if not position
       position = 1
       while @items[position]
@@ -109,6 +116,23 @@ export class Inventory
   removeActive: =>
     @\remove(nil, @active)
     @active = nil
+
+  totalAmount: (sort) =>
+    items = sort and @itemsByClass(sort) or @items
+    return _.reduce(items, 0, (sum, i) -> sum + (i.amount or 1))
+
+  canReceive: (sort, amount) =>
+    if @restrictions.sorts
+      if @restrictions.sorts[sort]
+        if @restrictions.sorts[sort] == -1
+          return true
+        if @restrictions.sorts[sort] < @totalAmount(sort) + amount
+          return false
+      elseif @restrictions.deny_other
+        return false
+    if @restrictions.max_amount and @restrictions.max_amount < (@totalAmount() + amount)
+      return false
+    return true
 
   toString: =>
     return @name or 'Inventory'
