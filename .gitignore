@@ -29,3 +29,4 @@ lib/pm_prng.lua
 data/recipes/*lua
 lib/contour*lua
 *.pyxel
+components/*lua

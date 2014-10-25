@@ -20,6 +20,9 @@ export class Map
     @createCenterBuckets()
     @center_update_dt = 0
     @center_update_duration = game.dt * 30
+    game.log("Total minerals in the map")
+    for sort, amount in pairs Center.extensions.MineralsDeposit.totals
+      game.log(" * " .. sort .. ": " .. amount)
 
     @
 

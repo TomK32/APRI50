@@ -6,11 +6,16 @@ random = PM_PRNG(game.seed + 10)
 -- This only adds matter to the center
 class MineralsDeposit extends Deposit
   noiseSeed: game.seed + 10
+  @totals: {}
   @apply: (center) =>
-    r = random\nextDoubleRange(unpack(center\relativeXY()))
     for sort_name, sort in pairs(Mineral.SORTS)
+      r = random\nextDouble()
       if r < sort.chance
-        center\addMatter(Mineral(sort_name, math.ceil((r/sort.chance) * sort.amount)))
+        game.log(sort_name .. ' deposit at ' .. center.point\toString())
+        amount = math.ceil((1 - r - sort.chance) * sort.amount)
+        center\addMatter(Mineral(sort_name, amount))
+        @totals[sort_name] or= 0
+        @totals[sort_name] += amount
     return false
 
   new: (center, strength) =>

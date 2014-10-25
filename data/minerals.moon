@@ -3,7 +3,7 @@
 -- smelting is the duration to smelt it. if nil it can't be smelted
 return {
   Dirt:
-    chance: 0.5
+    chance: 0.3
     amount: 1000
     fillingDensity: 0.9
     color: {137, 99, 65}
@@ -15,7 +15,7 @@ return {
     fillingDensity: 0.5
     color: {190, 170, 120}
     description: 'Plain and simple sand'
-    mining: 10
+    mining: 8
     smelting: 50
   Rock:
     chance: 0.3
@@ -32,14 +32,14 @@ return {
     description: 'I always thought of gravel being big brother of Sand'
     mining: 30
   Stone:
-    chance: 0.01
+    chance: 0.1
     amount: 200
     fillingDensity: 0.5
     color: {40, 40, 40}
     description: 'Solid stone for solid buildings'
     mining: 50
   Iron:
-    chance: 0.002
+    chance: 0.02
     amount: 100
     fillingDensity: 0.1
     color: {90, 50, 40}
@@ -47,14 +47,14 @@ return {
     mining: 100
     smelting: 350
   Coal:
-    chance: 0.005
+    chance: 0.05
     amount: 500
     fillingDensity: 0.5
     color: {40, 40, 40}
     description: 'When burnt it will produce energy and have an impact on the atmosphere, which can be useful on some planets'
     mining: 50
   Copper:
-    chance: 0.001
+    chance: 0.01
     amount: 200
     fillingDensity: 0.5
     color: {40, 40, 40}
@@ -62,7 +62,7 @@ return {
     mining: 250
     smelting: 300
   Gold:
-    chance: 0.0001
+    chance: 0.001
     amount: 200
     fillingDensity: 0.5
     color: {40, 40, 40}
