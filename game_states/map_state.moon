@@ -5,7 +5,6 @@ require 'views/inventory_view'
 require 'views/scores_view'
 require 'views.contourlines_overlay'
 require 'views.map_entities_overlay'
-require 'game_plays/game_play'
 
 export class MapState extends State
   @extensions = {}
@@ -22,9 +21,6 @@ export class MapState extends State
     @map = Map(game.map.size, game.map.size, game.seed, game.map.size * game.map.size * game.map_density)
     game.log('Started game with seed ' .. game.seed)
     @view = MapView(@map)
-
-    @game_play = GamePlay.Colony(@)
-    @focus = @game_play
 
     @light_dt = 0
 
@@ -61,13 +57,6 @@ export class MapState extends State
     if game.speed == 0
       return
     game.tickTime(dt)
-    if @focus and @focus.update
-      @focus\update(dt)
-    if @focus_changed
-      @focus_changed = false
-      return
-    if @focus.modal
-      return true
     @map\update(dt)
     if game.show_sun and @light_dt > 8 * dt
       @view\updateLight(dt)
@@ -94,8 +83,6 @@ export class MapState extends State
   keypressed: (key, unicode) =>
     if (love.keyboard.isDown("lmeta") or love.keyboard.isDown('rmeta'))
       return
-    if @focus and @focus.keypressed and @focus\keypressed(key, unicode)
-      return
 
     if (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift"))
       if key == "q"
@@ -108,10 +95,6 @@ export class MapState extends State
   mousepressed: (x, y, button) =>
     for i, view in ipairs(@sub_views)
       if view\active() and view.mousepressed and view\mousepressed(x, y)
-        return true
-
-    if @focus and @focus.mousepressed
-      if @focus\mousepressed(x, y, button)
         return true
 
     if @focused_entity and @focused_entity.moveTo

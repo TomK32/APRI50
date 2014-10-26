@@ -79,19 +79,29 @@ function love.keypressed(key)
     end
   end
 
-  if not game.current_state then return end
-  game.current_state:keypressed(key)
+  if game.current_state and game.current_state:keypressed(key) then
+    return true
+  end
+  if game.game_play and game.game_play:keypressed(key) then
+    return true
+  end
 end
 
 function love.mousepressed(x,y,button)
   if game.current_state.mousepressed then
     game.current_state:mousepressed(x,y,button)
   end
+  if game.game_play and game_play.game_play.mousepressed then
+    game.game_play:mousepressed(x,y,button)
+  end
 end
 
 function love.mousereleased(x,y,button)
   if game.current_state.mousereleased then
     game.current_state:mousereleased(x,y,button)
+  end
+  if game.game_play and game_play.game_play.mousereleased then
+    game.game_play:mousereleased(x,y,button)
   end
 end
 
@@ -100,8 +110,12 @@ function love.update(dt)
   if game.speed > 0 then
     tween.update(dt * game.speed)
   end
-  if not game.current_state then return end
-  game.current_state:update(dt * game.speed)
+  if game.current_state then
+    game.current_state:update(dt * game.speed)
+  end
+  if game.game_play then
+    game.game_play:update(dt * game.speed)
+  end
 end
 
 function love.quit()

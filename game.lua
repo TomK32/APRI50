@@ -175,9 +175,13 @@ end
 
 function game:start()
   game.stopped = false
-  --love.mouse.setVisible(false)
-  game.current_state = MapState()
+  love.mouse.setVisible(true)
+  require('game_plays.colony')
+  game.game_play = GamePlay.Colony()
+  game.setState(game.game_play.map_state)
+  game.save_game.map = game.current_state.map
   game.renderer.map_view = game.current_state.view
+  game:save()
 end
 
 function game:mutator()

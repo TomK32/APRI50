@@ -10,9 +10,6 @@ export class State
       @view = view
     if @view and not @view.state
       @view.state = @
-    @focus = nil
-    @last_focus = {}
-    @focus_changed = false
     @sub_views = {}
 
   update: (dt) =>
@@ -59,7 +56,3 @@ export class State
         table.remove(@sub_views, i)
         return true
     return false
-
-  setFocus: (new_focus) =>
-    table.insert(@last_focus, @focus)
-    @focus = new_focus

@@ -7,16 +7,17 @@ package.path = './game_plays/colony/entities/?.lua;' .. package.path
 require 'views.atmosphere_view'
 
 
-GamePlay.Colony = class Colony extends GamePlay
+export GamePlay = {}
+GamePlay.Colony = class Colony
   Colonist: require 'colonist'
   OxygenGenerator: require 'oxygen_generator'
   OxygenTank: require 'oxygen_tank'
   SpaceShip: require 'space_ship'
   Workshop: require 'workshop'
 
-  new: (map_state) =>
-    super(map_state)
-    @map = map_state.map
+  new: () =>
+    @map_state = MapState()
+    @map = @map_state.map
 
     @map_state.compute_scores = true
     game.player.colonists = Inventory()
@@ -56,7 +57,7 @@ GamePlay.Colony = class Colony extends GamePlay
     @burning_centers = {}
     @particle_systems = {}
 
-  registerExtensions: =>
+  update: (dt) =>
     true
 
   keypressed: (key, unicode) =>
