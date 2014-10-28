@@ -1,5 +1,6 @@
 
 require 'entities/player'
+require 'lib.serpent'
 anim8 = require 'lib/anim8'
 gui = require 'lib.quickie'
 
@@ -45,7 +46,9 @@ game = {
   },
   player = Player(),
   icon_size = 32,
-  images = {}
+  images = {},
+  save_game = {}, -- anything you want to have saved
+  save_filename = 'game.sav'
 }
 game.renderer.colors = game.colors
 

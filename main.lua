@@ -91,7 +91,7 @@ function love.mousepressed(x,y,button)
   if game.current_state.mousepressed then
     game.current_state:mousepressed(x,y,button)
   end
-  if game.game_play and game_play.game_play.mousepressed then
+  if game.game_play and game.game_play.mousepressed then
     game.game_play:mousepressed(x,y,button)
   end
 end
@@ -100,7 +100,7 @@ function love.mousereleased(x,y,button)
   if game.current_state.mousereleased then
     game.current_state:mousereleased(x,y,button)
   end
-  if game.game_play and game_play.game_play.mousereleased then
+  if game.game_play and game.game_play.mousereleased then
     game.game_play:mousereleased(x,y,button)
   end
 end
