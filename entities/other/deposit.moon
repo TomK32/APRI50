@@ -41,3 +41,5 @@ export class Deposit
       @normalizeComposition()
     return true
 
+  __serialize: =>
+    return {composition: @composition}

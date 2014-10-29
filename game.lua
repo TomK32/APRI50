@@ -1,6 +1,6 @@
 
 require 'entities/player'
-require 'lib.serpent'
+serpent = require 'lib.serpent'
 anim8 = require 'lib/anim8'
 gui = require 'lib.quickie'
 
@@ -47,7 +47,6 @@ game = {
   player = Player(),
   icon_size = 32,
   images = {},
-  save_game = {}, -- anything you want to have saved
   save_filename = 'game.sav'
 }
 game.renderer.colors = game.colors
@@ -180,11 +179,14 @@ function game:start()
   game.stopped = false
   love.mouse.setVisible(true)
   require('game_plays.colony')
-  game.game_play = GamePlay.Colony()
+  if false and love.filesystem.exists(game.save_filename) then
+    game:load()
+  else
+    game.game_play = GamePlay.Colony()
+  end
   game.setState(game.game_play.map_state)
-  game.save_game.map = game.current_state.map
   game.renderer.map_view = game.current_state.view
-  game:save()
+  --game:save()
 end
 
 function game:mutator()
@@ -219,4 +221,66 @@ function game:timeInWords()
   local minutes = (math.floor(t / game.time_minutes) * 15) % 60
   self.time_string = self.time_string .. ' ' .. hours .. ':' .. minutes .. 'hrs'
   return self.time_string
+end
+
+setmetatable(game, {
+  __serialize = function(self)
+    print(self.game_play)
+    return {
+      game_play = self.game_play,
+      time = self.time,
+      map = self.map
+    }
+  end
+})
+
+stack = {}
+function game.recursiveMerge(destination, source, seen)
+  local seen = seen and seen or {}
+  if type(source) ~= 'table' then
+    seen[source] = true
+    return source
+  end
+  for k, v in pairs(source) do
+    table.insert(stack, k)
+    if type(v) == 'table' then
+      if not seen[v] then
+        if v.__deserialize then
+          inspect(_.keys(v))
+          local args = game.recursiveMerge({}, v, seen)
+          inspect(_.keys(args))
+          local ok
+          destination[k] = nil
+          destination[k] = v.__deserialize(args)
+        else
+          seen[v] = true
+          if type(destination[k]) == 'table' then
+            destination[k] = game.recursiveMerge(destination[k], v, seen)
+          else
+            destination[k] = v
+          end
+        end
+      end
+    else
+      destination[k] = game.recursiveMerge({}, v, seen)
+    end
+    _.pop(stack)
+  end
+  return destination
+end
+
+
+function game:load()
+  --game = Tserial.unpack(love.filesystem.read(game.save_filename or 'game.sav'), true)
+  local file, length = love.filesystem.read(self.save_filename)
+  local tmp = loadstring(file)()
+
+  --local ok, tmp = serpent.load(file)
+  game.recursiveMerge(game, tmp)
+  game.log('Game loaded')
+end
+
+function game:save()
+  love.filesystem.write(game.save_filename or 'game.sav', serpent.dump(game, {nocode = false, indent='  '}))
+  game.log('Game saved')
 end

@@ -214,3 +214,15 @@ export class Center
       if b ~= border and b.v1 and b.v0 and (point == b.v1.point or point == b.v1.point)
         return b
     return false
+
+  __deserialize: (args) ->
+    print "HI"
+    return Center(args.map, args.point)
+
+  __serialize: =>
+    {
+      point: @point
+      map: @map
+      --deposit: @deposit
+      --extensions: @extensions
+    }

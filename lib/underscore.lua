@@ -317,7 +317,7 @@ end
 function Underscore.funcs.extend(destination, source)
 	for k,v in pairs(source) do
 		destination[k] = v
-	end	
+	end
 	return destination
 end
 

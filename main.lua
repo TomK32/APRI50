@@ -59,9 +59,9 @@ function love.keypressed(key)
   elseif key == 'f5' then
     game.map_debug = math.min(4, game.map_debug + 1)
   elseif key == 'f6' then
-    game.use_shaders = not game.use_shaders
+    game:save()
   elseif key == 'f7' then
-    game.show_sun = not game.show_sun
+    game:load()
   elseif key == 'i' then
     game.speed = game.speed + 1
     if game.speed == 1 then

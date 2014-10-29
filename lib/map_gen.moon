@@ -42,8 +42,9 @@ export class MapGen
 
     @map_random = PM_PRNG(seed)
 
-    @reset()
-    @go()
+    if number_of_points
+      @reset()
+      @go()
     return @
 
   reset: =>

@@ -46,3 +46,6 @@ export class Point
 
   length: =>
     return math.sqrt(@x * @x + @y * @y)
+
+  __serialize: =>
+    return __deserialize: 'return Point(' .. @x .. ', ' .. @y .. ', ' .. @z .. ')'

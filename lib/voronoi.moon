@@ -81,7 +81,7 @@ export class Site
     @point = point
     @index = index
     @edges = {}
-    point.site = @
+    --point.site = @
 
   toString: =>
     edges = ""

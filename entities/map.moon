@@ -6,34 +6,36 @@ require 'lib.map_gen'
 require 'lib.contourlines_map'
 
 export class Map
-  new: (width, height, seed, number_of_points) =>
+  new: (options) =>
+    for k, v in pairs(options)
+      print 'k', k
+      @[k] = v
     mixin(@, ContourlinesMap)
     @layers = {} -- here the entities are stuffed into
     @layer_indexes = {}
     @tiles = {}
     @updateAble = {} -- entities that need to be called during update
     @controlAble = {} -- entities that can be controlled by the player
-    @width = width
-    @height = height
-    @map_gen = MapGen(@, width, height, seed, number_of_points)
-    @bucket_size = 32
+    @map_gen or= MapGen(@, @width, @height, @seed, @number_of_points)
+    @_points or= @map_gen.points
+    @_centers or= @map_gen.centers
+    @_corners or= @map_gen.corners
+    @bucket_size = math.floor((1 / game.map.density) / 32)
     @createCenterBuckets()
     @center_update_dt = 0
-    @center_update_duration = game.dt * 30
+    @center_update_duration = game.dt * 60
     game.log("Total minerals in the map")
     for sort, amount in pairs Center.extensions.MineralsDeposit.totals
       game.log(" * " .. sort .. ": " .. amount)
 
     @
 
-  points: =>
-    return @map_gen.points
-
   corners: =>
-    return @map_gen.corners
+    return @_corners
 
   centers: =>
-    return @map_gen.centers
+    assert(@_centers, 'centers')
+    return @_centers
 
   pointToBucket: (point, bucket) =>
     x = math.ceil(point.x / @bucket_size)
@@ -88,7 +90,7 @@ export class Map
       for y = 1, math.ceil(@height / @bucket_size)
         @center_buckets[x][y] = {}
 
-    for i, center in ipairs(@map_gen.centers)
+    for i, center in ipairs(@centers())
       table.insert(@pointToBucket(center.point, @center_buckets), center)
 
   removeEntity: (entity) =>
@@ -197,3 +199,16 @@ export class Map
     center\calculateDownslopes()
     for i, n in pairs center.neighbors
       n\calculateDownslopes()
+
+  __deserialize: (args) ->
+     inspect(args, depth: 2)
+     return Map(args)
+
+  __serialize: =>
+    {
+      _centers: @centers()
+      _corners: @corners()
+      width: @width
+      height: @height
+      seed: @seed
+    }

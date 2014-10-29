@@ -1,4 +1,4 @@
-local n, v = "serpent", 0.27 -- (C) 2012-13 Paul Kulchenko; MIT License
+local n, v = "serpent", 0.272 -- (C) 2012-13 Paul Kulchenko; MIT License
 local c, d = "Paul Kulchenko", "Lua serializer and pretty printer"
 local snum = {[tostring(1/0)]='1/0 --[[math.huge]]',[tostring(-1/0)]='-1/0 --[[-math.huge]]',[tostring(0/0)]='0/0'}
 local badtype = {thread = true, userdata = true, cdata = true}
@@ -8,7 +8,7 @@ for _,k in ipairs({'and', 'break', 'do', 'else', 'elseif', 'end', 'false',
   'return', 'then', 'true', 'until', 'while'}) do keyword[k] = true end
 for k,v in pairs(G) do globals[v] = k end -- build func to name mapping
 for _,g in ipairs({'coroutine', 'debug', 'io', 'math', 'string', 'table', 'os'}) do
-  for k,v in pairs(G[g]) do globals[v] = g..'.'..k end end
+  for k,v in pairs(G[g] or {}) do globals[v] = g..'.'..k end end
 
 local function s(t, opts)
   local name, indent, fatal, maxnum = opts.name, opts.indent, opts.fatal, opts.maxnum
@@ -46,10 +46,16 @@ local function s(t, opts)
     if seen[t] then -- already seen this element
       sref[#sref+1] = spath..space..'='..space..seen[t]
       return tag..'nil'..comment('ref', level) end
-    if type(mt) == 'table' and (mt.__serialize or mt.__tostring) then -- knows how to serialize itself
-      seen[t] = insref or spath
-      if mt.__serialize then t = mt.__serialize(t) else t = tostring(t) end
-      ttype = type(t) end -- new value falls through to be serialized
+    if type(mt) == 'table' then
+      if (mt.__serialize or mt.__tostring) then -- knows how to serialize itself
+        seen[t] = insref or spath
+        if mt.__serialize then t = mt.__serialize(t) else t = tostring(t) end
+        if type(t) == 'table' and mt.__deserialize then
+          t.__deserialize = mt.__deserialize
+        end
+        ttype = type(t) -- new value falls through to be serialized
+      end
+    end
     if ttype == "table" then
       if level >= maxl then return tag..'{}'..comment('max', level) end
       seen[t] = insref or spath
@@ -92,7 +98,7 @@ local function s(t, opts)
       seen[t] = insref or spath
       local ok, res = pcall(string.dump, t)
       local func = ok and ((opts.nocode and "function() --[[..skipped..]] end" or
-        "loadstring("..safestr(res)..",'@serialized')")..comment(t, level))
+        "((loadstring or load)("..safestr(res)..",'@serialized'))")..comment(t, level))
       return tag..(func or globerr(t, level))
     else return tag..safestr(t) end -- handle all other types
   end

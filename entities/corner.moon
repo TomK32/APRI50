@@ -13,3 +13,11 @@ export class Corner
   angle: (other_corner) =>
     return math.atan2(@point.y - other_corner.point.y, @point.x - other_corner.point.x)
 
+  __deserialize: (args) ->
+    return Corner(args.map, args.point)
+
+  __serialize: =>
+    {
+      point: @point
+      map: @map
+    }
