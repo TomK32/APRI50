@@ -48,4 +48,4 @@ export class Point
     return math.sqrt(@x * @x + @y * @y)
 
   __serialize: =>
-    return __deserialize: 'return Point(' .. @x .. ', ' .. @y .. ', ' .. @z .. ')'
+    {x: @x, y: @y, z: @z}

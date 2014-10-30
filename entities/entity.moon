@@ -1,5 +1,8 @@
 
 export class Entity
+  -- used for serialization
+  @attributes: {'name', 'position'}
+
   @interactions_icons:
     controls: {game\quadFromImage('images/entities/interaction.png', 1)}
     inventory: {game\quadFromImage('images/entities/interaction.png', 2)}
@@ -207,3 +210,23 @@ export class Entity
   -- for hovering in inventories
   iconTitle: =>
     @name or @@__name
+
+  __deserialize: (attr) ->
+    klass = attr.__class
+    attr.__class = nil
+    if attr.position
+      attr.position = Point(attr.position.x, attr.position.y, attr.position.z)
+
+    func = (loadstring or load)('return function(attr) return ' .. klass .. '(attr) end')()
+    return func(attr)
+
+  -- not very elegant but keeps the save file small und resistant against upgrades
+  __serialize_classname: =>
+    return @@.__name
+
+  __serialize: =>
+    ret = {}
+    for i, attr in ipairs(@@attributes)
+      ret[attr] = @[attr]
+    ret.__class = @__serialize_classname()
+    return ret

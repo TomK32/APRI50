@@ -78,7 +78,7 @@ return class MapDebugOverlay extends View
       return
     x, y = @getMousePosition()
 
-    focused_center = @focusedCenter()
+    focused_center = @map_view\focusedCenter()
     if focused_center
       for k, v in pairs {borders: focused_center.borders}
         print k, v

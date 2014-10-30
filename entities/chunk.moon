@@ -47,9 +47,8 @@ export class Chunk
     TROPICAL_RAIN_FOREST: {0x33, 0x77, 0x55}
     TROPICAL_SEASONAL_FOREST: {0x55, 0x99, 0x44}
 
-  new: (center, evolution_kit) =>
+  new: (center) =>
 
-    -- evolution_kit can be nil
     @canvas = nil
     @center = center
     @center.chunk = @
@@ -98,7 +97,6 @@ export class Chunk
     @display_rect = { 0, 0, @width, @height}
     @absolute_display_rect = {x0, y0, x1, y1}
     @position = {x: x0, y: y0}
-    @evolution_kit = evolution_kit
     @setColors()
     @sunlight = {}
     @sunlight_borders = {}
@@ -245,3 +243,4 @@ export class Chunk
             n = @relativePoint(@center.downslope.point)
           love.graphics.line(c.x, c.y, n.x, n.y)
         love.graphics.pop()
+

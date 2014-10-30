@@ -8,7 +8,6 @@ require 'lib.contourlines_map'
 export class Map
   new: (options) =>
     for k, v in pairs(options)
-      print 'k', k
       @[k] = v
     mixin(@, ContourlinesMap)
     @layers = {} -- here the entities are stuffed into
@@ -34,7 +33,6 @@ export class Map
     return @_corners
 
   centers: =>
-    assert(@_centers, 'centers')
     return @_centers
 
   pointToBucket: (point, bucket) =>
@@ -201,13 +199,18 @@ export class Map
       n\calculateDownslopes()
 
   __deserialize: (args) ->
-     inspect(args, depth: 2)
-     return Map(args)
+    entities = args.entities
+    args.entities = nil
+    map = Map(args)
+    for i, entity in ipairs(entities)
+      map\addEntity(entity)
+    return map
 
   __serialize: =>
     {
       _centers: @centers()
       _corners: @corners()
+      entities: @entities()
       width: @width
       height: @height
       seed: @seed

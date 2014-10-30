@@ -1,7 +1,7 @@
 require 'entities.entity'
 export class Building extends Entity
   @interactions: Entity.addInteractions{
-    building_control:
+    controls:
       icon: @@interactions_icons.controls_machine
       match: (e) ->
         e.controllable and (e.controllable == true or e\controllable())

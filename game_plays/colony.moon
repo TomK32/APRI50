@@ -8,32 +8,32 @@ require 'views.atmosphere_view'
 
 
 export GamePlay = {}
-GamePlay.Colony = class Colony
+class GamePlay.Colony
   Colonist: require 'colonist'
   OxygenGenerator: require 'oxygen_generator'
   OxygenTank: require 'oxygen_tank'
   SpaceShip: require 'space_ship'
   Workshop: require 'workshop'
 
-  new: () =>
-    @map_state = MapState()
+  new: (options) =>
+    options or= {}
+    for k, v in pairs options
+      @[k] = v
+    @map_state or= MapState(options.map)
     @map = @map_state.map
+    game.setState(@map_state)
 
     @map_state.compute_scores = true
-    game.player.colonists = Inventory()
     @start_position = Point(@map_state.map.width / 2, @map_state.map.height / 2, game.layers.buildings)
     @map_state.view.camera\lookAt(@start_position.x, @start_position.y)
 
     --@actors_view = InventoryView(game.player.colonists, {30, 30, 200, 100}, 'press <shift> + <0-9>')
     --@map_state\addView(@actors_view)
 
-    start_data = require('game_plays.colony.data.start')
-    if start_data.requires
-      for i, file in *start_data.requires
-        require file
+    start_data = options.start_data or require('game_plays.colony.data.start')
     game.log('Initializing Colony')
 
-    for name, entity in pairs(start_data.entities)
+    for name, entity in pairs(start_data.entities or {})
       entity.args or= {}
       if entity.before_create
         entity.before_create(entity, @)
@@ -116,3 +116,17 @@ GamePlay.Colony = class Colony
 
   findCenter: (x, y) =>
     return @map_state.map\findClosestCenter(x, y)
+
+  __deserialize: (args) ->
+    args.start_data = {}
+    print 'colony'
+    colony = GamePlay.Colony(args)
+    colony.map_state.atmosphere = args.atmosphere
+    return colony
+
+  __serialize: =>
+    return {
+      map_state: @map_state
+      --atmosphere: @atmosphere
+      colonist: @colonist
+    }

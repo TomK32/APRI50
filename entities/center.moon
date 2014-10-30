@@ -9,16 +9,18 @@ export class Center
   @extensions: {
     WaterSource: require 'extensions/water_source'
     MineralsDeposit: require 'extensions/minerals_deposit'
+    -- TODO Prospector
   }
 
-  new: (map, point) =>
-    @map, @point = map, point
+  new: (options) =>
+    for k, v in pairs(options)
+      @[k] = v
     @index = 0
 
     @deposit = Deposit()
     @matter_for_chunk = {}
     @filling_matter_for_chunk
-    @moisture = point.moisture or 0 -- 0..1
+    @moisture = @point.moisture or 0 -- 0..1
 
     @neighbors = {} -- Center
     @borders = {} -- Edge
@@ -27,12 +29,13 @@ export class Center
     @border = false
     @biome = nil -- string
     @prospected = false
-    @extensions = {}
     @_diameter = nil
-    for i, extension_class in pairs(@@extensions)
-      extension = extension_class\apply(@)
-      if extension
-        table.insert(@extensions, extension)
+    if not @extensions
+      @extensions = {}
+      for i, extension_class in pairs(@@extensions)
+        extension = extension_class\apply(@)
+        if extension
+          table.insert(@extensions, extension)
     @
 
   -- for all those 0..1 values
@@ -216,13 +219,13 @@ export class Center
     return false
 
   __deserialize: (args) ->
-    print "HI"
-    return Center(args.map, args.point)
+    args.point = Point(unpack(args.point))
+    return Center(args)
 
   __serialize: =>
     {
-      point: @point
-      map: @map
+      point: {@point.x, @point.y, @point.z}
+      corners: _.to_array(@corners)
+      extensions: @extensions
       --deposit: @deposit
-      --extensions: @extensions
     }

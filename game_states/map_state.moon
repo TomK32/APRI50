@@ -14,11 +14,16 @@ export class MapState extends State
     s: {x: 0,  y:  4},
     d: {x: 4,  y:  0}
 
-  new: =>
-    super(@)
+  new: (map) =>
+    super(game)
     @scores = {}
     @compute_scores = false
-    @map = Map(game.map.size, game.map.size, game.seed, game.map.size * game.map.size * game.map_density)
+    @map = map or Map({
+      width: game.map.size,
+      height: game.map.size,
+      seed: game.seed,
+      number_of_points: game.map.size * game.map.size * game.map.density
+    })
     game.log('Started game with seed ' .. game.seed)
     @view = MapView(@map)
 
@@ -140,3 +145,9 @@ export class MapState extends State
     if not center
       return false
     return @map\raiseCenter(up, center)
+
+  __deserialize: (args) ->
+    return MapState(args.map)
+
+  __serialize: =>
+    map: @map

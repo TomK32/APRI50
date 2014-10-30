@@ -3,6 +3,7 @@
 
 require 'entities.recipe'
 export class Machine extends Building
+  @attributes: _.flatten({'recipes', 'active_recipe', 'source_inventories', 'target_inventory', Building.attributes})
   -- machines consume from inventories that provide a consume method (element, amount)
   -- and place things into target_inventory that provide an add method (element, amount)
   @ANY = {build: 'anything'}

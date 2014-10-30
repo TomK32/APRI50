@@ -31,7 +31,7 @@ class LineSegment
 export class MapGen
   -- TODO: accept a table in the constructor
   -- FIXME: Allow width and height for oblong shapes
-  new: (map, width, height, seed, number_of_points, _type) =>
+  new: (map, width, height, seed, number_of_points) =>
     @map = map
     @num_points = number_of_points
     @lake_treshold = 0.3 -- 0...1
@@ -139,7 +139,7 @@ export class MapGen
     -- NOTE: This `centers = {}` is not in the original
     @centers = {}
     for i, point in ipairs(@points)
-      center = Center(@map, point)
+      center = Center(map: @map, point: point)
       center.index = center_count
 
       @centers[i] = center
@@ -274,4 +274,3 @@ export class MapGen
     for i, edge in ipairs(corner.protrudes)
       if edge.v0 == other_corner or edge.v1 == other_corner
         return edge
-

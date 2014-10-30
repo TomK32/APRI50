@@ -11,3 +11,6 @@ return class Workshop extends Building
 
   game_state: =>
     return require 'workshop_state'
+
+  __serialize_classname: ->
+    'GamePlay.Colony.Workshop'

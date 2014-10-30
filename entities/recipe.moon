@@ -48,3 +48,14 @@ export class Recipe
         table.insert(produced, product)
         -- goes to waste?
     return produced
+
+  __deserialize: (args) ->
+    return Recipe(args)
+
+  __serialize: =>
+    {
+      name: @name
+      ingredients: @ingredients
+      products: @products
+      duration: @duration
+    }

@@ -225,7 +225,6 @@ end
 
 setmetatable(game, {
   __serialize = function(self)
-    print(self.game_play)
     return {
       game_play = self.game_play,
       time = self.time,
@@ -234,7 +233,6 @@ setmetatable(game, {
   end
 })
 
-stack = {}
 function game.recursiveMerge(destination, source, seen)
   local seen = seen and seen or {}
   if type(source) ~= 'table' then
@@ -242,20 +240,18 @@ function game.recursiveMerge(destination, source, seen)
     return source
   end
   for k, v in pairs(source) do
-    table.insert(stack, k)
+    destination[k] = nil
     if type(v) == 'table' then
       if not seen[v] then
         if v.__deserialize then
-          inspect(_.keys(v))
+          local func = v.__deserialize
+          v.__deserialize = nil
           local args = game.recursiveMerge({}, v, seen)
-          inspect(_.keys(args))
-          local ok
-          destination[k] = nil
-          destination[k] = v.__deserialize(args)
+          destination[k] = func(args)
         else
           seen[v] = true
-          if type(destination[k]) == 'table' then
-            destination[k] = game.recursiveMerge(destination[k], v, seen)
+          if type(v) == 'table' then
+            destination[k] = game.recursiveMerge({}, v, seen)
           else
             destination[k] = v
           end
@@ -264,7 +260,6 @@ function game.recursiveMerge(destination, source, seen)
     else
       destination[k] = game.recursiveMerge({}, v, seen)
     end
-    _.pop(stack)
   end
   return destination
 end
@@ -272,6 +267,8 @@ end
 
 function game:load()
   --game = Tserial.unpack(love.filesystem.read(game.save_filename or 'game.sav'), true)
+  game.save_filename = game.save_filename or 'game.sav'
+  game.log('Loading game ' .. self.save_filename)
   local file, length = love.filesystem.read(self.save_filename)
   local tmp = loadstring(file)()
 
@@ -281,6 +278,7 @@ function game:load()
 end
 
 function game:save()
-  love.filesystem.write(game.save_filename or 'game.sav', serpent.dump(game, {nocode = false, indent='  '}))
-  game.log('Game saved')
+  game.save_filename = game.save_filename or 'game.sav'
+  love.filesystem.write(game.save_filename, serpent.dump(game, {nocode = false, indent='  '}))
+  game.log('Game saved to ' .. game.save_filename)
 end

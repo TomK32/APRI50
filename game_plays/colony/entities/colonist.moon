@@ -76,3 +76,7 @@ return class Colonist extends MovableActor
     @dead = true
     @active = false
     @image = game\image('game_plays/colony/images/colonist-angelica-dead.png')
+
+  __serialize_classname: =>
+    return 'GamePlay.Colony.' .. @@.__name
+
